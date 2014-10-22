@@ -30,17 +30,14 @@ task main()
   	motor[motorLeft] = 100;
   	motor[motorRight] = 100;
 
-		while(nMotorEncoder[motorLeft] <= encoderScale * (250.0 / wheelCircumference) )
+		while(nMotorEncoder[motorLeft] <= encoderScale * (192.0 / wheelCircumference) )
 		{
 		}
 		motor[motorLeft] = 0;
 		motor[motorRight] = 0;
 		wait10Msec(150);
-		pos1=100;
-		pos2=155;
-		servo[grabber1]=pos2;
-		servo[grabber2]=pos1;
-		wait10Msec(150);
+
+		wait10Msec(10);
 /*		if(motor[motorLeft]==0){
 			for(int i=0;i<10;i++){
 		//		while(pos1<=255 && pos2>=0){
@@ -56,21 +53,51 @@ task main()
   	motor[motorLeft] = -100;
   	motor[motorRight] = 100;
 
-		while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (59.8 / wheelCircumference) ) // rotate counterclockwise 150 degree
+		while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (12.0 / wheelCircumference) ) // rotate counterclockwise 30 degree
 		{
 		}
+			  resetEncoders();
 		motor[motorLeft] = 100;
 		motor[motorRight] = 100;
 		
-		while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (250.0 / wheelCircumference) )//move forward 250 cm
+		
+		while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (136.0 / wheelCircumference) )//move forward 136 cm, approach goal
 		{
 		}
 		
 		motor[motorLeft] = 0;
 		motor[motorRight] = 0;
+			  resetEncoders();
+		wait10Msec(10);
+		pos1=100;
+		pos2=155;//grabber not completely down
+		servo[grabber1]=pos2;
+		servo[grabber2]=pos1;
 		
-	 pos1 = 0;
-	 pos2 = 255;
-	servo[grabber1]=pos2;
-	servo[grabber2]=pos1;
+		motor[motorLeft] = -100;
+  	motor[motorRight] = 100;
+
+		while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (27.82 / wheelCircumference) ) // rotate counterclockwise 139.5 degree
+		{
+		}
+			  resetEncoders();
+		motor[motorLeft] = 100;
+  	motor[motorRight] = 100;
+		motor[thrower] = -50.0;
+		
+		while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (281.0 / wheelCircumference) ) // move forward 281 cm
+		{
+		}
+	  resetEncoders();
+			  		
+		motor[motorLeft] = 0;
+		motor[motorRight] = 0;
+		motor[thrower] = 0;
+		wait10Msec(10);
+ 	  pos1 = 0;
+	  pos2 = 255;
+		servo[grabber1]=pos2;//they are swtiched
+		servo[grabber2]=pos1;
+		
+		
 }
