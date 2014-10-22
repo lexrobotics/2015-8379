@@ -15,19 +15,62 @@ void resetEncoders(){
 		nMotorEncoder[motorRight] = 0;
 		nMotorEncoder[motorLeft] = 0;
 		}
-
+//everything is in centimeters
 static float encoderScale=1440.0;
-static float wheelRadius=5.0;
+static float wheelRadius=((9.7)/2);
 static float wheelCircumference=PI*2*wheelRadius;
 task main()
 {
+	int pos1 = 0;
+	int pos2 = 255;
+	servo[grabber1]=pos2;//they are swtiched
+	servo[grabber2]=pos1;
+
   	resetEncoders();
   	motor[motorLeft] = 100;
   	motor[motorRight] = 100;
 
-		while(nMotorEncoder[motorLeft] <= encoderScale * (100.0 / wheelCircumference) )
+		while(nMotorEncoder[motorLeft] <= encoderScale * (250.0 / wheelCircumference) )
 		{
 		}
 		motor[motorLeft] = 0;
 		motor[motorRight] = 0;
+		wait10Msec(150);
+		pos1=100;
+		pos2=155;
+		servo[grabber1]=pos2;
+		servo[grabber2]=pos1;
+		wait10Msec(150);
+/*		if(motor[motorLeft]==0){
+			for(int i=0;i<10;i++){
+		//		while(pos1<=255 && pos2>=0){
+			 	pos1+=5;
+			 	pos2-=5;
+			 	if (pos1>=255) pos1=255;
+			 	if(pos2<=0) pos2=0;
+	     	servo[grabber1] = (pos2);
+	     	servo[grabber2] = (pos1);
+			}
+		}*/
+	  resetEncoders();
+  	motor[motorLeft] = -100;
+  	motor[motorRight] = 100;
+
+		while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (59.8 / wheelCircumference) ) // rotate counterclockwise 150 degree
+		{
+		}
+		motor[motorLeft] = 100;
+		motor[motorRight] = 100;
+		
+		while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (250.0 / wheelCircumference) )//move forward 250 cm
+		{
+		}
+		
+		motor[motorLeft] = 0;
+		motor[motorRight] = 0;
+		
+	 pos1 = 0;
+	 pos2 = 255;
+	servo[grabber1]=pos2;
+	servo[grabber2]=pos1;
 }
