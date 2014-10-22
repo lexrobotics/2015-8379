@@ -19,11 +19,12 @@ void resetEncoders(){
 static float encoderScale=1440.0;
 static float wheelRadius=((9.7)/2);
 static float wheelCircumference=PI*2*wheelRadius;
+//static float AngleRatio = ? //used as angle(in degree) * AngleRatio
 task main()
 {
 	int pos1 = 0;
 	int pos2 = 255;
-	servo[grabber1]=pos2;//they are swtiched
+	servo[grabber1]=pos2;//they are switched
 	servo[grabber2]=pos1;
 
   	resetEncoders();
@@ -83,7 +84,7 @@ task main()
 			  resetEncoders();
 		motor[motorLeft] = 100;
   	motor[motorRight] = 100;
-		motor[thrower] = -50.0;
+		motor[thrower] = -100.0;
 		
 		while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (281.0 / wheelCircumference) ) // move forward 281 cm
 		{
@@ -96,7 +97,7 @@ task main()
 		wait10Msec(10);
  	  pos1 = 0;
 	  pos2 = 255;
-		servo[grabber1]=pos2;//they are swtiched
+		servo[grabber1]=pos2;
 		servo[grabber2]=pos1;
 		
 		
