@@ -1,7 +1,9 @@
-#pragma config(Hubs,  S1, HTMotor,  HTServo,  none,     none)
+#pragma config(Hubs,  S1, HTMotor,  HTServo,  HTMotor,  none)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Motor,  mtr_S1_C1_1,     motorRight,    tmotorTetrix, openLoop, encoder)
 #pragma config(Motor,  mtr_S1_C1_2,     motorLeft,     tmotorTetrix, openLoop, reversed, encoder)
+#pragma config(Motor,  mtr_S1_C3_1,     thrower,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C3_2,     motorG,        tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S1_C2_1,    grabber1,             tServoStandard)
 #pragma config(Servo,  srvo_S1_C2_2,    grabber2,             tServoStandard)
 #pragma config(Servo,  srvo_S1_C2_3,    servo3,               tServoNone)
@@ -12,9 +14,9 @@
 
 #include "JoystickDriver.c"
 void resetEncoders(){
-		nMotorEncoder[motorRight] = 0;
-		nMotorEncoder[motorLeft] = 0;
-		}
+	nMotorEncoder[motorRight] = 0;
+	nMotorEncoder[motorLeft] = 0;
+}
 //everything is in centimeters
 static float encoderScale=1440.0;
 static float wheelRadius=((9.7)/2);
@@ -27,78 +29,98 @@ task main()
 	servo[grabber1]=pos2;//they are switched
 	servo[grabber2]=pos1;
 
-  	resetEncoders();
-  	motor[motorLeft] = 100;
-  	motor[motorRight] = 100;
+	resetEncoders();
+	motor[motorLeft] = 100;
+	motor[motorRight] = 100;
 
-		while(nMotorEncoder[motorLeft] <= encoderScale * (192.0 / wheelCircumference) )
-		{
-		}
-		motor[motorLeft] = 0;
-		motor[motorRight] = 0;
-		wait10Msec(150);
+	while(nMotorEncoder[motorLeft] <= encoderScale * (169.0 / wheelCircumference) )
+	{
+	}
+	motor[motorLeft] = 0;
+	motor[motorRight] = 0;
+	wait10Msec(50);
 
-		wait10Msec(10);
-/*		if(motor[motorLeft]==0){
-			for(int i=0;i<10;i++){
-		//		while(pos1<=255 && pos2>=0){
-			 	pos1+=5;
-			 	pos2-=5;
-			 	if (pos1>=255) pos1=255;
-			 	if(pos2<=0) pos2=0;
-	     	servo[grabber1] = (pos2);
-	     	servo[grabber2] = (pos1);
-			}
-		}*/
-	  resetEncoders();
-  	motor[motorLeft] = -100;
-  	motor[motorRight] = 100;
+	/*		if(motor[motorLeft]==0){
+	for(int i=0;i<10;i++){
+	//		while(pos1<=255 && pos2>=0){
+	pos1+=5;
+	pos2-=5;
+	if (pos1>=255) pos1=255;
+	if(pos2<=0) pos2=0;
+	servo[grabber1] = (pos2);
+	servo[grabber2] = (pos1);
+	}
+	}*/
+	resetEncoders();
+	motor[motorLeft] = -100;
+	motor[motorRight] = 100;
 
-		while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (12.0 / wheelCircumference) ) // rotate counterclockwise 30 degree
-		{
-		}
-			  resetEncoders();
-		motor[motorLeft] = 100;
-		motor[motorRight] = 100;
-		
-		
-		while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (136.0 / wheelCircumference) )//move forward 136 cm, approach goal
-		{
-		}
-		
-		motor[motorLeft] = 0;
-		motor[motorRight] = 0;
-			  resetEncoders();
-		wait10Msec(10);
-		pos1=100;
-		pos2=155;//grabber not completely down
-		servo[grabber1]=pos2;
-		servo[grabber2]=pos1;
-		
-		motor[motorLeft] = -100;
-  	motor[motorRight] = 100;
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (1.55 / wheelCircumference) ) // rotate towards goal
+	{
+	}
+	resetEncoders();
+	motor[motorLeft] = 65;
+	motor[motorRight] = 65;
 
-		while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (27.82 / wheelCircumference) ) // rotate counterclockwise 139.5 degree
-		{
-		}
-			  resetEncoders();
-		motor[motorLeft] = 100;
-  	motor[motorRight] = 100;
-		motor[thrower] = -100.0;
-		
-		while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (281.0 / wheelCircumference) ) // move forward 281 cm
-		{
-		}
-	  resetEncoders();
-			  		
-		motor[motorLeft] = 0;
-		motor[motorRight] = 0;
-		motor[thrower] = 0;
-		wait10Msec(10);
- 	  pos1 = 0;
-	  pos2 = 255;
-		servo[grabber1]=pos2;
-		servo[grabber2]=pos1;
-		
-		
+
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (51.0 / wheelCircumference) )//move forward 46.8 cm, approach goal
+	{
+	}
+
+	motor[motorLeft] = 0;//stop robot
+	motor[motorRight] = 0;
+	resetEncoders();
+
+	wait10Msec(50);
+	pos1=100;
+	pos2=155;//grabber not completely down
+	servo[grabber1]=pos2;
+	servo[grabber2]=pos1;
+	wait10Msec(50);
+
+	resetEncoders();
+	motor[motorLeft] = -100;
+	motor[motorRight] = -100;
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (5.0 / wheelCircumference) )//move backwards to get robot off goal base
+	{
+	}
+	resetEncoders();
+	motor[motorLeft] = -100;
+	motor[motorRight] = 100;
+
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (48.0 / wheelCircumference) ) // rotate counterclockwise 139.5 degree
+	{
+	}
+	resetEncoders();
+	motor[motorLeft] = 70.0;
+	motor[motorRight] = 70.0;
+	motor[thrower] = -100.0; //start thrower motor
+
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (110.0 / wheelCircumference) ) // move forward 281 cm
+	{
+	}
+	resetEncoders();
+
+	motor[motorLeft] = 0;
+	motor[motorRight] = 0;
+	// motor[thrower] = -100.0; //start thrower motor
+	wait1Msec(500);
+	pos1 = 0;
+	pos2 = 255;
+	servo[grabber1]=pos2;
+	servo[grabber2]=pos1;
+	wait1Msec(1000000);
+	//	motor[thrower] = -100.0; //start thrower motor
+
+
+	/*		motor[motorLeft] = -100;
+	motor[motorRight] = -100;
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (10.0 / wheelCircumference) ) // move forward 281 cm
+	{
+	}
+
+	motor[motorLeft] = 0;
+	motor[motorRight] = 0;
+	resetEncoders();*///this part mess up the angles...... eh
+
 }
