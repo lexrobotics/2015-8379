@@ -81,6 +81,7 @@ task main()
 	}
 	motor[motorLeft] = 0;
 	motor[motorRight] = 0;
+
 	wait1Msec(10);
 
 	/*		if(motor[motorLeft]==0){
@@ -94,6 +95,7 @@ task main()
 	servo[grabber2] = (pos1);
 	}
 	}*/
+
 	turnWithGyro(-100, 5.0);
 
 	resetEncoders();
@@ -124,6 +126,7 @@ task main()
 	resetEncoders();
 	motor[motorLeft] = 60.0;
 	motor[motorRight] = 60.0;
+
 	motor[thrower] = -100.0; //start thrower motor
 
 	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (110.0 / wheelCircumference) ) // move forward 281 cm
@@ -139,7 +142,9 @@ task main()
 	pos2 = 255;
 	servo[grabber1]=pos2;
 	servo[grabber2]=pos1;
+
 	wait1Msec(10000);
+
 	//	motor[thrower] = -100.0; //start thrower motor
 
 
@@ -151,6 +156,7 @@ task main()
 
 	motor[motorLeft] = 0;
 	motor[motorRight] = 0;
+
 	resetEncoders();*///this part mess up the angles.....eh
 
 }
