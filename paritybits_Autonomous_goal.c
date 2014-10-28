@@ -66,45 +66,45 @@ task main()
 	waitForStart();
 	nxtDisplayCenteredTextLine(2, "%d", delay);
 	wait1Msec(1000*delay);
-
 	int pos1 = 0;
 	int pos2 = 255;
-	servo[grabber1]=pos2;//they are switched
+	servo[grabber1]=pos2;//grabbers and pos switched
 	servo[grabber2]=pos1;
+
+	turnWithGyro(100, 4.5);// turn in parking zone
 
 	resetEncoders();
 	motor[motorLeft] = 100;
 	motor[motorRight] = 100;
-
-	while(nMotorEncoder[motorLeft] <= encoderScale * (169.0 / wheelCircumference) )
+	while(nMotorEncoder[motorLeft] <= encoderScale * (130.0 / wheelCircumference) )
 	{
 	}
 	motor[motorLeft] = 0;
 	motor[motorRight] = 0;
 	wait1Msec(10);
 
-	/*		if(motor[motorLeft]==0){
-	for(int i=0;i<10;i++){
-	//		while(pos1<=255 && pos2>=0){
-	pos1+=5;
-	pos2-=5;
-	if (pos1>=255) pos1=255;
-	if(pos2<=0) pos2=0;
-	servo[grabber1] = (pos2);
-	servo[grabber2] = (pos1);
-	}
-	}*/
-	turnWithGyro(-100, 5.0);
+	turnWithGyro(-100, 2.8);//turn towards goal
 
 	resetEncoders();
-	motor[motorLeft] = 55;
-	motor[motorRight] = 55;
-	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (54.0 / wheelCircumference) )//move forward 55 cm, approach goal
+	motor[motorLeft] = 100;
+	motor[motorRight] = 100;
+	while(nMotorEncoder[motorLeft] <= encoderScale * (131.0 / wheelCircumference) )	//approach goal
 	{
 	}
-
-	motor[motorLeft] = 0;//stop robot
+	motor[motorLeft] = 0;
 	motor[motorRight] = 0;
+	wait1Msec(10);
+
+	resetEncoders();
+	motor[motorLeft] = 60;
+	motor[motorRight] = 60;
+	while(nMotorEncoder[motorLeft] <= encoderScale * (30.0 / wheelCircumference) )	//slowly approach goal
+	{
+	}
+	motor[motorLeft] = 0;
+	motor[motorRight] = 0;
+	wait1Msec(10);
+
 	resetEncoders();
 
 	wait10Msec(50);
@@ -120,37 +120,40 @@ task main()
 	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (5.0 / wheelCircumference) )//move backwards to get robot off goal base
 	{
 	}
-	turnWithGyro(-100,120.0);
+
+	turnWithGyro(-100,160.0);//turn back to parking zone
+
+
 	resetEncoders();
 	motor[motorLeft] = 60.0;
 	motor[motorRight] = 60.0;
 	motor[thrower] = -100.0; //start thrower motor
 
-	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (110.0 / wheelCircumference) ) // move forward 281 cm
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (80.0 / wheelCircumference) ) // move forward 80 cm
 	{
 	}
 	resetEncoders();
 
+
+	turnWithGyro(100, 4.5);//turn towards parking zone
+
+	resetEncoders();
+	motor[motorLeft] = 100;
+	motor[motorRight] = 100;
+	while(nMotorEncoder[motorLeft] <= encoderScale * (55.0 / wheelCircumference) )	//approach parking zone
+	{
+	}
 	motor[motorLeft] = 0;
 	motor[motorRight] = 0;
-	// motor[thrower] = -100.0; //start thrower motor
+	wait1Msec(10);
+
+	motor[motorLeft] = 0;
+	motor[motorRight] = 0;
 	wait1Msec(500);
 	pos1 = 0;
 	pos2 = 255;
 	servo[grabber1]=pos2;
 	servo[grabber2]=pos1;
 	wait1Msec(10000);
-	//	motor[thrower] = -100.0; //start thrower motor
-
-
-	/*		motor[motorLeft] = -100;
-	motor[motorRight] = -100;
-	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (10.0 / wheelCircumference) ) // move forward 281 cm
-	{
-	}
-
-	motor[motorLeft] = 0;
-	motor[motorRight] = 0;
-	resetEncoders();*///this part mess up the angles.....eh
 
 }
