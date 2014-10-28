@@ -20,6 +20,7 @@ task main()
 	servo[grabber1]=pos1;
 	servo[grabber2]=pos2;
 
+
     while(true){
 	   getJoystickSettings(joystick);
 
