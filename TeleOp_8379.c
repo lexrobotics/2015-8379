@@ -36,7 +36,7 @@ task main()
      motor[motorLeft] = 100.0/128 * joystick.joy1_y2;
 
 		if(joy2Btn(1)) { //runs thrower
-			motor[thrower] = -100.0;//originally 100, works best at 60
+			motor[thrower] = -60.0;//originally 100, works best at 60
 	   }
 
 	   if(joy2Btn(3)) { //stops thrower
@@ -44,7 +44,7 @@ task main()
 	   }
 
 	   if(joy2Btn(5)) { //runs thrower in reverse direction
-			motor[thrower] = 100.0;
+			motor[thrower] = 60.0;
 	   }
 
 		if(joy2Btn(2)) { //moves grabbers down
