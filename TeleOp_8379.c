@@ -6,7 +6,7 @@
 #pragma config(Motor,  mtr_S1_C3_2,     motorG,        tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S1_C2_1,    grabber2,             tServoStandard)
 #pragma config(Servo,  srvo_S1_C2_2,    grabber1,             tServoStandard)
-#pragma config(Servo,  srvo_S1_C2_3,    servo3,               tServoNone)
+#pragma config(Servo,  srvo_S1_C2_3,    arm,                  tServoContinuousRotation)
 #pragma config(Servo,  srvo_S1_C2_4,    servo4,               tServoNone)
 #pragma config(Servo,  srvo_S1_C2_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S1_C2_6,    servo6,               tServoNone)
@@ -17,8 +17,10 @@ task main()
 {
 	int pos1 = 0;
 	int pos2 = 255;
+	int pos3 = 150;
 	servo[grabber1]=pos1;
 	servo[grabber2]=pos2;
+	servo[arm] = pos3;
 
 	waitForStart();
     while(true){
@@ -36,15 +38,11 @@ task main()
      motor[motorLeft] = 100.0/128 * joystick.joy1_y2;
 
 		if(joy2Btn(1)) { //runs thrower
-			motor[thrower] = -60.0;//originally 100, works best at 60
+			motor[thrower] = -50.0;
 	   }
 
 	   if(joy2Btn(3)) { //stops thrower
 			motor[thrower] = 0;
-	   }
-
-	   if(joy2Btn(5)) { //runs thrower in reverse direction
-			motor[thrower] = 60.0;
 	   }
 
 		if(joy2Btn(2)) { //moves grabbers down
@@ -65,10 +63,33 @@ task main()
 			 	if(pos2>=255) pos2=255;
 	     	servo[grabber1] = (pos1);
 	     	servo[grabber2] = (pos2);
+	    	}
+	    }
+
+	    if (joy2Btn(5)){// up left move arm up
+				if(pos3 >= 0 && pos3 <= 150){
+	      pos3+=5;
+	     	if (pos3 <= 0) pos3=0;
+	     	if(pos3>=150) pos3=150;
+	     	servo[arm] = (pos3);
+	     	wait1Msec(5);
+	    	}
+	    }
+
+	    if (joy2Btn(7)){ //down left move arm down
+				if(pos3 >= 0 && pos3 <= 150){
+	      pos3-=5;
+	     	if (pos3 <= 0) pos3=0;
+	     	if (pos3 >=150) pos3=150;
+	     	servo[arm] = (pos3);
+	     	wait1Msec(5);
 	    }
 	   }
 
+	   if (joy2Btn(6))//runs thrower backward just in case a ball is stuck or something
+	     motor[thrower] = 50;
 
-     wait1Msec(10);
+
+     wait10Msec(1);
   }
 }
