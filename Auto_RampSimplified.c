@@ -31,7 +31,7 @@ void move(float speed, float distance)
 	resetEncoders();
 	motor[motorLeft] = speed;
 	motor[motorRight] = speed;
-	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (distance / wheelCircumference) )
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * (distance / wheelCircumference) )
 	{
 	}
 	motor[motorLeft] = 0;
@@ -70,6 +70,16 @@ void turnWithGyro(int speed, float degrees) {
   turn(0);
 }
 
+void ramp(float speed, float distance)
+{
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * (distance / wheelCircumference) )
+	{
+			motor[motorLeft] = speed *( (encoderScale * distance / wheelCircumference- nMotorEncoder[motorLeft]) / ( encoderScale * distance / wheelCircumference));
+			motor[motorRight] = speed *( (encoderScale * distance / wheelCircumference - nMotorEncoder[motorRight]) / ( encoderScale * distance / wheelCircumference));
+	}
+
+}
+
 task main()
 {
 	int delay=0;
@@ -88,9 +98,9 @@ task main()
 	servo[grabber1]=pos2;//they are switched
 	servo[grabber2]=pos1;
 
-	move(50.0, 150.0);//**1st length: move down the ramp
-	turnWithGyro(-100.0, 11.0);//1st turn: turn to face rolling goal
-	move(50.0,62.0);//**2nd length: move toward the 30 cm goal
+	move(50.0, 167.0);//**1st length: move down the ramp
+	turnWithGyro(-100.0, 8.5);//1st turn: turn to face rolling goal
+	ramp(50.0,112.0);//**2nd length: move toward the 30 cm goal
 
 	wait10Msec(50);
 	pos1=255;
@@ -99,14 +109,14 @@ task main()
 	servo[grabber2]=pos1;
 	wait10Msec(50);
 
-	move(-100.0,5.0);//**back up 5 cm
+	move(-100.0,10.0);//**back up 5 cm
 
-	turnWithGyro(-100.0,141.0);//turn back to straight
-	motor[thrower] = -100.0; //start thrower motor
+	turnWithGyro(-100.0,135.0);//turn back to straight
+	motor[thrower] = -60.0; //start thrower motor
 
-	move(100.0,90.0);//**length: move pass the kick stand
+	move(100.0,180.0);//**length: move pass the kick stand
 	turnWithGyro(100.0,15.0);//turn toward the PK
-	move(100.0, 40.0);//**length: move into the PK
+	move(100.0, 80.0);//**length: move into the PK
 
 	/******move to the right side of PZ**********************
 	move(100.0, 75.0);//**length: move back
