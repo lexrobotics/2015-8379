@@ -33,7 +33,7 @@ void move(float speed, float distance)
 	resetEncoders();
 	motor[motorLeft] = speed;
 	motor[motorRight] = speed;
-	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * (distance / wheelCircumference) )
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2* (distance / wheelCircumference) )
 	{
 	}
 	motor[motorLeft] = 0;
@@ -91,8 +91,8 @@ task main()
 
 	move(100.0, 20.0); //**1st length: move away from the wall
 
-	turnWithGyro(100, 3.2);// 1st turn: turn in parking zone
-	move(100.0,132.0);//**2nd length: move toward the ramp
+	turnWithGyro(-100, 3.2);// 1st turn: turn in parking zone
+	move(100.0,132.0);//**2nd length: move towards opposite ramp
 
 	int pos1 = 0;
 	int pos2 = 255;
@@ -101,9 +101,12 @@ task main()
 	motor[motorLeft] = 0;
 	motor[motorRight] = 0;
 
-	turnWithGyro(-100, 10.0);//2nd turn: turn towards goal
-	move(100.0,128.0);//**3rd length: move toward the goal, may want to ramp
-	move(60.0, 28.0);
+	turnWithGyro(100, 10.0);//2nd turn: turn toward opposite parking zone (should be parallel)
+	move(100.0,98.0);//**3rd length: move past center goal on left
+	turnWithGyro(100, 90.0);//3rd turn: turn right towards right wall
+	move(100.0, 60.0);//4th length: move past center goal
+	turnWithGyro(-100, 90.0);//4th turn: turn left toward goal
+	move(100.0, 30.0);//5th lenghth: move toards goal
 
 	wait10Msec(50);
 	pos1=255;
@@ -112,7 +115,7 @@ task main()
 	servo[grabber2]=pos1;
 	wait10Msec(50);
 
-	move(-100.0,10.0);// **length: back away a little
+move(-100.0,10.0);// **length: back away a little
 	turnWithGyro(-100,172.0);//turn back to return
 	motor[thrower] = -100.0; //start thrower motor
 	move(100.0, 150.0);//**length: move back
