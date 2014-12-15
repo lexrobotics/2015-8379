@@ -1,13 +1,14 @@
 //updated before 12/11/14   can be covered
 #pragma config(Hubs,  S1, HTMotor,  HTServo,  HTMotor,  none)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Motor,  mtr_S1_C1_1,     motorRight,    tmotorTetrix, openLoop, reversed, encoder)
+#pragma config(Sensor, S2,     gyro,           sensorAnalogInactive)
+#pragma config(Motor,  mtr_S1_C1_1,     motorRight,    tmotorTetrix, openLoop, encoder)
 #pragma config(Motor,  mtr_S1_C1_2,     thrower,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C3_1,     motorF,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C3_2,     motorLeft,     tmotorTetrix, openLoop, encoder)
-#pragma config(Servo,  srvo_S1_C2_1,    grabber2,             tServoStandard)
-#pragma config(Servo,  srvo_S1_C2_2,    grabber1,             tServoStandard)
-#pragma config(Servo,  srvo_S1_C2_3,    arm,                  tServoContinuousRotation)
+#pragma config(Motor,  mtr_S1_C3_2,     motorLeft,     tmotorTetrix, openLoop, reversed, encoder)
+#pragma config(Servo,  srvo_S1_C2_1,    grabber1,             tServoStandard)
+#pragma config(Servo,  srvo_S1_C2_2,    grabber2,             tServoStandard)
+#pragma config(Servo,  srvo_S1_C2_3,    hood,                 tServoStandard)
 #pragma config(Servo,  srvo_S1_C2_4,    servo4,               tServoNone)
 #pragma config(Servo,  srvo_S1_C2_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S1_C2_6,    servo6,               tServoNone)
@@ -18,11 +19,13 @@ task main()
 {
 	int pos1 = 0;
 	int pos2 = 255;
-	int pos3 = 150;
+//	int pos3 = 150;
 	servo[grabber1]=pos1;
 	servo[grabber2]=pos2;
-	servo[arm] = pos3;
-
+//	servo[arm] = pos3;
+	int pos4 = 10s;
+	servo[hood] = pos4;
+	
 	waitForStart();
     while(true){
 	   getJoystickSettings(joystick);
@@ -47,11 +50,11 @@ task main()
 
 	   if (abs(joystick.joy1_y2)>=10 && abs (joystick.joy1_y2) <50)
 	   {
-	     motor[motorLeft] = 50.0/128 * joystick.joy1_y2;//right = joy1_y1, the right button
+	     motor[motorLeft] = 50.0/128 * joystick.joy1_y2;//left = joy1_y2, the left button
 	   }
 	   else
 	   {
-	      motor[motorLeft] = 100.0/128 * joystick.joy1_y2;//right = joy1_y1, the right button
+	      motor[motorLeft] = 100.0/128 * joystick.joy1_y2;//left = joy1_y2, the left button
 	   }
 
 		if(joy2Btn(1)) { //runs thrower
@@ -83,7 +86,7 @@ task main()
 	    	}
 	    }
 
-	    if (joy2Btn(5)){// up left move arm up
+/*	    if (joy2Btn(5)){// up left move arm up; up left side button
 				if(pos3 >= 0 && pos3 <= 150){
 	      pos3+=5;
 	     	if (pos3 <= 0) pos3=0;
@@ -93,7 +96,7 @@ task main()
 	    	}
 	    }
 
-	    if (joy2Btn(7)){ //down left move arm down
+	    if (joy2Btn(7)){ //down left move arm down; bottom left side button
 				if(pos3 >= 0 && pos3 <= 150){
 	      pos3-=5;
 	     	if (pos3 <= 0) pos3=0;
@@ -101,12 +104,37 @@ task main()
 	     	servo[arm] = (pos3);
 	     	wait1Msec(5);
 	    }
+	   }*/
+	   if (joy2Btn(5)){
+/*	     if (pos4 >= 0 && pos4 <= 255)
+	     {
+	       pos4 +=5;
+	       if (pos4 <= 0) pos4=0;
+	     	 if (pos4 >=255) pos4=255;
+	     	 servo[hood] = pos4;
+	     	 wait1Msec(100);
+	     }*/ 
+	     pos4 = 120;
+	     servo[hood] = pos4;
+	   }
+	   
+	   if (joy2Btn(7)){
+/*	     if (pos4 >= 0 && pos4 <= 255)
+	     {
+	       pos4 -=5;
+	       if (pos4 <= 0) pos4=0;
+	     	 if (pos4 >=255) pos4=255;
+	     	 servo[hood] = pos4;
+	     	 wait1Msec(100);
+	     }*/
+	     pos4 = 10;
+	     servo[hood] = pos4;
 	   }
 
-	   if (joy2Btn(6))//runs thrower backward just in case a ball is stuck or something
+	   if (joy2Btn(6))//runs thrower backward just in case a ball is stuck or something; up right side button
 	     motor[thrower] = 50;
 
 
-     wait10Msec(1);
+     wait1Msec(10);
   }
 }
