@@ -17,8 +17,8 @@
 #include "JoystickDriver.c"
 task main()
 {
-	int pos1 = 0;
-	int pos2 = 255;
+	int pos1 = 255;
+	int pos2 = 0;
 //	int pos3 = 150;
 	servo[grabber1]=pos1;
 	servo[grabber2]=pos2;
@@ -66,7 +66,7 @@ task main()
 			motor[thrower] = 0;
 	   }
 
-		if(joy2Btn(2)) { //moves grabbers down
+		if(joy2Btn(4)) { //moves grabbers up
 
 			 	pos1+=5;
 			 	pos2-=5;
@@ -76,15 +76,15 @@ task main()
 	     	servo[grabber2] = (pos2);
 	   }
 
-	   if(joy2Btn(4)) { //moves grabbers up
-	     if(pos1 >= 0 && pos1 <= 255){
+	   if(joy2Btn(2)) { //moves grabbers down
+
 	      pos1-=5;
 	     	pos2+=5;
 	     	if (pos1 <= 0) pos1=0;
 			 	if(pos2>=255) pos2=255;
 	     	servo[grabber1] = (pos1);
 	     	servo[grabber2] = (pos2);
-	    	}
+
 	    }
 
 /*	    if (joy2Btn(5)){// up left move arm up; up left side button
@@ -107,29 +107,29 @@ task main()
 	    }
 	   }*/
 	   if (joy2Btn(5)){
-	     if (pos4 >= 0 && pos4 <= 255)
+/*	     if (pos4 >= 0 && pos4 <= 255)
 	     {
-	       pos4 +=5;
+	       pos4 +=5;//20
 	       if (pos4 <= 0) pos4=0;
 	     	 if (pos4 >=255) pos4=255;
 	     	 servo[hood] = pos4;
-	     	 wait1Msec(1000);
-	     }
-	    // pos4 = 120;
-	     //servo[hood] = pos4;
+	     	 wait1Msec(750);
+	     }*/
+	     pos4 = 100;
+	     servo[hood] = pos4;
 	   }
 
 	   if (joy2Btn(7)){
-     if (pos4 >= 0 && pos4 <= 255)
+     /*if (pos4 >= 0 && pos4 <= 255)
 	     {
 	       pos4 -=5;
 	       if (pos4 <= 0) pos4=0;
 	     	 if (pos4 >=255) pos4=255;
 	     	 servo[hood] = pos4;
-	     	 wait1Msec(1000);
-	     }
-	     //pos4 = 10;
-	     //servo[hood] = pos4;
+	     	 wait1Msec(750);
+	     }*/
+	     pos4 = 10;
+	     servo[hood] = pos4;
 	   }
 
 	   if (joy2Btn(6))//runs thrower backward just in case a ball is stuck or something; up right side button
