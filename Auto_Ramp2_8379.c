@@ -1,3 +1,4 @@
+//version 12/15/14 tp to date with github and other computer
 #pragma config(Hubs,  S1, HTMotor,  HTServo,  HTMotor,  none)
 #pragma config(Sensor, S2,     gyro,           sensorAnalogInactive)
 #pragma config(Motor,  mtr_S1_C1_1,     motorRight,    tmotorTetrix, openLoop, encoder)
@@ -83,24 +84,80 @@ task main()
 	wait1Msec(1000*delay);
 
 	int pos1 = 0;
-	int pos2 = 255;
+ 	int pos2 = 255;
 	servo[grabber1]=pos2;//they are switched
 	servo[grabber2]=pos1;
-	move(50.0, 167.0);
+
+	resetEncoders();
+	motor[motorLeft] = 50;
+	motor[motorRight] = 50;
+
+	while(nMotorEncoder[motorLeft] <= encoderScale * (167.0 / wheelCircumference) )//169
+	{
+	}
+	motor[motorLeft] = 0;
+	motor[motorRight] = 0;
+
 	wait1Msec(10);
+
 	turnWithGyro(-100.0, 8.5);
-	move(50.0, 56.0);
+
+	resetEncoders();
+	motor[motorLeft] = 50;
+	motor[motorRight] = 50;
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (56.0 / wheelCircumference) )//move forward 55 cm, approach goal
+	{
+	//	motor[motorLeft] = -100*( (encoderScale * (56.0 / wheelCircumference))- nMotorEncoder[motorLeft])/ encoderScale * 2 * (56.0 / wheelCircumference) );
+	//	motor[motorRight] = -100*(nMotorEncoder[motorRight]-(encoderScale * (56.0 / wheelCircumference)));
+	}
+
+	motor[motorLeft] = 0;//stop robot
+	motor[motorRight] = 0;
+	resetEncoders();
+
 	wait10Msec(50);
 	pos1=255;
 	pos2=0;//grabber completely down
 	servo[grabber1]=pos2;
 	servo[grabber2]=pos1;
 	wait10Msec(50);
-	move(-50.0, 5.0);
+
+	resetEncoders();
+	motor[motorLeft] = -50;
+	motor[motorRight] = -50;
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (5.0 / wheelCircumference) )//move backwards to get robot off goal base
+	{
+	}
 	turnWithGyro(-100.0,135.0);//turn 125 degrees around
+	resetEncoders();
+	motor[motorLeft] = 100.0;
+	motor[motorRight] = 100.0;
+
 	motor[thrower] = -100.0; //start thrower motor
-	move(100.0,90.0);
+
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (90.0 / wheelCircumference) ) // move forward 281 cm
+	{
+	}
+	resetEncoders();
+
 	turnWithGyro(100.0,15.0);//turn 125 degrees around
-	move(100.0, 40.0);
-	wait1Msec(10500);
+	resetEncoders();
+	motor[motorLeft] = 100.0;
+	motor[motorRight] = 100.0;
+
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * 2 * (40.0 / wheelCircumference) )
+	{
+	}
+	resetEncoders();
+
+	motor[motorLeft] = 0;
+	motor[motorRight] = 0;
+	wait1Msec(500);
+	pos1 = 0;
+	pos2 = 255;
+	//servo[grabber1]=pos2;
+	//servo[grabber2]=pos1;
+
+	wait1Msec(10000);
+
 }

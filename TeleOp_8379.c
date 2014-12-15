@@ -1,4 +1,4 @@
-//version 12/11/14   Hardware rewired 12/10/14 with motor controllers on opposite sides    hood function added   github not updated
+//version 12/15/14  github fixes
 #pragma config(Hubs,  S1, HTMotor,  HTServo,  HTMotor,  none)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     gyro,           sensorAnalogInactive)
@@ -23,6 +23,7 @@ task main()
 	servo[grabber1]=pos1;
 	servo[grabber2]=pos2;
 //	servo[arm] = pos3;
+
 	int pos4 = 10;
 	servo[hood] = pos4;
 
