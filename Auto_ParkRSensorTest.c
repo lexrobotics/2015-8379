@@ -1,7 +1,8 @@
-//version 12/11/14   move function: no more 2*   Parks to the right side of the parking zone   hardware config not updated
+//version 12/11/14   hardware configs not rewired   sensor stuffs line 81 and 85   move function not *2
 #pragma config(Hubs,  S1, HTMotor,  HTServo,  HTMotor,  none)
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     gyro,           sensorAnalogInactive)
+#pragma config(Sensor, S3,     front,          sensorSONAR)
+#pragma config(Sensor, S4,     back,           sensorSONAR)
 #pragma config(Motor,  mtr_S1_C1_1,     motorRight,    tmotorTetrix, openLoop, encoder)
 #pragma config(Motor,  mtr_S1_C1_2,     motorLeft,     tmotorTetrix, openLoop, reversed, encoder)
 #pragma config(Motor,  mtr_S1_C3_1,     thrower,       tmotorTetrix, openLoop)
@@ -77,8 +78,14 @@ static float wheelRadius=((9.7)/2);
 static float wheelCircumference=PI*2*wheelRadius;
 //static float AngleRatio = ? //used as angle(in degree) * AngleRatio
 */
+function parallel(int speed){
+}
 task main()
 {
+	SensorValue[front];
+
+
+
 	int delay=0;
 	while(nNxtButtonPressed!=3){
 		if(nNxtButtonPressed==1) delay++;

@@ -1,3 +1,4 @@
+//version: 12/11/14  derived from AutoPark and the robot will go around the center goal; move function: still 2*   errors?   hardware config not updated
 #pragma config(Hubs,  S1, HTMotor,  HTServo,  HTMotor,  none)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     gyro,           sensorAnalogInactive)
@@ -115,7 +116,7 @@ task main()
 	servo[grabber2]=pos1;
 	wait10Msec(50);
 
-move(-100.0,10.0);// **length: back away a little
+  move(-100.0,10.0);// **length: back away a little
 	turnWithGyro(-100,172.0);//turn back to return
 	motor[thrower] = -100.0; //start thrower motor
 	move(100.0, 150.0);//**length: move back

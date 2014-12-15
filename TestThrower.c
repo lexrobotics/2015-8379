@@ -1,3 +1,5 @@
+//version: 12/11/14   just simply running the thrower Hardware update: 12/10/14 rewire, motor controller on both sides of the robot
+
 #pragma config(Hubs,  S1, HTMotor,  HTServo,  HTMotor,  none)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Motor,  mtr_S1_C1_1,     motorRight,    tmotorTetrix, openLoop, reversed, encoder)
