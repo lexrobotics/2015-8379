@@ -115,7 +115,7 @@ task main()
 	     	 servo[hood] = pos4;
 	     	 wait1Msec(750);
 	     }*/
-	     pos4 = 100;
+	     pos4 = 110;
 	     servo[hood] = pos4;
 	   }
 
