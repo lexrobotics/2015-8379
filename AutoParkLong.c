@@ -107,12 +107,12 @@ task main()
 	turnWithGyro(-100, 90.0);//4th turn: turn left toward goal
 	move(100.0, 30.0);//5th lenghth: move toards goal
 
-	wait10Msec(50);
+	wait1Msec(50);
 	pos1=255;
 	pos2=0;//grabber down
 	servo[grabber1]=pos2;
 	servo[grabber2]=pos1;
-	wait10Msec(50);
+	wait1Msec(50);
 
 	move(-100.0,10.0);// **length: back away a little
 
@@ -128,6 +128,9 @@ task main()
 	turnWithGyro(-100, 60.0);//turn towards right side of parking zone
 	move(100,20.0);//**length: move into the PZ
 
-	wait1Msec(10000);
+	int totaltime = 25000;
+	wait1Msec((300000-totaltime) - 1000 * delay);
+	pos3 = 10;
+	servo[hood] = pos3;//to prevent the hood from falling onto the tube when the program stops
 
 }
