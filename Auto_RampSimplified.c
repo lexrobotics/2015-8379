@@ -144,7 +144,7 @@ task main()
 	turnWithGyro(-100, 60.0);//turn towards right side of parking zone
 	move(100,20.0);//**length: move into the PZ
 	**********************************************************/
-	float totaltime = (float)Time1[T2];
+	float totaltime = (float)Time1[T2]/1000.0;
 	wait1Msec((30.0-totaltime-(float)delay)*1000.0);
 	pos3 = 10;
 	servo[hood] = pos3;//to prevent the hood from falling onto the tube when the program stops

@@ -103,16 +103,16 @@ task main()
 	int pos3 = 10;
 	servo[hood] = pos3;//initialize the hood for 30 cm*/
 		int delay=0;
-	while(nNxtButtonPressed!=3){
+		while(nNxtButtonPressed!=3){
 		if(nNxtButtonPressed==1) delay++;
 		else if(nNxtButtonPressed==2 && delay>0) delay--;
 		nxtDisplayCenteredTextLine(2, "%d", delay);
 		wait1Msec(200);
-	}
+		}
 	waitForStart();
 	nxtDisplayCenteredTextLine(2, "%d", delay);
 	wait1Msec(1000*delay);
-
+	time1[T2]=0;
 
 	int pos3 = 10;
 	servo[hood] = pos3;
@@ -146,7 +146,6 @@ task main()
 
 	move(-100.0,10.0);// **length: back away a little
 	move(100.0, 10.0);
-//	wait1Msec(4000);
 	move(-100.0, 10.0);
 
 	pos3 = 120;
@@ -155,17 +154,10 @@ task main()
 	move(-100.0, 50.0);//back out
 	turnWithGyro(-100, 80.0);//turn, parallel to other parking zone
 	move(100.0, 120.0);//move past the other parking zone
-	turnWithGyro(-100, 60.0);//3rd turn: turn right towards right wall
+	turnWithGyro(-100, 60.0);//turn left
 	move(100.0, 90.0);
-	turnWithGyro(-100, 30.0);//2nd turn: turn toward opposite parking zone (should be parallel)
-	move(100.0,120.0);//**2nd length: move toward the ramp
-//	turnWithGyro(-100, 3.0);// 1st turn: turn in parking zone
-	//move(100.0, 15.0); //**1st length: move away from the wall
-
-
-
-
-
+	turnWithGyro(-100, 30.0);//turn left towards goal
+	move(100.0,120.0);//turn left into parking zone
 
 	/*turnWithGyro(-100,172.0);//turn back to return
 	motor[thrower] = -100.0; //start thrower motor
@@ -176,7 +168,7 @@ task main()
 	move(100,20.0);//**length: move into the PZ
 `*/
 
-	float totaltime = (float)Time1[T2];
+	float totaltime = (float)Time1[T2]/1000.0;
 	wait1Msec((30.0-totaltime-(float)delay)*1000.0);
 	pos3 = 10;
 	servo[hood] = pos3;//to prevent the hood from falling onto the tube when the program stops
