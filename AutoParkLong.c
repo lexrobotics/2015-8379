@@ -132,8 +132,8 @@ task main()
 
 	turnWithGyro(100, 40.0);//2nd turn: turn toward opposite parking zone (should be parallel)
 	move(100.0,98.0);//**3rd length: move past center goal on left
-	turnWithGyro(100, 30.0);//3rd turn: turn right towards right wall
-	move(100.0, 100.0);//4th length: move past center goal
+	turnWithGyro(100, 28.0);//3rd turn: turn right towards right wall
+	move(100.0, 92.0);//4th length: move past center goal
 	turnWithGyro(-100, 80.0);//4th turn: turn left toward goal
 	move(100.0, 60.0);//5th lenghth: move toards goal
 
@@ -157,7 +157,7 @@ task main()
 	turnWithGyro(-100, 60.0);//turn left
 	move(100.0, 90.0);
 	turnWithGyro(-100, 30.0);//turn left towards goal
-	move(100.0,120.0);//turn left into parking zone
+	move(100.0,60.0);//turn left into parking zone
 
 	/*turnWithGyro(-100,172.0);//turn back to return
 	motor[thrower] = -100.0; //start thrower motor

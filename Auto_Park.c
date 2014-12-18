@@ -123,22 +123,11 @@ task main()
 	pos3 = 120;
 	servo[hood] = pos3;//hood in place
 
-/*	turnWithGyro(-100,170.0);//turn back to return
-	motor[thrower] = -100.0; //start thrower motor
-	move(100.0, 140.0);//**length: move back
-	turnWithGyro(100, 50.0);//turn towards parking zone
-	move(100, 130.0);//**length: move right to the right side of the PZ
-	turnWithGyro(-100, 60.0);//turn towards right side of parking zone
-	move(100,20.0);//**length: move into the PZ*/
-
-
 	turnWithGyro(-100,165.0);//turn back to return
 	motor[thrower]=-100.0;
 	move(100.0,170.0);//**length: move pass the kick stand
-	turnWithGyro(100.0,70.0);//turn toward the PK
-	move(100.0,100.0);
-	turnWithGyro(-100.0,80.0);
-	move(100.0,30.0);
+	turnWithGyro(100.0,30.0);//turn toward the PK
+	move(100.0, 50.0);
 
 	float totaltime = (float)Time1[T2]/1000.0;
 	wait1Msec((30.0-totaltime-(float)delay)*1000.0);
