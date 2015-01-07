@@ -26,26 +26,37 @@ static float wheelRadius=((9.7)/2);
 static float wheelCircumference=PI*2*wheelRadius;
 //static float AngleRatio = ? //used as angle(in degree) * AngleRatio
 
-void mecMove(float speed, float degrees, float speedRotation){ //speed [-1,1], degrees [0, 360], speedRotation [-1,1]
+void mecMove(float speed, float degrees, float speedRotation, float distance){ //speed [-1,1], degrees [0, 360], speedRotation [-1,1]
+		resetEncoders();
 		motor[FrontLeft] = speed * sin(degreesToRadians(degrees) + PI/4) + speedRotation;
 		motor[FrontRight] = speed * cos(degreesToRadians(degrees) + PI/4) - speedRotation;
 		motor[BackLeft] = speed * cos(degreesToRadians(degrees) + PI/4) + speedRotation;
 		motor[BackRight] = speed * sin(degreesToRadians(degrees) + PI/4) -  speedRotation;
+		while(abs(nMotorEncoder[motorLeft]) <= encoderScale * (distance / wheelCircumference) )
+	{
+	}
+	motor[backLeft] = 0;
+	motor[backRight] = 0;
+	motor[frontLeft] = 0;
+	motor[frontRight] = 0;
+	resetEncoders();
 }
 
 
 void resetEncoders(){
-	nMotorEncoder[motorRight] = 0;
-	nMotorEncoder[motorLeft] = 0;
+	nMotorEncoder[FrontLeft] = 0;
+	nMotorEncoder[FrontRight] = 0;
+	nMotorEncoder[BackLeft] = 0;
+	nMotorEncoder[BackRight] = 0;
 }
 
 
 void move(float speed, float distance)
 {
 	resetEncoders();
-	motor[Left] = speed;
+	motor[motorLeft] = speed;
 	motor[motorRight] = speed;
-	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * (distance / wheelCircumference) )
+	while(abs(nMotorEncoder[motorLeft]) <= encoderScale * (distance / wheelCircumference) )//min(abs(sec theta), abs(csc theta)
 	{
 	}
 	motor[motorLeft] = 0;
