@@ -47,7 +47,7 @@ task main ()
     // You can switch between the two different DSP modes by pressing the
     // orange enter button
 
-   // playSound(soundBeepBeep);
+    playSound(soundBeepBeep);
     while(bSoundActive)
     {}
     eraseDisplay();
