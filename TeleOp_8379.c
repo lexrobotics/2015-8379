@@ -40,23 +40,23 @@ task main()
 	    joystick.joy1_y2=0;
 	   }
 
-	   if (abs(joystick.joy1_y1)>=10 && abs (joystick.joy1_y1) <50)
+	  /* if (abs(joystick.joy1_y1)>=10 && abs (joystick.joy1_y1) <50)
 	   {
 	     motor[motorRight] = 50.0/128 * joystick.joy1_y1;//right = joy1_y1, the right button
 	   }
 	   else
-	   {
+	   {*/
 	      motor[motorRight] = 100.0/128 * joystick.joy1_y1;//right = joy1_y1, the right button
-	   }
+	   /*}
 
 	   if (abs(joystick.joy1_y2)>=10 && abs (joystick.joy1_y2) <50)
 	   {
 	     motor[motorLeft] = 50.0/128 * joystick.joy1_y2;//left = joy1_y2, the left button
 	   }
 	   else
-	   {
+	   {*/
 	      motor[motorLeft] = 100.0/128 * joystick.joy1_y2;//left = joy1_y2, the left button
-	   }
+	   //}
 
 		if(joy2Btn(1)) { //runs thrower
 			motor[thrower] = -100.0;

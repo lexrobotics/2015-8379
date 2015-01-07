@@ -34,7 +34,7 @@ void mecMove(float speed, float degrees, float speedRotation){ //speed [-1,1], d
 }
 
 
-/*void resetEncoders(){
+void resetEncoders(){
 	nMotorEncoder[motorRight] = 0;
 	nMotorEncoder[motorLeft] = 0;
 }
@@ -92,7 +92,7 @@ void ramp(float speed, float distance)
 			motor[motorRight] = speed *( (encoderScale * distance / wheelCircumference - nMotorEncoder[motorRight]) / ( encoderScale * distance / wheelCircumference));
 	}
 
-}*/
+}
 
 task main()
 {
