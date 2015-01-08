@@ -1,12 +1,10 @@
-#pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
+#pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  none)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     gyro,           sensorAnalogInactive)
-#pragma config(Motor,  mtr_S1_C1_1,     FrontRight,    tmotorTetrix, openLoop, encoder)
-#pragma config(Motor,  mtr_S1_C1_2,     BackRight,     tmotorTetrix, openLoop, reversed, encoder)
-#pragma config(Motor,  mtr_S1_C2_1,     Flipper,       tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C2_2,     motorG,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C4_1,     BackLeft,      tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C4_2,     FrontLeft,     tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_1,     BackRight,     tmotorTetrix, openLoop, encoder)
+#pragma config(Motor,  mtr_S1_C1_2,     FrontRight,    tmotorTetrix, openLoop, encoder)
+#pragma config(Motor,  mtr_S1_C2_1,     FrontLeft,     tmotorTetrix, openLoop, reversed)
+#pragma config(Motor,  mtr_S1_C2_2,     BackLeft,      tmotorTetrix, openLoop, reversed)
 #pragma config(Servo,  srvo_S1_C3_1,    grabber1,             tServoStandard)
 #pragma config(Servo,  srvo_S1_C3_2,    grabber2,             tServoStandard)
 #pragma config(Servo,  srvo_S1_C3_3,    hood,                 tServoStandard)
@@ -34,11 +32,10 @@ void resetEncoders(){
 }
 
 void mecMove(float speed, float degrees, float speedRotation, float distance)
-{ //speed [-100,100], degrees [0, 360], speedRotation [-100,100], distance cm
+{ //speed [-1,1], degrees [0, 360], speedRotation [-1,1]
 		playSound(soundBeepBeep);
 		resetEncoders();
 		float min = 0.0;
-
 		if (abs(1/cosDegrees(degrees))<= abs(1/sinDegrees(degrees)))
 			{
 				min = 1/cosDegrees(degrees);
@@ -47,18 +44,14 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 			{
 				min = 1/sinDegrees(degrees);
 			}
-
-		if(cosDegrees(degrees) == 0 || sinDegrees(degrees) == 0)
-			{
-				min = 1;
-			}
-		float scaled = encoderScale* (distance * min / wheelCircumference);
-
+		float scaled = encoderScale* distance * min / wheelCircumference;
+		//bool run = (nMotorEncoder[FrontLeft]<scaled) && (nMotorEncoder[FrontRight]<scaled) && (nMotorEncoder[BackLeft]< scaled) && (nMotorEncoder[BackRight]< scaled);
+		bool run = true;
 		motor[FrontLeft] = speed * sinDegrees(degrees + 45) + speedRotation;
 		motor[FrontRight] = speed * cosDegrees(degrees + 45) - speedRotation;
 		motor[BackLeft] = speed * cosDegrees(degrees + 45) + speedRotation;
 		motor[BackRight] = speed * sinDegrees(degrees + 45) -  speedRotation;
-		while((nMotorEncoder[FrontLeft]<scaled) && (nMotorEncoder[FrontRight]<scaled) && (nMotorEncoder[BackLeft]< scaled) && (nMotorEncoder[BackRight]< scaled))
+		while(run)
 		{
   	}
 		motor[BackLeft] = 0;
@@ -137,11 +130,9 @@ task main()
 	waitForStart();
 	nxtDisplayCenteredTextLine(2, "%d", delay);
 	wait1Msec(1000*delay);
-
-	mecMove(100, 0, 0, 145);
-	wait1Msec(10);
-	playSound(soundDownwardTones);
-	mecMove(100, 310, 0, 150);
+	mecMove(1, 0, 1, 10);
+	mecMove(1, 90, 1, 10);
+	mecMove(1, 45, 1, 10);
 
 	/*int pos1 = 0;
 	int pos2 = 255;
