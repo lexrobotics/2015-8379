@@ -88,7 +88,7 @@ void turnMecGyro(int speed, float degrees) {
   HTGYROstartCal(gyro);
  	wait1Msec(500);
  	PlaySound(soundBeepBeep);
- 	turn (speed);//+ = right   - = turn left
+ 	turnMec (speed);//+ = right   - = turn left
   while (abs(currHeading) < abs(degrees)) {
     time1[T1] = 0;
     curRate = HTGYROreadRot(gyro);
@@ -100,7 +100,7 @@ void turnMecGyro(int speed, float degrees) {
     wait1Msec(5);
     delTime = ((float)time1[T1]) / 1000; //set delta (zero first time around)
   }
-  turn(0);
+  turnMec(0);
 }
 
 void armOut(){
