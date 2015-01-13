@@ -68,8 +68,20 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 		motor[FrontRight] = 0;
 		resetEncoders();
 }
+void tankTurnMec(int speed, float degrees) {
+	while (nMotorEncoder(FrontLeft) < 25.5 * PI * (degrees/360){
+	motor[BackRight] = speed;
+	motor[FrontRight] = speed;
+	motor[FrontLeft] = 0-speed;
+	motor[BackLeft] = 0-speed;
+}
+	motor[BackRight] = 0;
+	motor[FrontRight] = 0;
+	motor[FrontLeft] = 0;
+	motor[BackLeft] = 0;
+}
 
-void turnMec(float speed){//+ = turn right     - = turn left
+/*void turnMec(float speed){//+ = turn right     - = turn left
 	motor[BackRight] = speed;
 	motor[FrontRight] = speed;
 	motor[FrontLeft] = 0-speed;
@@ -101,7 +113,7 @@ void turnMecGyro(int speed, float degrees) {
     delTime = ((float)time1[T1]) / 1000; //set delta (zero first time around)
   }
   turnMec(0);
-}
+}*/
 
 void armOut(){
 	nMotorEncoder[arm] = 0;
@@ -119,6 +131,81 @@ void armIn(){
 	 motor[arm] = 0;
 }
 
+void centergoalPositionIR()
+{
+  // Create struct to hold sensor data
+  tHTIRS2 irSeeker;
+
+  // Initialise and configure struct and port
+  initSensor(&irSeeker, S3);
+
+  if (true)
+  {
+  	int position;
+  	float reading1;
+  	float reading2;
+
+  	tHTIRS2 irSeeker;
+  	initSensor(&irSeeker, S3);
+  	irSeeker.mode = DSP_1200;
+
+  	readSensor(&irSeeker);
+  	reading1 = irSeeker.acDirection;
+
+  	//playSound(soundBeepBeep);
+  	//displayTextLine(1, "D:%4d", reading1);
+  	//wait1Msec(5000);
+
+  	readSensor(&irSeeker);
+  	reading2 = irSeeker.acDirection;
+  	//playSound(soundFastUpwardTones);
+  	//displayTextLine(2, "K: %d", reading2);
+  	//displayTextLine(3, "1: %d", reading1);
+  	//displayTextLine(4, "2: %d", reading2);
+  	wait1Msec(5000);
+  	if (reading1 == 5 && reading2 == 5)
+  	{
+  		playSound(soundBeepBeep);
+  		wait1Msec(3000);
+  	 	position = 1;
+  	 	displayTextLine(5, "pos: %d", position);
+  		wait1Msec(5000);
+  	}
+    else if (reading1 == 5 && (reading2 == 4 || reading2 == 3))
+		{
+			playSound(soundLowBuzz);
+  		wait1Msec(3000);
+  	 	position = 3;
+  	 	displayTextLine(5, "pos: %d", position);
+  		wait1Msec(5000);
+		}
+   else
+ 		{
+ 			playSound(soundFastUpwardTones);
+  		wait1Msec(3000);
+  	 	position = 2;
+  	 	displayTextLine(5, "pos: %d", position);
+  		wait1Msec(5000);
+ 		}
+
+  /* switch(position)
+   {
+     case 1: playSound(soundBeepBeep);
+     wait1Msec(2000);
+     displayTextLine(1, "at: %d", position);
+     break;
+     case 2: playSound(soundFastUpwardTones);
+     wait1Msec(2000);
+     displayTextLine(1, "at: %d", position);
+     break;
+     case 3: playSound(soundLowBuzz);
+     wait1Msec(2000);
+     displayTextLine(1, "at: %d", position);
+     break;
+   }*/
+ }
+}
+
 task main()
 {
 	int delay=0;
@@ -132,11 +219,15 @@ task main()
 	nxtDisplayCenteredTextLine(2, "%d", delay);
 	wait1Msec(1000*delay);
 
-
 	int pos3 = 10;
 	servo[hood] = pos3;
 
 	time1[T2]=0;
+
+	centergoalPositionIR();
+	armOut();
+	mecMove(100, 35, 0, 50);
+	armIn();
 
 
 	/*move(100.0, 15.0); //**1st length: move away from the wall

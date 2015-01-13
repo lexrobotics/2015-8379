@@ -70,7 +70,20 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 		resetEncoders();
 }
 
-void turnMec(float speed){//+ = turn right     - = turn left
+void tankTurnMec(int speed, float degrees) {
+	while (nMotorEncoder(FrontLeft) < 25.5 * PI * (degrees/360){
+	motor[BackRight] = speed;
+	motor[FrontRight] = speed;
+	motor[FrontLeft] = 0-speed;
+	motor[BackLeft] = 0-speed;
+}
+	motor[BackRight] = 0;
+	motor[FrontRight] = 0;
+	motor[FrontLeft] = 0;
+	motor[BackLeft] = 0;
+}
+
+/*void turnMec(float speed){//+ = turn right     - = turn left
 	motor[BackRight] = speed;
 	motor[FrontRight] = speed;
 	motor[FrontLeft] = 0-speed;
@@ -89,7 +102,7 @@ void turnMecGyro(int speed, float degrees) {
   HTGYROstartCal(gyro);
  	wait1Msec(500);
  	PlaySound(soundBeepBeep);
- 	turn (speed);//+ = right   - = turn left
+ 	turnMec (speed);//+ = right   - = turn left
   while (abs(currHeading) < abs(degrees)) {
     time1[T1] = 0;
     curRate = HTGYROreadRot(gyro);
@@ -101,8 +114,8 @@ void turnMecGyro(int speed, float degrees) {
     wait1Msec(5);
     delTime = ((float)time1[T1]) / 1000; //set delta (zero first time around)
   }
-  turn(0);
-}
+  turnMec(0);
+}*/
 
 void armOut(){
 	nMotorEncoder[arm] = 0;
