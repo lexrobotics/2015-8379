@@ -32,10 +32,11 @@ void resetEncoders(){
 	nMotorEncoder[FrontRight] = 0;
 	nMotorEncoder[BackLeft] = 0;
 	nMotorEncoder[BackRight] = 0;
+	nMotorEncoder[arm]
 }
 
 void mecMove(float speed, float degrees, float speedRotation, float distance)
-{ //speed [-100,100], degrees [0, 360], speedRotation [-100,100], distance cm
+{ //should be speed [-100,100], degrees [0, 360], speedRotation [-100,100], distance cm, but it's not
 		playSound(soundBeepBeep);
 		resetEncoders();
 		float min = 0.0;
@@ -69,7 +70,55 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 		resetEncoders();
 }
 
+void turnMec(float speed){//+ = turn right     - = turn left
+	motor[BackRight] = speed;
+	motor[FrontRight] = speed;
+	motor[FrontLeft] = 0-speed;
+	motor[BackLeft] = 0-speed;
+}
 
+void turnMecGyro(int speed, float degrees) {
+	float delTime = 0;
+	float curRate = 0;
+	float currHeading = 0;
+	motor [BackLeft]=0;
+	motor [BackRight]=0;
+	motor [BackLeft]=0;
+	motor [BackRight]=0;
+	wait1Msec(500);
+  HTGYROstartCal(gyro);
+ 	wait1Msec(500);
+ 	PlaySound(soundBeepBeep);
+ 	turn (speed);//+ = right   - = turn left
+  while (abs(currHeading) < abs(degrees)) {
+    time1[T1] = 0;
+    curRate = HTGYROreadRot(gyro);
+    if (abs(curRate) > 3) {
+      currHeading += curRate * delTime; //Approximates the next heading by adding the rate*time.
+      if (currHeading > 360) currHeading -= 360;
+      else if (currHeading < -360) currHeading += 360;
+    }
+    wait1Msec(5);
+    delTime = ((float)time1[T1]) / 1000; //set delta (zero first time around)
+  }
+  turn(0);
+}
+
+void armOut(){
+	nMotorEncoder[arm] = 0;
+	while(nMotorEncoder[arm] < 90){
+    motor[arm] = 50;
+	 }
+	 motor[arm] = 0;
+}
+
+void armIn(){
+	nMotorEncoder[arm] = 0;
+	while(nMotorEncoder[arm] < 90){
+    motor[arm] = -50;
+	 }
+	 motor[arm] = 0;
+}
 
 /*void move(float speed, float distance)
 {
@@ -138,17 +187,19 @@ task main()
 	waitForStart();
 	nxtDisplayCenteredTextLine(2, "%d", delay);
 	wait1Msec(1000*delay);
-
+`	/*
 	while(nMotorEncoder[arm]<90)
 	{
 		motor[arm]=100;
 	}
 	motor[arm]=0;
-
+	*/
+	armIn();
 	mecMove(100, 0, 0, 145);
 	wait1Msec(10);
 	playSound(soundDownwardTones);
 	mecMove(100, 310, 0, 150);
+	armOut();
 
 
 	/*int pos1 = 0;

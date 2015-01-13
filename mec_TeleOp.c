@@ -3,6 +3,7 @@
 #pragma config(Sensor, S2,     touch,          sensorTouch)
 #pragma config(Sensor, S3,     light,          sensorLightActive)
 #pragma config(Sensor, S4,     sonar,          sensorSONAR)
+#pragma config(Motor,  motorA,          arm,           tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     BackLeft,      tmotorTetrix, openLoop, reversed, encoder)
 #pragma config(Motor,  mtr_S1_C1_2,     FrontLeft,     tmotorTetrix, openLoop, reversed, encoder)
 #pragma config(Motor,  mtr_S1_C2_1,     thrower,       tmotorTetrix, openLoop)
@@ -95,48 +96,12 @@ Where:*/
 	     	servo[grabber2] = (pos2);
 
 	    }
-
-/*	    if (joy2Btn(5)){// up left move arm up; up left side button
-				if(pos3 >= 0 && pos3 <= 150){
-	      pos3+=5;
-	     	if (pos3 <= 0) pos3=0;
-	     	if(pos3>=150) pos3=150;
-	     	servo[arm] = (pos3);
-	     	wait1Msec(5);
-	    	}
-	    }
-
-	    if (joy2Btn(7)){ //down left move arm down; bottom left side button
-				if(pos3 >= 0 && pos3 <= 150){
-	      pos3-=5;
-	     	if (pos3 <= 0) pos3=0;
-	     	if (pos3 >=150) pos3=150;
-	     	servo[arm] = (pos3);
-	     	wait1Msec(5);
-	    }
-	   }*/
 	   if (joy2Btn(5)){
-/*	     if (pos4 >= 0 && pos4 <= 255)
-	     {
-	       pos4 +=5;//20
-	       if (pos4 <= 0) pos4=0;
-	     	 if (pos4 >=255) pos4=255;
-	     	 servo[hood] = pos4;
-	     	 wait1Msec(500);
-	     }*/
 	     pos4 = 110;
 	     servo[hood] = pos4;
 	   }
 
 	   if (joy2Btn(7)){
-     /*if (pos4 >= 0 && pos4 <= 255)
-	     {
-	       pos4 -=5;
-	       if (pos4 <= 0) pos4=0;
-	     	 if (pos4 >=255) pos4=255;
-	     	 servo[hood] = pos4;
-	     	 wait1Msec(500);
-	     }*/
 	     pos4 = 10;
 	     servo[hood] = pos4;
 	   }
@@ -144,6 +109,20 @@ Where:*/
 	   if (joy2Btn(6))//runs thrower backward just in case a ball is stuck or something; up right side button
 	     motor[thrower] = 50;
 
+	   if(joy1Btn(3)){
+	     nMotorEncoder[arm] = 0;
+	     while(nMotorEncoder[arm] < 90){
+	     motor[arm] = 50;
+	   }
+	   motor[arm] = 0;
+	 	}
+	 	if(joy1Btn(4)){
+	 		nMotorEncoder[arm] = 0;
+	    while(nMotorEncoder[arm] < 90){
+	     motor[arm] = -50;
+	   }
+	   motor[arm] = 0;
+	}
      wait1Msec(10);
   }
 }
