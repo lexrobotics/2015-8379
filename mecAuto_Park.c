@@ -1,6 +1,7 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S2,     gyro,           sensorAnalogInactive)
+#pragma config(Sensor, S2,     irSeeker,       sensorI2CCustom)
+#pragma config(Sensor, S3,     back,           sensorSONAR)
+#pragma config(Sensor, S4,     front,          sensorSONAR)
 #pragma config(Motor,  motorA,          arm,           tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     FrontRight,    tmotorTetrix, openLoop, encoder)
 #pragma config(Motor,  mtr_S1_C1_2,     BackRight,     tmotorTetrix, openLoop, reversed, encoder)
@@ -19,6 +20,8 @@
 //version 12/17/14  totaltime function added
 
 #include "JoystickDriver.c"
+#include "hitechnic-irseeker-v2.h"
+
 #include "include\hitechnic-gyro.h"
 
 //everything is in centimeters
@@ -69,7 +72,7 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 		resetEncoders();
 }
 void tankTurnMec(int speed, float degrees) {
-	while (nMotorEncoder(FrontLeft) < 25.5 * PI * (degrees/360){
+	while (nMotorEncoder(FrontLeft) < 25.5 * PI * (degrees/360)){
 	motor[BackRight] = speed;
 	motor[FrontRight] = speed;
 	motor[FrontLeft] = 0-speed;
@@ -137,24 +140,19 @@ void centergoalPositionIR()
   tHTIRS2 irSeeker;
 
   // Initialise and configure struct and port
-  initSensor(&irSeeker, S3);
+  initSensor(&irSeeker, S2);
 
   if (true)
   {
   	int position;
   	float reading1;
   	float reading2;
-
-  	tHTIRS2 irSeeker;
-  	initSensor(&irSeeker, S3);
   	irSeeker.mode = DSP_1200;
 
   	readSensor(&irSeeker);
   	reading1 = irSeeker.acDirection;
-
-  	//playSound(soundBeepBeep);
-  	//displayTextLine(1, "D:%4d", reading1);
-  	//wait1Msec(5000);
+  	wait1Msec(1000);
+  	mecMove(100, 0, 0, 50);
 
   	readSensor(&irSeeker);
   	reading2 = irSeeker.acDirection;
