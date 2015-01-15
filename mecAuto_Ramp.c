@@ -1,13 +1,15 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     gyro,           sensorAnalogInactive)
-#pragma config(Motor,  motorA,          arm,           tmotorNXT, PIDControl, encoder)
-#pragma config(Motor,  mtr_S1_C1_1,     FrontRight,    tmotorTetrix, openLoop, encoder)
+#pragma config(Motor,  motorA,          arm,           tmotorNXT, openLoop, encoder)
+#pragma config(Motor,  motorB,           ,             tmotorNXT, openLoop, encoder)
+#pragma config(Motor,  motorC,           ,             tmotorNXT, openLoop, encoder)
+#pragma config(Motor,  mtr_S1_C1_1,     FrontRight,    tmotorTetrix, openLoop, reversed, encoder)
 #pragma config(Motor,  mtr_S1_C1_2,     BackRight,     tmotorTetrix, openLoop, reversed, encoder)
 #pragma config(Motor,  mtr_S1_C2_1,     Flipper,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_2,     motorG,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C4_1,     BackLeft,      tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C4_2,     FrontLeft,     tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C4_1,     BackLeft,      tmotorTetrix, openLoop, encoder)
+#pragma config(Motor,  mtr_S1_C4_2,     FrontLeft,     tmotorTetrix, openLoop, encoder)
 #pragma config(Servo,  srvo_S1_C3_1,    grabber1,             tServoStandard)
 #pragma config(Servo,  srvo_S1_C3_2,    grabber2,             tServoStandard)
 #pragma config(Servo,  srvo_S1_C3_3,    hood,                 tServoStandard)
@@ -32,7 +34,6 @@ void resetEncoders(){
 	nMotorEncoder[FrontRight] = 0;
 	nMotorEncoder[BackLeft] = 0;
 	nMotorEncoder[BackRight] = 0;
-	nMotorEncoder[arm]
 }
 
 void mecMove(float speed, float degrees, float speedRotation, float distance)
@@ -41,6 +42,11 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 		resetEncoders();
 		float min = 0.0;
 
+
+		if(cosDegrees(degrees) == 0 || sinDegrees(degrees) == 0)
+			{
+				min = 1;
+			}
 		if (abs(1/cosDegrees(degrees))<= abs(1/sinDegrees(degrees)))
 			{
 				min = 1/cosDegrees(degrees);
@@ -62,6 +68,7 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 		motor[BackRight] = speed * sinDegrees(degrees + 45) -  speedRotation;
 		while((nMotorEncoder[FrontLeft]<scaled) && (nMotorEncoder[FrontRight]<scaled) && (nMotorEncoder[BackLeft]< scaled) && (nMotorEncoder[BackRight]< scaled))
 		{
+			wait1Msec(10);
   	}
 		motor[BackLeft] = 0;
 		motor[BackRight] = 0;
@@ -70,8 +77,8 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 		resetEncoders();
 }
 
-void tankTurnMec(int speed, float degrees) {
-	while (nMotorEncoder(FrontLeft) < 25.5 * PI * (degrees/360){
+/*void tankTurnMec(int speed, float degrees) {
+	while (nMotorEncoder(FrontLeft) < 25.5 * PI * (degrees/360)){
 	motor[BackRight] = speed;
 	motor[FrontRight] = speed;
 	motor[FrontLeft] = 0-speed;
@@ -81,7 +88,7 @@ void tankTurnMec(int speed, float degrees) {
 	motor[FrontRight] = 0;
 	motor[FrontLeft] = 0;
 	motor[BackLeft] = 0;
-}
+}*/
 
 /*void turnMec(float speed){//+ = turn right     - = turn left
 	motor[BackRight] = speed;
@@ -200,20 +207,21 @@ task main()
 	waitForStart();
 	nxtDisplayCenteredTextLine(2, "%d", delay);
 	wait1Msec(1000*delay);
-`	/*
+
+	//armOut();
+	mecMove(70, 0, 0, 855);
+	wait1Msec(10);
+	playSound(soundDownwardTones);
+	//mecMove(100, 310, 0, 150);
+	//armIn();
+
+	/*
 	while(nMotorEncoder[arm]<90)
 	{
 		motor[arm]=100;
 	}
 	motor[arm]=0;
 	*/
-	armIn();
-	mecMove(100, 0, 0, 145);
-	wait1Msec(10);
-	playSound(soundDownwardTones);
-	mecMove(100, 310, 0, 150);
-	armOut();
-
 
 	/*int pos1 = 0;
 	int pos2 = 255;
