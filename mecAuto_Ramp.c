@@ -71,7 +71,7 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 }
 
 void tankTurnMec(int speed, float degrees) {
-	while (nMotorEncoder(FrontLeft) < 25.5 * PI * (degrees/360){
+	while (nMotorEncoder(FrontLeft) < 25.5 * PI * (degrees/360)){
 	motor[BackRight] = speed;
 	motor[FrontRight] = speed;
 	motor[FrontLeft] = 0-speed;
@@ -200,19 +200,16 @@ task main()
 	waitForStart();
 	nxtDisplayCenteredTextLine(2, "%d", delay);
 	wait1Msec(1000*delay);
-`	/*
-	while(nMotorEncoder[arm]<90)
-	{
-		motor[arm]=100;
-	}
-	motor[arm]=0;
-	*/
+
 	armIn();
 	mecMove(100, 0, 0, 145);
 	wait1Msec(10);
 	playSound(soundDownwardTones);
 	mecMove(100, 310, 0, 150);
 	armOut();
+	mecMove(50, 0, 0, 170);//**1st length: move down the ramp
+	mecMove(100, 270, 0, 42);
+	mecMove(100, 0, 0, 120);
 
 
 	/*int pos1 = 0;
