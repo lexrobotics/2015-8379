@@ -34,7 +34,7 @@ task main()
 
 	int pos4 = 10;
 	servo[hood] = pos4;
-	int armcounter = 0;
+	//int armcounter = 0;
 
 	//int throwerCount = 0;
 	//int kArmCount = 0;
@@ -102,13 +102,15 @@ Where:*/
 			wait1Msec(300);
 	   }*/
 
-	   if(joy1Btn(1)) {
+	   if(joy2Btn(1)) {
 	     motor[thrower] = -100;
-	   }
-	   if(joy1Btn(2)) {
+	}
+
+	   if(joy2Btn(3)) { //runs motor backwards
 	     motor[thrower] = 0;
 	   }
-	   if(joy1Btn(3)) {
+
+	   if(joy2Btn(6)) {
 	     motor[thrower] = 100;
 	   }
 //-Grabber--------------------------------------------------------------------------------
@@ -165,23 +167,24 @@ Where:*/
 	     wait1Msec(300);
 
 	   }*/
-	   if (joy2Btn(6)){
-	   	nMotorEncoder[arm] = 0;
-	   	armcounter++;
-	   	while(armcounter < 10 && abs(nMotorEncoder[arm]) < 15){
-	   		motor[arm] = 50;
+	   if (joy1Btn(6)){
+	   		while(joy1Btn(6))
+	   		{
+	   			motor[arm] = 50;
+	   			wait1Msec(10);
+	   		}
+	   		motor[arm]=0;
 	   	}
-	   	motor[arm] = 0;
-	   }
-	   if (joy2Btn(8)){
-	   		nMotorEncoder[arm] = 0;
-	   		while(abs(nMotorEncoder[arm]) < (armcounter*15)){
+
+	   if (joy1Btn(8)){
+	   		while(joy1Btn(8))
+	   		{
 	   			motor[arm] = -50;
-	   			}
-	   		motor[arm] = 0;
-	   		armcounter = 0;
+	   			wait1Msec(10);
+	   		}
+	   		motor[arm]=0;
 	   	}
 //------------------------------------------------------------------------------------------------
-     wait1Msec(100);
+     //wait1Msec(100);
   }
 }
