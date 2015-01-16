@@ -1,7 +1,7 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
-#pragma config(Sensor, S2,     irSeeker,       sensorI2CCustom)
-#pragma config(Sensor, S3,     back,           sensorSONAR)
-#pragma config(Sensor, S4,     front,          sensorSONAR)
+#pragma config(Sensor, S2,     gyro,           sensorI2CCustom)
+#pragma config(Sensor, S3,     irSeeker,       sensorSONAR)
+#pragma config(Sensor, S4,     ,               sensorSONAR)
 #pragma config(Motor,  motorA,          arm,           tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     FrontRight,    tmotorTetrix, openLoop, encoder)
 #pragma config(Motor,  mtr_S1_C1_2,     BackRight,     tmotorTetrix, openLoop, reversed, encoder)
@@ -42,8 +42,11 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 		playSound(soundBeepBeep);
 		resetEncoders();
 		float min = 0.0;
-
-		if (abs(1/cosDegrees(degrees))<= abs(1/sinDegrees(degrees)))
+		if (cosDegrees(degrees) == 0 || sinDegrees(degrees) == 0)
+			{
+				min = 1;
+			}
+		else if (abs(1/cosDegrees(degrees))<= abs(1/sinDegrees(degrees)))
 			{
 				min = 1/cosDegrees(degrees);
 			}
@@ -52,10 +55,6 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 				min = 1/sinDegrees(degrees);
 			}
 
-		if(cosDegrees(degrees) == 0 || sinDegrees(degrees) == 0)
-			{
-				min = 1;
-			}
 		float scaled = encoderScale* (distance * min / wheelCircumference);
 
 		motor[FrontLeft] = speed * sinDegrees(degrees + 45) + speedRotation;
@@ -64,12 +63,14 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 		motor[BackRight] = speed * sinDegrees(degrees + 45) -  speedRotation;
 		while((nMotorEncoder[FrontLeft]<scaled) && (nMotorEncoder[FrontRight]<scaled) && (nMotorEncoder[BackLeft]< scaled) && (nMotorEncoder[BackRight]< scaled))
 		{
+			//wait1Msec(10);
   	}
 		motor[BackLeft] = 0;
 		motor[BackRight] = 0;
 		motor[FrontLeft] = 0;
 		motor[FrontRight] = 0;
 		resetEncoders();
+		wait1Msec(10);
 }
 void tankTurnMec(int speed, float degrees) {
 	while (nMotorEncoder(FrontLeft) < 25.5 * PI * (degrees/360)){

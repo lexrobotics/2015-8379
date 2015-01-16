@@ -1,5 +1,4 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     gyro,           sensorAnalogInactive)
 #pragma config(Motor,  motorA,          arm,           tmotorNXT, openLoop, encoder)
 #pragma config(Motor,  motorB,           ,             tmotorNXT, openLoop, encoder)
@@ -25,7 +24,7 @@
 
 //everything is in centimeters
 static float encoderScale=1440.0;
-static float wheelRadius=((9.7)/2);
+static float wheelRadius=(10.16); //was 9.7/2
 static float wheelCircumference=PI*2*wheelRadius;
 //static float AngleRatio = ? //used as angle(in degree) * AngleRatio
 
@@ -43,11 +42,11 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 		float min = 0.0;
 
 
-		if(cosDegrees(degrees) == 0 || sinDegrees(degrees) == 0)
+		if (cosDegrees(degrees) == 0 || sinDegrees(degrees) == 0)
 			{
 				min = 1;
 			}
-		if (abs(1/cosDegrees(degrees))<= abs(1/sinDegrees(degrees)))
+		else if (abs(1/cosDegrees(degrees))<= abs(1/sinDegrees(degrees)))
 			{
 				min = 1/cosDegrees(degrees);
 			}
@@ -56,27 +55,25 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 				min = 1/sinDegrees(degrees);
 			}
 
-		if(cosDegrees(degrees) == 0 || sinDegrees(degrees) == 0)
-			{
-				min = 1;
-			}
 		float scaled = encoderScale* (distance * min / wheelCircumference);
 
 		motor[FrontLeft] = speed * sinDegrees(degrees + 45) + speedRotation;
 		motor[FrontRight] = speed * cosDegrees(degrees + 45) - speedRotation;
 		motor[BackLeft] = speed * cosDegrees(degrees + 45) + speedRotation;
 		motor[BackRight] = speed * sinDegrees(degrees + 45) -  speedRotation;
+
 		while((nMotorEncoder[FrontLeft]<scaled) && (nMotorEncoder[FrontRight]<scaled) && (nMotorEncoder[BackLeft]< scaled) && (nMotorEncoder[BackRight]< scaled))
 		{
 			//wait1Msec(10);
   	}
   	playSound(soundDownwardTones);
+  	motor[FrontLeft] = 0;
+		motor[FrontRight] = 0;
 		motor[BackLeft] = 0;
 		motor[BackRight] = 0;
-		motor[FrontLeft] = 0;
-		motor[FrontRight] = 0;
-		resetEncoders();
-		wait1Msec(10);
+
+		wait1Msec(1000);
+		playSound(soundException);
 }
 
 /*void tankTurnMec(int speed, float degrees) {
@@ -213,13 +210,15 @@ task main()
 
 
 	//armIn();
-	mecMove(50, 0, 0, 170);//**1st length: move down the ramp
-	mecMove(100, 270, 0, 42);
-	mecMove(100, 0, 0, 120);
-
-
+	//mecMove(50, 0, 0, 170);//**1st length: move down the ramp
+	//wait1Msec(10000);
+	mecMove(80, 270, 0, 42);
+	//wait1Msec(10000);
+//	mecMove(80, 0, 0, 120);
+	//wait1Msec(10000);
+	//mecMove(70, 0, 0, 855);
 	//armOut();
-	mecMove(70, 0, 0, 855);
+
 
 	/*int pos1 = 0;
 	int pos2 = 255;
