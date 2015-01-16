@@ -20,6 +20,8 @@
 
 //version 1/15/15   program more organized and kick-stand arm commands added
 //joystick1 = primary, and drives and controls the kick stand arm    joystick2 = secondary, and controls everything else except for the kick stand arm
+//!!!!!!!!!!!!!!!!!!!!!!wait what check the configurations... all sensors are named differently in each autonomous program!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//and why are touch and light sensors used here...?
 
 #include "JoystickDriver.c"
 
