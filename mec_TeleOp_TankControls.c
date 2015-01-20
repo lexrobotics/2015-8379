@@ -69,16 +69,18 @@ FrontRight = Ch3 - Ch1 - Ch4
 RearRight = Ch3 - Ch1 + Ch4
 
 Where:*/
-			int Rot = joystick.joy1_x2;//Right joystick X-axis
+			/*int Rot = joystick.joy1_x2;//Right joystick X-axis
 			int Fwd = joystick.joy1_y1;//-Left joystick Y-axis
 			int Side= joystick.joy1_x1;// Left joystick X-axis
 			motor[FrontLeft] = 100.0/384 * (-Fwd - Rot - Side);
 			motor[FrontRight] = 100.0/384 * (-Fwd + Rot + Side);
 			motor[BackLeft] = 100.0/384* (-Fwd - Rot + Side);
-			motor[BackRight] = 100.0/384 * (-Fwd + Rot - Side);
-			/*while(joystick.joy1_x2>=10 || joystick.joy1_y1>=10 || joystick.joy1_x1>=10)
-			{
-			}*/
+			motor[BackRight] = 100.0/384 * (-Fwd + Rot - Side);*/
+
+			motor[FrontLeft] = -100.0/256 * (joystick.joy1_y1 - (joystick.joy1_x1 + joystick.joy1_x2) / 2);
+			motor[BackLeft] = -100.0/256 * (joystick.joy1_y1 + (joystick.joy1_x1 + joystick.joy1_x2) / 2);
+			motor[FrontRight] = -100.0/256 * (joystick.joy1_y2 + (joystick.joy1_x1 + joystick.joy1_x2) / 2);
+			motor[BackRight] = -100.0/256 * (joystick.joy1_y2 - (joystick.joy1_x1 + joystick.joy1_x2) / 2);
 
 			wait1Msec(10);
 
