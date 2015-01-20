@@ -20,10 +20,13 @@
 
 #include "JoystickDriver.c"
 #include "include\hitechnic-gyro.h"
+#include "include\hitechnic-sensormux.h"
 
 static float encoderScale=1440.0;
 static float wheelRadius=((9.7)/2);
 static float wheelCircumference=PI*2*wheelRadius;
+
+const tMUXSensor LEGOTOUCH = msensor_S4_1;
 
 void resetEncoders(){
 	nMotorEncoder[FrontLeft] = 0;
@@ -136,7 +139,7 @@ task main()
 	move(80.0, 65.0);
 
 
-	float totaltime = (float)Time1[T2]/1000.0;
+	float totaltime = (float)time1[T2]/1000.0;
 	wait1Msec((30.0-totaltime-(float)delay)*1000.0);
 	pos3 = 10;
 	servo[hood] = pos3;//to prevent the hood from falling onto the tube when the program stops

@@ -1,7 +1,7 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
 #pragma config(Sensor, S2,     gyro,           sensorI2CCustom)
 #pragma config(Sensor, S3,     irSeeker,       sensorSONAR)
-#pragma config(Sensor, S4,     ,               sensorSONAR)
+#pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
 #pragma config(Motor,  motorA,          arm,           tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     FrontRight,    tmotorTetrix, openLoop, encoder)
 #pragma config(Motor,  mtr_S1_C1_2,     BackRight,     tmotorTetrix, openLoop, reversed, encoder)
@@ -22,8 +22,11 @@
 
 #include "JoystickDriver.c"
 #include "hitechnic-irseeker-v2.h"
-
+#include "include\hitechnic-sensormux.h"
+#include "include\lego-touch.h"
 #include "include\hitechnic-gyro.h"
+
+const tMUXSensor LEGOTOUCH = msensor_S4_1;
 
 //everything is in centimeters
 static float encoderScale=1440.0;
@@ -73,6 +76,22 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 		resetEncoders();
 		wait1Msec(10);
 }
+
+void align(int speed)
+{
+		motor[BackLeft] = speed;
+		motor[BackRight] = speed;
+		motor[FrontLeft] = speed;
+		motor[FrontRight] = speed;
+	while (!TSreadState(LEGOTOUCH))
+	{
+	}
+		motor[BackLeft] = 0;
+		motor[BackRight] = 0;
+		motor[FrontLeft] = 0;
+		motor[FrontRight] = 0;
+}
+
 void tankTurnMec(int speed, float degrees) {
 	while (nMotorEncoder(FrontLeft) < 25.5 * PI * (degrees/360)){
 	motor[BackRight] = speed;
@@ -268,7 +287,7 @@ task main()
 	turnWithGyro(100.0,26.0);//turn toward the PK
 	move(100.0, 70.0);*/
 
-	float totaltime = (float)Time1[T2]/1000.0;
+	float totaltime = (float)time1[T2]/1000.0;
 	wait1Msec((30.0-totaltime-(float)delay)*1000.0);
 	pos3 = 10;
 	servo[hood] = pos3;//to prevent the hood from falling onto the tube when the program stops
