@@ -49,7 +49,7 @@ void move(float speed, float distance)
 	{
 	}
 	motor[FrontLeft] = 0;
-b	motor[FrontRight] = 0;
+	motor[FrontRight] = 0;
 	motor[BackLeft] = 0;
 	motor[BackRight] = 0;
 	resetEncoders();
@@ -161,8 +161,8 @@ task main()
 	wait1Msec(300);
 
 	move(-100.0,10.0);// **length: back away a little
-	move(100.0, 10.0);
-	move(-100.0, 10.0);
+	//move(100.0, 10.0);
+	//move(-100.0, 10.0);
 
 	pos3 = 120;
 	servo[hood] = pos3;//hood in place

@@ -65,9 +65,9 @@ void turnWithGyro(int speed, float degrees) {
 	motor[FrontRight] = 0;
 	motor[BackLeft] = 0;
 	motor[BackRight] = 0;
-	wait1Msec(500);
+	wait1Msec(300);
   HTGYROstartCal(gyro);
- 	wait1Msec(500);
+ 	wait1Msec(300);
  	playSound(soundBeepBeep);
  	turn (speed);//+ = right   - = turn left
   while (abs(currHeading) < abs(degrees)) {
@@ -108,11 +108,11 @@ task main()
 
 	time1[T2]=0;
 
-	move(100.0, 15.0); //**1st length: move away from the wall
+	move(50.0, 15.0); //**1st length: move away from the wall
 	turnWithGyro(100, 3.5);// 1st turn: turn in parking zone
-	move(100.0,152.0);//**2nd length: move toward the ramp
-	turnWithGyro(-100, 3.5);//2nd turn: turn towards goal
-	move(100.0,125.0);//**3rd length: move toward the goal, may want to ramp
+	move(80.0,144.0);//**2nd length: move toward the ramp 152
+	turnWithGyro(-100, 2.8);//2nd turn: turn towards goal
+	move(80.0,125.0);//**3rd length: move toward the goal, may want to ramp
 	move(68.0, 25.0);
 
 	wait1Msec(200);
@@ -122,16 +122,23 @@ task main()
 	servo[grabber2]=pos1;
 	wait1Msec(500);
 
-	move(-100.0,10.0);// **length: back away a little
-	move(100.0, 10.0);
-	move(-100.0, 15.0);
+	move(-80.0,10.0);// **length: back away a little
+//move(100.0, 10.0);
+	//move(-100.0, 15.0);
 
 	pos3 = 120;
 	servo[hood] = pos3;//hood in place
 
-	turnWithGyro(-100,165.0);//turn back to return
+	turnWithGyro(-100,154.0);//turn back to return
 	motor[thrower]=-100.0;
-	move(100.0,190.0);//**length: move pass the kick stand
-	turnWithGyro(100.0,26.0);//turn toward the PK
-	move(100.0, 65.0);
+	move(80.0,205.0);//**length: move pass the kick stand
+	turnWithGyro(100.0,24.0);//turn toward the PK
+	move(80.0, 65.0);
+
+
+	float totaltime = (float)Time1[T2]/1000.0;
+	wait1Msec((30.0-totaltime-(float)delay)*1000.0);
+	pos3 = 10;
+	servo[hood] = pos3;//to prevent the hood from falling onto the tube when the program stops
+	wait1Msec(500);
 }

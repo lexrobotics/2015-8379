@@ -112,44 +112,6 @@ task main()
 
 	time1[T2]=0;
 
-	move(50.0, 170.0);//**1st length: move down the ramp
-	turnWithGyro(-100.0, 72.0);//1st turn: turn to face rolling goal
-	move(100.0, 64.0);
-	turnWithGyro(100.0, 65.0);
-	move(50.0,120.0);//**2nd length: move toward the 30 cm goal possibly to be ramped?
-
-	wait1Msec(250);
-	pos1=255;
-	pos2=0;//grabber completely down
-	servo[grabber1]=pos2;
-	servo[grabber2]=pos1;
-	wait1Msec(500);
-
-	move(-100.0,10.0);//**back up 5 cm
-	wait1Msec(100);
-//	move(100.0,10.0);
-	//wait1Msec(100);
-	//move(-100.0,10.0);
-
-	pos3 = 115;
-	servo[hood] = pos3;//hood in place
-
-	turnWithGyro(-100.0,165.0);//turn back to straight
-	motor[thrower] = -100.0; //start thrower motor
-
-	move(100.0,220.0);//**length: move pass the kick stand
-	turnWithGyro(100.0,55.0);//turn toward the PK
-	move(100.0,90.0);
-	turnWithGyro(-100.0,70.0);
-	move(100.0,55.0);
-
-	/******move to the right side of PZ**********************
-	move(100.0, 130.0);//**length: move back
-	turnWithGyro(100, 50.0);//turn towards parking zone
-	move(100, 120.0);//**length: move right to the right side of the PZ
-	turnWithGyro(-100, 60.0);//turn towards right side of parking zone
-	move(100,20.0);//**length: move into the PZ
-	**********************************************************/
 	float totaltime = (float)Time1[T2]/1000.0;
 	wait1Msec((30.0-totaltime-(float)delay)*1000.0);
 	pos3 = 10;
