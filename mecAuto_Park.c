@@ -1,5 +1,4 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     gyro,           sensorI2CCustom)
 #pragma config(Sensor, S3,     irSeeker,       sensorSONAR)
 #pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
@@ -229,13 +228,10 @@ task main()
 	time1[T2]=0;
 
 	int position = centergoalPositionIR();
-	//armOut();
-	mecMove(80, 0, 0, 30);
-	//armIn();
-	wait1Msec(100);
-	mecMove(80, 90, 0, 30);
-	wait1Msec(100);
-	mecMove(80, 315, 0, 30);
+
+	while(!TSreadState(LEGOTOUCH)&& !TSreadState(LEGOTOUCH2)){
+		mecMove(40, 90, 0, 1)
+}
 
 
 	/*move(100.0, 15.0); //**1st length: move away from the wall
