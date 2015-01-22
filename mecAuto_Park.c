@@ -227,10 +227,11 @@ task main()
 
 	time1[T2]=0;
 
-	int position = centergoalPositionIR();
+	//int position = centergoalPositionIR();
 
 	while(!TSreadState(LEGOTOUCH)&& !TSreadState(LEGOTOUCH2)){
-		mecMove(40, 90, 0, 1)
+		playSound(soundLowBuzz);
+		mecMove(40, 90, 0, 1);
 }
 
 
