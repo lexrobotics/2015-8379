@@ -1,6 +1,6 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
 #pragma config(Sensor, S2,     gyro,           sensorI2CCustom)
-#pragma config(Sensor, S3,     irSeeker,       sensorSONAR)
+#pragma config(Sensor, S3,     irSeeker,       sensorI2CCustom)
 #pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
 #pragma config(Motor,  motorA,          arm,           tmotorNXT, openLoop, encoder)
 #pragma config(Motor,  motorB,           ,             tmotorNXT, openLoop, encoder)
@@ -27,8 +27,8 @@
 #include "include\lego-touch.h"
 #include "include\hitechnic-gyro.h"
 
-const tMUXSensor LEGOTOUCH = msensor_S4_1;
-const tMUXSensor LEGOTOUCH2 = msensor_S4_2;
+const tMUXSensor TOUCHFront = msensor_S4_3;
+const tMUXSensor TOUCHBack = msensor_S4_4;
 
 //everything is in centimeters
 static float encoderScale=1440.0;
@@ -173,7 +173,7 @@ int centergoalPositionIR()
   	readSensor(&irSeeker);
   	reading1 = irSeeker.acDirection;
   	wait1Msec(1000);
-  	mecMove(100, 0, 0, 50);
+  	mecMove(80, 0, 0, 50);
 
   	readSensor(&irSeeker);
   	reading2 = irSeeker.acDirection;
@@ -227,12 +227,14 @@ task main()
 
 	time1[T2]=0;
 
-	//int position = centergoalPositionIR();
+//	mecMove(40,-90,0,20);
+//	int position = centergoalPositionIR();
 
-	while(!TSreadState(LEGOTOUCH)&& !TSreadState(LEGOTOUCH2)){
+/*	while(!TSreadState(LEGOTOUCH)|| !TSreadState(LEGOTOUCH2)){
 		playSound(soundLowBuzz);
 		mecMove(40, 90, 0, 1);
-}
+}*/
+    while (T
 
 
 	/*move(100.0, 15.0); //**1st length: move away from the wall
