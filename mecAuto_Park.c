@@ -45,62 +45,66 @@ void resetEncoders(){
 
 void mecMove(float speed, float degrees, float speedRotation, float distance)
 { //speed [-100,100], degrees [0, 360], speedRotation [-100,100], distance cm
-		playSound(soundBeepBeep);
-		resetEncoders();
-		float min = 0.0;
-		if (cosDegrees(degrees) == 0.0 || sinDegrees(degrees) == 0.0)
-			{
-				min = 1.0;
-			}
-		else if (abs(1.0/cosDegrees(degrees))<= abs(1.0/sinDegrees(degrees)))
-			{
-				min = 1.0/cosDegrees(degrees);
-			}
-		else
-			{
-				min = 1.0/sinDegrees(degrees);
-			}
+	playSound(soundBeepBeep);
+	resetEncoders();
+	float min = 0.0;
+	if (cosDegrees(degrees) == 0.0 || sinDegrees(degrees) == 0.0)
+	{
+		min = 1.0;
+	}
+	else if (abs(1.0/cosDegrees(degrees))<= abs(1.0/sinDegrees(degrees)))
+	{
+		min = 1.0/cosDegrees(degrees);
+	}
+	else
+	{
+		min = 1.0/sinDegrees(degrees);
+	}
 
-		float scaled = abs(encoderScale* (distance * min / wheelCircumference));
+	float scaled = abs(encoderScale* (distance * min / wheelCircumference));
 
-		motor[FrontLeft] = speed * sinDegrees(degrees + 45) + speedRotation;
-		motor[FrontRight] = speed * cosDegrees(degrees + 45) - speedRotation;
-		motor[BackLeft] = speed * cosDegrees(degrees + 45) + speedRotation;
-		motor[BackRight] = speed * sinDegrees(degrees + 45) -  speedRotation;
-		while((nMotorEncoder[FrontLeft]<scaled) && (nMotorEncoder[FrontRight]<scaled) && (nMotorEncoder[BackLeft]< scaled) && (nMotorEncoder[BackRight]< scaled))
-		{
-			//wait1Msec(10);
-  	}
-		motor[BackLeft] = 0;
-		motor[BackRight] = 0;
-		motor[FrontLeft] = 0;
-		motor[FrontRight] = 0;
-		resetEncoders();
-		wait1Msec(10);
+	motor[FrontLeft] = speed * sinDegrees(degrees + 45) + speedRotation;
+	motor[FrontRight] = speed * cosDegrees(degrees + 45) - speedRotation;
+	motor[BackLeft] = speed * cosDegrees(degrees + 45) + speedRotation;
+	motor[BackRight] = speed * sinDegrees(degrees + 45) -  speedRotation;
+	while((nMotorEncoder[FrontLeft]<scaled) && (nMotorEncoder[FrontRight]<scaled) && (nMotorEncoder[BackLeft]< scaled) && (nMotorEncoder[BackRight]< scaled))
+	{
+		//wait1Msec(10);
+	}
+	motor[BackLeft] = 0;
+	motor[BackRight] = 0;
+	motor[FrontLeft] = 0;
+	motor[FrontRight] = 0;
+	resetEncoders();
+	wait1Msec(10);
 }
 
-void align(int speed)
+void align(int speed, float degrees, float speedRotation)
 {
-		motor[BackLeft] = speed;
-		motor[BackRight] = speed;
-		motor[FrontLeft] = speed;
-		motor[FrontRight] = speed;
-	while (!TSreadState(LEGOTOUCH)||!TSreadState(LEGOTOUCH2))
+	motor[FrontLeft] = speed * sinDegrees(degrees + 45) + speedRotation;
+	motor[FrontRight] = speed * cosDegrees(degrees + 45) - speedRotation;
+	motor[BackLeft] = speed * cosDegrees(degrees + 45) + speedRotation;
+	motor[BackRight] = speed * sinDegrees(degrees + 45) -  speedRotation;
+	while (!(TSreadState(TOUCHFront))&&!(TSreadState(TOUCHBack)))//&&(!TSreadState(TOUCHBack)))
 	{
 	}
-		motor[BackLeft] = 0;
-		motor[BackRight] = 0;
-		motor[FrontLeft] = 0;
-		motor[FrontRight] = 0;
+	motor[BackLeft] = 0;
+	motor[BackRight] = 0;
+	motor[FrontLeft] = 0;
+	motor[FrontRight] = 0;
+	while(TSreadState(TOUCHFront)&&!TSreadState(TOUCHBack))
+	{
+
+	}
 }
 
 void tankTurnMec(int speed, float degrees) {
 	while (nMotorEncoder(FrontLeft) < 25.5 * PI * (degrees/360)){
-	motor[BackRight] = speed;
-	motor[FrontRight] = speed;
-	motor[FrontLeft] = 0-speed;
-	motor[BackLeft] = 0-speed;
-}
+		motor[BackRight] = speed;
+		motor[FrontRight] = speed;
+		motor[FrontLeft] = 0-speed;
+		motor[BackLeft] = 0-speed;
+	}
 	motor[BackRight] = 0;
 	motor[FrontRight] = 0;
 	motor[FrontLeft] = 0;
@@ -108,105 +112,110 @@ void tankTurnMec(int speed, float degrees) {
 }
 
 /*void turnMec(float speed){//+ = turn right     - = turn left
-	motor[BackRight] = speed;
-	motor[FrontRight] = speed;
-	motor[FrontLeft] = 0-speed;
-	motor[BackLeft] = 0-speed;
+motor[BackRight] = speed;
+motor[FrontRight] = speed;
+motor[FrontLeft] = 0-speed;
+motor[BackLeft] = 0-speed;
 }
 
 void turnMecGyro(int speed, float degrees) {
-	float delTime = 0;
-	float curRate = 0;
-	float currHeading = 0;
-	motor [BackLeft]=0;
-	motor [BackRight]=0;
-	motor [BackLeft]=0;
-	motor [BackRight]=0;
-	wait1Msec(500);
-  HTGYROstartCal(gyro);
- 	wait1Msec(500);
- 	PlaySound(soundBeepBeep);
- 	turnMec (speed);//+ = right   - = turn left
-  while (abs(currHeading) < abs(degrees)) {
-    time1[T1] = 0;
-    curRate = HTGYROreadRot(gyro);
-    if (abs(curRate) > 3) {
-      currHeading += curRate * delTime; //Approximates the next heading by adding the rate*time.
-      if (currHeading > 360) currHeading -= 360;
-      else if (currHeading < -360) currHeading += 360;
-    }
-    wait1Msec(5);
-    delTime = ((float)time1[T1]) / 1000; //set delta (zero first time around)
-  }
-  turnMec(0);
+float delTime = 0;
+float curRate = 0;
+float currHeading = 0;
+motor [BackLeft]=0;
+motor [BackRight]=0;
+motor [BackLeft]=0;
+motor [BackRight]=0;
+wait1Msec(500);
+HTGYROstartCal(gyro);
+wait1Msec(500);
+PlaySound(soundBeepBeep);
+turnMec (speed);//+ = right   - = turn left
+while (abs(currHeading) < abs(degrees)) {
+time1[T1] = 0;
+curRate = HTGYROreadRot(gyro);
+if (abs(curRate) > 3) {
+currHeading += curRate * delTime; //Approximates the next heading by adding the rate*time.
+if (currHeading > 360) currHeading -= 360;
+else if (currHeading < -360) currHeading += 360;
+}
+wait1Msec(5);
+delTime = ((float)time1[T1]) / 1000; //set delta (zero first time around)
+}
+turnMec(0);
 }*/
 
 void armOut(){
-  time1[T3]=0;
+	time1[T3]=0;
 	while((float)time1[T3]<2000){
-    motor[arm] = 50;
-	 }
-	 motor[arm] = 0;
+		motor[arm] = 50;
+	}
+	motor[arm] = 0;
 }
 
 void armIn(){
 	time1[T3]=0;
 	while((float)time1[T3] < 2000){
-    motor[arm] = -50;
-	 }
-	 motor[arm] = 0;
+		motor[arm] = -50;
+	}
+	motor[arm] = 0;
 }
 
 int centergoalPositionIR()
 {
-  // Create struct to hold sensor data
-  tHTIRS2 irSeeker;
+	// Create struct to hold sensor data
+	tHTIRS2 irSeeker;
 
-  // Initialise and configure struct and port
-  initSensor(&irSeeker, S2);
+	// Initialise and configure struct and port
+	initSensor(&irSeeker, S3);
 
-  	int position;
-  	float reading1;
-  	float reading2;
-  	irSeeker.mode = DSP_1200;
+	int position;
+	float reading1;
+	float reading2;
+	irSeeker.mode = DSP_1200;
 
-  	readSensor(&irSeeker);
-  	reading1 = irSeeker.acDirection;
-  	wait1Msec(1000);
-  	mecMove(80, 0, 0, 50);
-
-  	readSensor(&irSeeker);
-  	reading2 = irSeeker.acDirection;
-  	//playSound(soundFastUpwardTones);
-  	//displayTextLine(2, "K: %d", reading2);
-  	//displayTextLine(3, "1: %d", reading1);
-  	//displayTextLine(4, "2: %d", reading2);
-  	wait1Msec(5000);
-  	if (reading1 == 5 && reading2 == 5)
-  	{
-  		playSound(soundBeepBeep);
-  		wait1Msec(3000);
-  	 	position = 1;
-  	 	displayTextLine(5, "pos: %d", position);
-  		wait1Msec(5000);
-  	}
-    else if (reading1 == 5 && (reading2 == 4 || reading2 == 3))
-		{
-			playSound(soundLowBuzz);
-  		wait1Msec(3000);
-  	 	position = 3;
-  	 	displayTextLine(5, "pos: %d", position);
-  		wait1Msec(5000);
-		}
-   else
- 		{
- 			playSound(soundFastUpwardTones);
-  		wait1Msec(3000);
-  	 	position = 2;
-  	 	displayTextLine(5, "pos: %d", position);
-  		wait1Msec(5000);
- 		}
- 		return position;
+	readSensor(&irSeeker);
+	reading1 = irSeeker.acDirection;
+	wait1Msec(1000);
+	mecMove(80, 0, 0, 50);
+	wait1Msec(1000);
+	readSensor(&irSeeker);
+	reading2 = irSeeker.acDirection;
+	wait1Msec(1000);
+	//playSound(soundFastUpwardTones);
+	//displayTextLine(2, "K: %d", reading2);
+	nxtdisplayTextLine(3, "1: %d", reading1);
+	nxtdisplayTextLine(4, "2: %d", reading2);
+	wait1Msec(5000);
+	/*if (reading1 == 5 && reading2 == 5)
+	{
+		nxtdisplayTextLine(3, "1: %d", reading1);
+		nxtdisplayTextLine(4, "2: %d", reading2);
+	//wait1Msec(5000);
+		playSound(soundBeepBeep);
+	wait1Msec(300);
+		position = 1;
+		displayTextLine(5, "pos: %d", position);
+		//mecMove(80, -90, 0, 90);
+		wait1Msec(5000);
+	}
+	else if (reading1 == 5 && (reading2 == 4 || reading2 == 3))
+	{
+		playSound(soundLowBuzz);
+		wait1Msec(3000);
+		position = 3;
+		displayTextLine(5, "pos: %d", position);
+		wait1Msec(5000);
+	}
+	else
+	{
+		playSound(soundFastUpwardTones);
+		wait1Msec(3000);
+		position = 2;
+		displayTextLine(5, "pos: %d", position);
+		wait1Msec(5000);
+	}*/
+	return position;
 }
 
 task main()
@@ -222,19 +231,31 @@ task main()
 	nxtDisplayCenteredTextLine(2, "%d", delay);
 	wait1Msec(1000*delay);
 
-	int pos3 = 10;
+	//int pos3 = 10;
+	int pos3 = 120;
+//	servo[hood] = pos3;//hood in place
+	//mecMove(80, 90, 0, 20);
+	eraseDisplay();
+	int center=centergoalPositionIR();
 	servo[hood] = pos3;
 
 	time1[T2]=0;
+//	motor[Flipper]=-100;
+	/*if(center==1)
+	{
+	mecMove(80, 0, 0, 50);
+	}*/
+	//	align(30, 0, 0);
 
-//	mecMove(40,-90,0,20);
-//	int position = centergoalPositionIR();
+	//mecMove(40,0,0,20);
+	//mecMove(40,-90,0,20);
+	//	int position = centergoalPositionIR();
 
-/*	while(!TSreadState(LEGOTOUCH)|| !TSreadState(LEGOTOUCH2)){
-		playSound(soundLowBuzz);
-		mecMove(40, 90, 0, 1);
-}*/
-    while (T
+	/*	while(!TSreadState(LEGOTOUCH)|| !TSreadState(LEGOTOUCH2)){
+	playSound(soundLowBuzz);
+	mecMove(40, 90, 0, 1);
+	}*/
+	// while (T
 
 
 	/*move(100.0, 15.0); //**1st length: move away from the wall
