@@ -285,7 +285,7 @@ task main()
 	{
 		case 1:{
 			mecMove(70, 90, 0, 20);//move away from the wall
-			moveTillUS(60, 0, 0, 70, false);//move until the center goal is out of the sight of the front us
+			moveTillUS(60, 0, 0, 70, false);//move until the center goal is out of the sight of both us
 			turnMecGyro(80, 90);
 			moveTillUS(60, 0, 0, 50, true);
 			moveTillTouch(40, -90, 0, true);
