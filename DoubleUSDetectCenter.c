@@ -21,7 +21,7 @@
 
 //version 1/25/15  
 //authot: Eula
-//status: detecting center goal position using parallelity with double ultrasonic sensor, mecJustMove and moveTillUs function added, align function modified
+//status: detecting center goal position using parallelity with double ultrasonic sensor, mecJustMove, moveTillUs, and moveTillTouch function added, align function modified
 
 
 #include "JoystickDriver.c"
@@ -230,11 +230,25 @@ int centergoalPositionIR()
 
 void moveTillUS(float speed, float degrees, float speedRotation, float threshold, boolean till)//if till = true, move until sees something; if till = false, move until not seeing something
 {
-     mecJustMove(speed, degrees, speedRotation, distance);
+     mecJustMove(speed, degrees, speedRotation);
      if (till){
-     	while (TSreadState(USfront) > threshold || TSreadState(USback) > threshold){}}
+     	while (TSreadState(USfront) > threshold && TSreadState(USback) > threshold){}}
      else 
       	while (TSreadState(USfront) < threshold || TSreadState(USback) < threshold){}}
+    motor[BackRight] = 0;
+	motor[FrontRight] = 0;
+	motor[FrontLeft] = 0;
+	motor[BackLeft] = 0;
+}
+
+void moveTillTouch(float speed, float degrees, float speedRotation, boolean till)
+{
+    mecJustMove(speed, degrees, speedRotation);
+    if (till)
+    {while (!TSreadState(TOUCHfront) && !TSreadState(TOUCHfront)){}}
+    else
+    {while (TSreadState(TOUCHfront) || TSreadState(TOUCHfront)){}}
+	wait1Msec(500);
     motor[BackRight] = 0;
 	motor[FrontRight] = 0;
 	motor[FrontLeft] = 0;
@@ -274,7 +288,7 @@ task main()
 			moveTillUS(60, 0, 0, 70, false);//move until the center goal is out of the sight of the front us
 			turnMecGyro(80, 90);
 			moveTillUS(60, 0, 0, 50, true);
-			mecMove(40, -90, 0, 50);
+			moveTillTouch(40, -90, 0, true);
 			align(50, 0, 0);
 		};
 		break;
@@ -282,12 +296,12 @@ task main()
 			mecMove(50, 90, 0, 20);
 			turnMecGyro(80, 45);
 			moveTillUS(80, 0, 0, 50, true);
-			mecMove(50, 90, 0, 50);
+			moveTillTouch(50, 90, 0, true);
 			align(50, 0, 0);	
 		};
 		break;
 		case 3:{ 
-			mecMove(50, 90, 0, 100);
+			moveTillTouch(50, 90, 0, true);
 			align(50,0,0);
 		} 
 		break;
