@@ -49,7 +49,7 @@ void resetEncoders(){
 }
 
 void mecMove(float speed, float degrees, float speedRotation, float distance)
-{ //speed [-100,100], degrees [0, 360], speedRotation [-100,100], distance cm
+{ //speed [-100,100], degrees [0, 360] to the right, speedRotation [-100,100], distance cm
 	playSound(soundBeepBeep);
 	resetEncoders();
 	float min = 0.0;
@@ -93,9 +93,9 @@ void mecJustMove(int speed, float degrees, float speedRotation)
 }
 
 
-void align(int speed, float degrees, float speedRotation)
+void align(int speed, float degrees, float speedRotation)//if only the front sensor is active, move forward
 {
-	int direction = TSreadState(TOUCHFront)? -1:1;
+	int direction = TSreadState(TOUCHFront)? 1:-1;
 	speed *= direction;
 	mecJustMove(speed, degrees, speedRotation);
 	while (!(TSreadState(TOUCHFront))&&!(TSreadState(TOUCHBack)))
@@ -109,12 +109,11 @@ void align(int speed, float degrees, float speedRotation)
 }
 
 void tankTurnMec(int speed, float degrees) {
-	while (nMotorEncoder(FrontLeft) < 25.5 * PI * (degrees/360)){
-		motor[BackRight] = speed;
-		motor[FrontRight] = speed;
-		motor[FrontLeft] = 0-speed;
-		motor[BackLeft] = 0-speed;
-	}
+	motor[BackRight] = speed;
+	motor[FrontRight] = speed;
+	motor[FrontLeft] = 0-speed;
+	motor[BackLeft] = 0-speed;
+	while (nMotorEncoder(FrontLeft) < 25.5 * PI * (degrees/360)){}
 	motor[BackRight] = 0;
 	motor[FrontRight] = 0;
 	motor[FrontLeft] = 0;
