@@ -46,6 +46,8 @@ task main()
 	//int kArmCount = 0;
 	//int hoodCount=0;
 
+	int frontback = 1;
+
 	waitForStart();
     while(true){
 	   getJoystickSettings(joystick);
@@ -92,10 +94,10 @@ Where:*/
 			motor[BackLeft] = 100.0/384* (-Fwd - Rot + Side);
 			motor[BackRight] = 100.0/384 * (-Fwd + Rot - Side);*/
 
-			motor[FrontLeft] = -100.0/256 * (-joystick.joy1_y1 - (joystick.joy1_x1 + joystick.joy1_x2) / 2);
-			motor[BackLeft] = -100.0/256 * (-joystick.joy1_y1 + (joystick.joy1_x1 + joystick.joy1_x2) / 2);
-			motor[FrontRight] = -100.0/256 * (-joystick.joy1_y2 + (joystick.joy1_x1 + joystick.joy1_x2) / 2);
-			motor[BackRight] = -100.0/256 * (-joystick.joy1_y2 - (joystick.joy1_x1 + joystick.joy1_x2) / 2);
+			motor[FrontLeft] = frontback * (-100.0/256 * (-joystick.joy1_y1 - (joystick.joy1_x1 + joystick.joy1_x2) / 2));
+			motor[BackLeft] = frontback * (-100.0/256 * (-joystick.joy1_y1 + (joystick.joy1_x1 + joystick.joy1_x2) / 2));
+			motor[FrontRight] = frontback * (-100.0/256 * (-joystick.joy1_y2 + (joystick.joy1_x1 + joystick.joy1_x2) / 2));
+			motor[BackRight] = frontback * (-100.0/256 * (-joystick.joy1_y2 - (joystick.joy1_x1 + joystick.joy1_x2) / 2));
 
 			wait1Msec(10);
 
@@ -203,7 +205,12 @@ Where:*/
 	   		}
 	   		motor[arm]=0;
 	   	}
-//------------------------------------------------------------------------------------------------
+
+//---Switch Front and Back---------------------------------------------------------------------------------------
+		if (joy1Btn(5)){
+	   	frontback *= -1
+	   	}
+
      //wait1Msec(100);
   }
 }
