@@ -24,7 +24,7 @@
 #include "include\hitechnic-gyro.h"
 
 //everything is in centimeters
-static float encoderScale=1440.0;
+static float encoderScale=1120.0;
 static float wheelRadius=(10.16); //was 9.7/2
 static float wheelCircumference=PI*2*wheelRadius;
 //static float AngleRatio = ? //used as angle(in degree) * AngleRatio

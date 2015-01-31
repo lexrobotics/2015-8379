@@ -1,4 +1,5 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
+#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     gyro,           sensorI2CCustom)
 #pragma config(Sensor, S3,     irSeeker,       sensorI2CCustom)
 #pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
@@ -6,7 +7,7 @@
 #pragma config(Motor,  mtr_S1_C1_1,     BackLeft,      tmotorTetrix, openLoop, reversed, encoder)
 #pragma config(Motor,  mtr_S1_C1_2,     FrontLeft,     tmotorTetrix, openLoop, encoder)
 #pragma config(Motor,  mtr_S1_C2_1,     thrower,       tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C2_2,     motorG,        tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C2_2,     Lift,          tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_1,     FrontRight,    tmotorTetrix, openLoop, reversed, encoder)
 #pragma config(Motor,  mtr_S1_C4_2,     BackRight,     tmotorTetrix, openLoop, encoder)
 #pragma config(Servo,  srvo_S1_C3_1,    grabber1,             tServoStandard)
@@ -33,6 +34,7 @@ const tMUXSensor TOUCHBack = msensor_S4_4;
 
 task main()
 {
+	static float encoderScale=1120.0;
 	int pos1 = 255;
 	int pos2 = 0;
 	servo[grabber1]=pos1;
@@ -52,7 +54,7 @@ task main()
     while(true){
 	   getJoystickSettings(joystick);
 
-	   //-TESTING TOUCH SENSORS-----//
+/*	   //-TESTING TOUCH SENSORS-----//
 	  if(TSreadState(TOUCHFront)==0|| TSreadState(TOUCHBack)==0){
 		playSound(soundLowBuzz);
 		wait1Msec(1000);
@@ -61,6 +63,7 @@ if(TSreadState(TOUCHFront)==0 && TSreadState(TOUCHBack)==0){
 		playSound(soundDownwardTones);
 	wait1Msec(1000);
 		}
+		*/
 
 
 //-Movement--------------------------------------------------------------------------
@@ -206,9 +209,33 @@ Where:*/
 	   		motor[arm]=0;
 	   	}
 
+//---Lift--------------------------------------------------------------------------------------------------------
+	   if(joy1Btn(1)){
+	     nMotorEncoder[Lift]=0;
+				motor[Lift]=30;
+	   		while(nMotorEncoder[Lift]<encoderScale)
+	   		{
+	   		//	wait1Msec(10);
+	   		}
+	   		motor[Lift]=0;
+	   	}
+
+	   if(joy1Btn(3)){
+	     	nMotorEncoder[Lift]=0;
+				motor[Lift]=-30;
+	   		while(abs(nMotorEncoder[Lift])<encoderScale)
+	   		{
+	   			wait1Msec(10);
+	   		}
+	   		motor[Lift]=0;
+	   	}
+
 //---Switch Front and Back---------------------------------------------------------------------------------------
 		if (joy1Btn(5)){
-	   	frontback *= -1
+	   	frontback = -1;
+	   	}
+		if (joy1Btn(7)){
+	   	frontback = 1
 	   	}
 
      //wait1Msec(100);

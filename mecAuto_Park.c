@@ -31,7 +31,7 @@ const tMUXSensor TOUCHFront = msensor_S4_3;
 const tMUXSensor TOUCHBack = msensor_S4_4;
 
 //everything is in centimeters
-static float encoderScale=1440.0;
+static float encoderScale=1120.0;
 static float wheelRadius=((9.7)/2);
 static float wheelCircumference=PI*2*wheelRadius;
 
