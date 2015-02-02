@@ -215,7 +215,7 @@ void moveTillUS(float speed, float degrees, float speedRotation, float threshold
 
 void parallel()
 {
-	float difference=USreadDist(USfront) > readingB = SensorValue(USback)? 20:-20;//so that the sensors doesn't have to detect twice; to save batteries
+	float difference=USreadDist(USfront) > SensorValue(USback)? 20:-20;//so that the sensors doesn't have to detect twice; to save batteries
 	mecJustMove(0, 0, difference);
 	while(abs(USreadDist(USfront)-SensorValue(USback))>5)
 	{}
@@ -278,14 +278,15 @@ bool alignRecursiveT()//true = we are all set, false = nope not even touching no
 	{
 		wait1Msec(1000);
 		playSound(soundUpwardTones);
+		wait1Msec(1000);
 		return true;
 	}
 
 	if (TSreadState(TOUCHFront) || TSreadState(TOUCHBack))//run if at least one of them is touching, else... it is just unfortunate
 	{
 		short reading1 = TSreadState(TOUCHFront), reading2 = TSreadState(TOUCHBack);
-		direction = TSreadState(TOUCHFront)? 1:-1;//if only the front sensor is active, move forward
-		tempspeed = 20*direction;//positive speed = forward, negative = backward
+		short direction = TSreadState(TOUCHFront)? 1:-1;//if only the front sensor is active, move forward
+		int tempspeed = 10*direction;//positive speed = forward, negative = backward
 		mecJustMove(tempspeed, 0, 0);
 		while(TSreadState(TOUCHFront) == reading1 && TSreadState(TOUCHBack) == reading2)//stop if at least one of them is different from the beginning
 		{
@@ -293,7 +294,10 @@ bool alignRecursiveT()//true = we are all set, false = nope not even touching no
 		}
 		Stop();
 		bool result = alignRecursiveT();
-		result? playSound(soundUpwardTones) : playSound(soundDownwardTones);
+		if (result==true){
+			playSound(soundUpwardTones);}
+	if (result==true){
+		playSound(soundDownwardTones);}
 		wait1Msec(700);
 		return result;
 	}
@@ -302,15 +306,6 @@ bool alignRecursiveT()//true = we are all set, false = nope not even touching no
 	return false;
 }
 
-void adjustment()
-{
-	bool aligned;
-//	do{
-		 aligned = alignRecursiveT();
-		 //do some adjustment stuffs? go off and find the location? go for the kickstand (since it shouldn't be that far off but yet we don't know exactly where the robot is)?
-//	}while (!aligned);
-	 kickstand();
-}
 //----------------Sequential Stuffs--------------------------------------------------------------------------------------------------------------------------------
 void lift()
 {
@@ -329,6 +324,15 @@ void kickstand()//starting from the bottom of the center goal
 	armOut();
 	mecMove(50, -90, 0, 10);//move sideway so the robot is touching the kickstand or at least reachable
 	mecMove(-50, 0, 0, 50);//move backward to hook down the kickstand
+}
+void adjustment()
+{
+	bool aligned;
+//	do{
+		 aligned = alignRecursiveT();
+		 //do some adjustment stuffs? go off and find the location? go for the kickstand (since it shouldn't be that far off but yet we don't know exactly where the robot is)?
+//	}while (!aligned);
+	 kickstand();
 }
 
 //===================================================================================================================================
