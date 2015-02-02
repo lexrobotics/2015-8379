@@ -327,8 +327,8 @@ void kickstand()//starting from the bottom of the center goal
 	turnMecGyro(50, -90);//eh can't use parallel
 	mecMove(50, 0, 0, 30);//make sure that the arm passes the kickstand but the robot is still next to the kickstand
 	armOut();
-	mecMove(50, -90, 0, 10);
-	mecMove(-50, 0, 0, 50);
+	mecMove(50, -90, 0, 10);//move sideway so the robot is touching the kickstand or at least reachable
+	mecMove(-50, 0, 0, 50);//move backward to hook down the kickstand
 }
 
 //===================================================================================================================================
