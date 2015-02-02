@@ -108,11 +108,16 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 
 void align(int speed, float degrees, float speedRotation)//if only the front sensor is active, move forward
 {
+	nxtDisplayCenteredTextLine(2, "%d", "%d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
+	wait1Msec(4000);
+	eraseDisplay();
 	int direction = TSreadState(TOUCHFront)? 1:-1;
 	speed *= direction;
 	mecJustMove(speed, 0, 0);
-	while (!(TSreadState(TOUCHFront))&&!(TSreadState(TOUCHBack)))
+	playSound(soundLowBuzzShort);
+	while (!(TSreadState(TOUCHFront))||!(TSreadState(TOUCHBack)))
 	{
+		nxtDisplayCenteredTextLine(2, "%d", "%d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
 	}
 	Stop();
 }
@@ -254,9 +259,9 @@ void moveTillTouch(float speed, float degrees, float speedRotation, bool till)
 {
     mecJustMove(speed, degrees, speedRotation);
     if (till)
-    {while ((!TSreadState(TOUCHFront)) || (!TSreadState(TOUCHBack))){}}
+    {while ((!TSreadState(TOUCHFront)) && (!TSreadState(TOUCHBack))){}}
     else
-    {while ((TSreadState(TOUCHFront)) || (TSreadState(TOUCHBack))){}}//was &&, I think it should be ||
+    {while ((TSreadState(TOUCHFront)) || (TSreadState(TOUCHBack))){}}
 		wait1Msec(500);
 		Stop();
 }
@@ -330,12 +335,14 @@ switch (Cposition)
 			turnMecGyro(-80, 5);
 			//moveTillUS(80, 0, 0, 50, true);
 			moveTillTouch(50, 90, 0, true);
+			wait1Msec(1000);
 			align(50, 0, 0);
 		};
 		break;
 		case 3:{
-			mecMove(70, 0, 0, 15);
-			moveTillTouch(50, 90, 0, true);
+			mecMove(50, 0, 0, 20);
+			moveTillTouch(30, 90, 0, true);
+			wait1Msec(2000);
 			align(50,0,0);
 		}
 		break;
