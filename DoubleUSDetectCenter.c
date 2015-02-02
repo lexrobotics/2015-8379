@@ -224,11 +224,21 @@ void parallel()
 
 void moveTillTouch(float speed, float degrees, float speedRotation, bool till)
 {
+		/*wait1Msec(500);
+		HTGYROstartCal(gyro);
+		wait1Msec(500);*/
     mecJustMove(speed, degrees, speedRotation);
-    if (till)
-    {while ((!TSreadState(TOUCHFront)) && (!TSreadState(TOUCHBack))){}}
+    if (till){
+    	while ((!TSreadState(TOUCHFront)) && (!TSreadState(TOUCHBack))){
+    		//if(HTGYROreadRot(gyro)>5){break;}
+			}
+		}
     else
-    {while ((TSreadState(TOUCHFront)) || (TSreadState(TOUCHBack))){}}
+    {
+    	while ((TSreadState(TOUCHFront)) || (TSreadState(TOUCHBack))){
+    		//if(HTGYROreadRot(gyro)>5){break;}
+    	}
+    }
 		wait1Msec(500);
 		Stop();
 }
@@ -356,34 +366,28 @@ task main()
 //----------------------------------------------------------------
 	initUS();
 	int Cposition;
-	nxtDisplayCenteredTextLine(2, "%d", USreadDist(USfront));
+	/*nxtDisplayCenteredTextLine(2, "%d", USreadDist(USfront));
 	wait1Msec(3000);
 	eraseDisplay();
 	wait1Msec(2000);
 	nxtDisplayCenteredTextLine(2, "%d", SensorValue(USback));
 	wait1Msec(3000);
-	eraseDisplay();
+	eraseDisplay();*/
 
 
 	if (USreadDist(USfront) > 250 && SensorValue(USback) > 250) {
 		Cposition = 2;
-		wait1Msec(1000);
 		playSound(soundDownwardTones);
-		wait1Msec(2000);
 		}
 
 	else if(USreadDist(USfront) > 105 && USreadDist(USfront) < 115){//the other value is... doesn't matter
 		Cposition = 3;
-		wait1Msec(1000);
 		playSound(soundUpwardTones);
-		wait1Msec(2000);
 		}
 
 	else{ //values between 128-134, but don't need it really
 			Cposition = 1;
-			wait1Msec(1000);
 			playSound(soundBeepBeep);
-			wait1Msec(2000);
 		}
 
 switch (Cposition)
@@ -410,7 +414,7 @@ switch (Cposition)
 		};
 		break;
 		case 3:{
-			mecMove(50, 0, 0, 20);
+			mecMove(30, 0, 0, 25);
 			moveTillTouch(30, 90, 0, true);
 			wait1Msec(2000);
 			alignRecursiveT();
