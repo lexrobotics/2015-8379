@@ -108,7 +108,7 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 
 void align(int speed, float degrees, float speedRotation)//if only the front sensor is active, move forward
 {
-	nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
+	nxtDisplayCenteredTextLine(2, "%d", "%d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
 	wait1Msec(4000);
 	eraseDisplay();
 	int direction = TSreadState(TOUCHFront)? 1:-1;
@@ -117,7 +117,7 @@ void align(int speed, float degrees, float speedRotation)//if only the front sen
 	playSound(soundLowBuzzShort);
 	while (!(TSreadState(TOUCHFront))||!(TSreadState(TOUCHBack)))
 	{
-		nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
+		nxtDisplayCenteredTextLine(2, "%d", "%d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
 	}
 	Stop();
 }
@@ -343,7 +343,7 @@ switch (Cposition)
 			mecMove(50, 0, 0, 20);
 			moveTillTouch(30, 90, 0, true);
 			wait1Msec(2000);
-			align(20,0,0);
+			align(50,0,0);
 		}
 		break;
 	}
