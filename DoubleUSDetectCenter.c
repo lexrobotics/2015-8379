@@ -26,11 +26,11 @@
 
 
 #include "JoystickDriver.c"
-#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\hitechnic-irseeker-v2.h"
-#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\hitechnic-sensormux.h"
-#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\lego-touch.h"
-#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\lego-ultrasound.h"
-#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\hitechnic-gyro.h"
+#include "include\hitechnic-irseeker-v2.h"
+#include "include\hitechnic-sensormux.h"
+#include "include\lego-touch.h"
+#include "include\lego-ultrasound.h"
+#include "include\hitechnic-gyro.h"
 
 //const tMUXSensor USback = msensor_S4_1;
 const tMUXSensor USfront = msensor_S4_2;
