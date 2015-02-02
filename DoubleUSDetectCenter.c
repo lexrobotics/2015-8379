@@ -26,11 +26,11 @@
 
 
 #include "JoystickDriver.c"
-#include "hitechnic-irseeker-v2.h"
-#include "include\hitechnic-sensormux.h"
-#include "include\lego-touch.h"
-#include "include\lego-ultrasound.h"
-#include "include\hitechnic-gyro.h"
+#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\hitechnic-irseeker-v2.h"
+#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\hitechnic-sensormux.h"
+#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\lego-touch.h"
+#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\lego-ultrasound.h"
+#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\hitechnic-gyro.h"
 
 //const tMUXSensor USback = msensor_S4_1;
 const tMUXSensor USfront = msensor_S4_2;
@@ -234,17 +234,17 @@ void moveTillUS(float speed, float degrees, float speedRotation, float threshold
 {
    mecJustMove(speed, degrees, speedRotation);
    if (till){
-   	while ((TSreadState(USfront) > threshold) && (TSreadState(USback) > threshold)){}}
+   	while ((USreadDist(USfront) > threshold) && (SensorValue(USback) > threshold)){}}
    else{
-    	while ((TSreadState(USfront)) < threshold || (TSreadState(USback) < threshold)){}}
+    	while ((USreadDist(USfront)) < threshold && (SensorValue(USback) < threshold)){}}//was ||, I think it should be &&
 		Stop();
 }
 
 void parallel()
 {
-	while(abs(TSreadState(USfront)-TSreadState(USback))>5)
+	while(abs(USreadDist(USfront)-SensorValue(USback))>5)
 	{
-		float difference=abs(TSreadState((USfront)-TSreadState(USback))/(TSreadState((USfront)-TSreadState(USback));
+		float difference=abs(USreadDist(USfront)-SensorValue(USback))/(USreadDist(USfront)-SensorValue(USback));
 		mecJustMove(0, 0, difference*10);
 	}
 	Stop();
@@ -254,9 +254,9 @@ void moveTillTouch(float speed, float degrees, float speedRotation, bool till)
 {
     mecJustMove(speed, degrees, speedRotation);
     if (till)
-    {while ((!TSreadState(TOUCHFront)) && (!TSreadState(TOUCHBack))){}}
+    {while ((!TSreadState(TOUCHFront)) || (!TSreadState(TOUCHBack))){}}
     else
-    {while ((TSreadState(TOUCHFront)) || (TSreadState(TOUCHBack))){}}
+    {while ((TSreadState(TOUCHFront)) || (TSreadState(TOUCHBack))){}}//was &&, I think it should be ||
 		wait1Msec(500);
 		Stop();
 }
@@ -311,11 +311,11 @@ task main()
 			wait1Msec(2000);
 		}
 
-/*	switch (Cposition)
+switch (Cposition)
 	{
 		case 1:{
 			mecMove(70, 90, 0, 50);//move away from the wall
-			parallel();
+			//parallel();
 			//mecMove(80, -180, 0, 60);
 			moveTillUS(60, 0, 0, 70, false);//move until the center goal is out of the sight of both us
 			turnMecGyro(80, 90);
@@ -325,19 +325,21 @@ task main()
 		};
 		break;
 		case 2:{
+			mecMove(50, 0, 0, 40);
 			mecMove(50, 90, 0, 50);
-			turnMecGyro(80, 45);
-			moveTillUS(80, 0, 0, 50, true);
+			turnMecGyro(-80, 5);
+			//moveTillUS(80, 0, 0, 50, true);
 			moveTillTouch(50, 90, 0, true);
 			align(50, 0, 0);
 		};
 		break;
 		case 3:{
+			mecMove(70, 0, 0, 15);
 			moveTillTouch(50, 90, 0, true);
 			align(50,0,0);
 		}
 		break;
-	}*/
+	}
 	//and then do the lifting
 //-----------------------------------------------------------------------------
 }
