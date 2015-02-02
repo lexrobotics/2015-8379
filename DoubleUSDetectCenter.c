@@ -306,7 +306,7 @@ bool alignRecursiveT()//true = we are all set, false = nope not even touching no
 		bool result = alignRecursiveT();
 		if (result==true){
 			playSound(soundUpwardTones);}
-	if (result==true){
+		if (result==false){
 		playSound(soundDownwardTones);}
 		wait1Msec(700);
 		return result;
@@ -365,7 +365,8 @@ task main()
 
 //----------------------------------------------------------------
 	initUS();
-	int Cposition;
+	alignRecursiveT();
+	//int Cposition;
 	/*nxtDisplayCenteredTextLine(2, "%d", USreadDist(USfront));
 	wait1Msec(3000);
 	eraseDisplay();
@@ -375,7 +376,7 @@ task main()
 	eraseDisplay();*/
 
 
-	if (USreadDist(USfront) > 250 && SensorValue(USback) > 250) {
+	/*if (USreadDist(USfront) > 250 && SensorValue(USback) > 250) {
 		Cposition = 2;
 		playSound(soundDownwardTones);
 		}
@@ -418,12 +419,10 @@ switch (Cposition)
 			moveTillTouch(30, 90, 0, true);
 			wait1Msec(2000);
 			alignRecursiveT();
-			/*
-			 * adjustment();
-			 */
+		 //adjustment();
 		}
 		break;
 	}
-	lift();
+	lift();*/
 //-----------------------------------------------------------------------------
 }
