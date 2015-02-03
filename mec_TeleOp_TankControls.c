@@ -2,7 +2,7 @@
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     gyro,           sensorI2CCustom)
 #pragma config(Sensor, S3,     irSeeker,       sensorI2CCustom)
-#pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
+#pragma config(Sensor, S4,     HTSMUX,         sensorLowSpeed)
 #pragma config(Motor,  motorA,          arm,           tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     BackLeft,      tmotorTetrix, openLoop, reversed, encoder)
 #pragma config(Motor,  mtr_S1_C1_2,     FrontLeft,     tmotorTetrix, openLoop, encoder)
@@ -21,14 +21,15 @@
 //version 1/21/15   Status: May's edition of tank drive added
 
 #include "JoystickDriver.c"
-#include "hitechnic-irseeker-v2.h"
-#include "include\hitechnic-sensormux.h"
-#include "include\lego-touch.h"
-#include "include\hitechnic-gyro.h"
+#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\hitechnic-irseeker-v2.h"
+#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\hitechnic-sensormux.h"
+#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\lego-touch.h"
+#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\lego-ultrasound.h"
+#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\hitechnic-gyro.h"
 
 
-const tMUXSensor TOUCHFront = msensor_S4_3;
-const tMUXSensor TOUCHBack = msensor_S4_4;
+//const tMUXSensor TOUCHFront = msensor_S4_3;
+//const tMUXSensor TOUCHBack = msensor_S4_4;
 
 //--------------------------------------------------------------------------------------
 
@@ -210,7 +211,7 @@ Where:*/
 	   	}
 
 //---Lift--------------------------------------------------------------------------------------------------------
-	   if(joy1Btn(1)){
+	   if(joy1Btn(1)){ //lift down
 	     nMotorEncoder[Lift]=0;
 				motor[Lift]=30;
 	   		while(nMotorEncoder[Lift]<encoderScale)
@@ -220,12 +221,12 @@ Where:*/
 	   		motor[Lift]=0;
 	   	}
 
-	   if(joy1Btn(3)){
+	   if(joy1Btn(3)){ //lift up
 	     	nMotorEncoder[Lift]=0;
 				motor[Lift]=-30;
 	   		while(abs(nMotorEncoder[Lift])<encoderScale)
 	   		{
-	   			wait1Msec(10);
+	   			//wait1Msec(10);
 	   		}
 	   		motor[Lift]=0;
 	   	}
