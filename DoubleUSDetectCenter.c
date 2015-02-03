@@ -286,7 +286,8 @@ bool alignRecursiveT()//true = we are all set, false = nope not even touching no
 
 	if (TSreadState(TOUCHFront) && TSreadState(TOUCHBack))// if both of them are touching
 	{
-		wait1Msec(1000);
+		nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
+		wait1Msec(2000);
 		playSound(soundUpwardTones);
 		wait1Msec(1000);
 		return true;
@@ -294,6 +295,8 @@ bool alignRecursiveT()//true = we are all set, false = nope not even touching no
 
 	if (TSreadState(TOUCHFront) || TSreadState(TOUCHBack))//run if at least one of them is touching, else... it is just unfortunate
 	{
+		nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
+		wait1Msec(2000);
 		short reading1 = TSreadState(TOUCHFront), reading2 = TSreadState(TOUCHBack);
 		short direction = TSreadState(TOUCHFront)? 1:-1;//if only the front sensor is active, move forward
 		int tempspeed = 10*direction;//positive speed = forward, negative = backward
