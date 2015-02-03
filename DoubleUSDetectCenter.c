@@ -34,8 +34,8 @@
 
 //const tMUXSensor USback = msensor_S4_1;
 const tMUXSensor USfront = msensor_S4_2;
-const tMUXSensor TOUCHFront = msensor_S4_3;
-const tMUXSensor TOUCHBack = msensor_S4_4;
+const tMUXSensor TOUCHfront = msensor_S4_3;
+const tMUXSensor TOUCHback = msensor_S4_4;
 
 //everything is in centimeters
 static float encoderScale=1120.0;
@@ -239,7 +239,7 @@ void moveTillTouch(float speed, float degrees, float speedRotation, bool till)
     		//if(HTGYROreadRot(gyro)>5){break;}
     	}
     }
-		wait1Msec(500);
+		//wait1Msec(500);
 		Stop();
 }
 
@@ -253,10 +253,13 @@ void alignT(int speed, float degrees, float speedRotation)
 	eraseDisplay();
 	int direction;
 	int tempspeed;
-	while (!(TSreadState(TOUCHFront))||!(TSreadState(TOUCHBack)))
+	while ((!TSreadState(TOUCHfront))|| !(TSreadState(TOUCHback)))
 	{
 		nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
-		direction = TSreadState(TOUCHFront)? 1:-1;//if only the front sensor is active, move forward
+		if (!TSreadState(TOUCHfront) && !TSreadState(TOUCHback)){
+			moveTillTouch(10, 90, 0, true);
+		}
+		direction = TSreadState(TOUCHfront)? 1:-1;//if only the front sensor is active, move forward
 		tempspeed = speed*direction;
 		mecJustMove(tempspeed, 0, 0);
 		nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
@@ -284,24 +287,25 @@ bool alignRecursiveT()//true = we are all set, false = nope not even touching no
 {
 	nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
 
-	if (TSreadState(TOUCHFront) && TSreadState(TOUCHBack))// if both of them are touching
+	if (TSreadState(TOUCHfront) == 1 && TSreadState(TOUCHback) == 1)// if both of them are touching
 	{
 		nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
-		wait1Msec(2000);
+		//wait1Msec(2000);
 		playSound(soundUpwardTones);
-		wait1Msec(1000);
+		//wait1Msec(1000);
 		return true;
 	}
 
-	if (TSreadState(TOUCHFront) || TSreadState(TOUCHBack))//run if at least one of them is touching, else... it is just unfortunate
+	else if (TSreadState(TOUCHfront) == 1 || TSreadState(TOUCHback) == 1)//run if at least one of them is touching, else... it is just unfortunate
 	{
 		nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
-		wait1Msec(2000);
-		short reading1 = TSreadState(TOUCHFront), reading2 = TSreadState(TOUCHBack);
-		short direction = TSreadState(TOUCHFront)? 1:-1;//if only the front sensor is active, move forward
+		//wait1Msec(1000);
+		mecMove(10, 90, 0, 2);
+		short reading1 = TSreadState(TOUCHfront), reading2 = TSreadState(TOUCHback);
+		short direction = TSreadState(TOUCHfront)? 1:-1;//if only the front sensor is active, move forward
 		int tempspeed = 10*direction;//positive speed = forward, negative = backward
 		mecJustMove(tempspeed, 0, 0);
-		while(TSreadState(TOUCHFront) == reading1 && TSreadState(TOUCHBack) == reading2)//stop if at least one of them is different from the beginning
+		while(TSreadState(TOUCHfront) == reading1 && TSreadState(TOUCHback) == reading2)//stop if at least one of them is different from the beginning
 		{
 			nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
 		}
@@ -311,11 +315,25 @@ bool alignRecursiveT()//true = we are all set, false = nope not even touching no
 			playSound(soundUpwardTones);}
 		if (result==false){
 		playSound(soundDownwardTones);}
-		wait1Msec(700);
+		//wait1Msec(1000);
 		return result;
 	}
+
+	else{
+		nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
+		///wait1Msec(2000);
+		moveTillTouch(10, 90, 0, true);
+		bool result = alignRecursiveT();
+		if (result==true){
+			playSound(soundUpwardTones);}
+		if (result==false){
+		playSound(soundDownwardTones);}
+		//wait1Msec(1000);
+		return result;
+	}
+
 	playSound(soundDownwardTones);
-	wait1Msec(1000);
+	//wait1Msec(1000);
 	return false;
 }
 
@@ -347,6 +365,36 @@ void adjustment()
 //	}while (!aligned);
 	 kickstand();
 }
+void liftUp()
+{
+	     	nMotorEncoder[Lift]=0;
+				motor[Lift]=-30;
+	   		while(abs(nMotorEncoder[Lift])<encoderScale*12.3)
+	   		{
+	   			//wait1Msec(10);
+	   		}
+	   		motor[Lift]=0;
+}
+void liftDown()
+{
+	     	nMotorEncoder[Lift]=0;
+				motor[Lift]=30;
+	   		while(abs(nMotorEncoder[Lift])<encoderScale*8)
+	   		{
+	   			//wait1Msec(10);
+	   		}
+	   		motor[Lift]=0;
+}
+void liftRelease()
+{
+				nMotorEncoder[Lift]=0;
+				motor[Lift]=-30;
+	   		while(abs(nMotorEncoder[Lift])<encoderScale)
+	   		{
+	   			//wait1Msec(10);
+	   		}
+	   		motor[Lift]=0;
+}
 
 //===================================================================================================================================
 task main()
@@ -365,32 +413,36 @@ task main()
 	eraseDisplay();
 	int pos3 = 40; //should be 40
 	servo[hood] = pos3;//hood in place
+	mecMove(40, 90, 0, 3);
 
 //----------------------------------------------------------------
-	initUS();
-	alignRecursiveT();
-	//int Cposition;
-	/*nxtDisplayCenteredTextLine(2, "%d", USreadDist(USfront));
+	initUS()
+	int Cposition;
+	DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
 	wait1Msec(3000);
 	eraseDisplay();
-	wait1Msec(2000);
-	nxtDisplayCenteredTextLine(2, "%d", SensorValue(USback));
-	wait1Msec(3000);
-	eraseDisplay();*/
 
-
-	/*if (USreadDist(USfront) > 250 && SensorValue(USback) > 250) {
+	if (USreadDist(USfront) > 250 && SensorValue(USback) > 250) {
 		Cposition = 2;
+		DisplayCenteredTextLine(2, "%d", Cposition);
+		wait1Msec(2000);
+		eraseDisplay();
 		playSound(soundDownwardTones);
 		}
 
-	else if(USreadDist(USfront) > 105 && USreadDist(USfront) < 115){//the other value is... doesn't matter
+	else if(USreadDist(USfront) > 103 && USreadDist(USfront) < 113){//the other value is... doesn't matter
 		Cposition = 3;
+		DisplayCenteredTextLine(2, "%d", Cposition);
+		wait1Msec(2000);
+		eraseDisplay();
 		playSound(soundUpwardTones);
 		}
 
 	else{ //values between 128-134, but don't need it really
 			Cposition = 1;
+			DisplayCenteredTextLine(2, "%d", Cposition);
+			wait1Msec(2000);
+			eraseDisplay();
 			playSound(soundBeepBeep);
 		}
 
@@ -418,14 +470,19 @@ switch (Cposition)
 		};
 		break;
 		case 3:{
-			mecMove(30, 0, 0, 25);
-			moveTillTouch(30, 90, 0, true);
-			wait1Msec(2000);
+			mecMove(40, 0, 0, 25);
+			liftUp();
+			moveTillTouch(70, 90, 0, true);
+			wait1Msec(1000);
 			alignRecursiveT();
+			wait1Msec(1000);
+			liftRelease();
+			wait1Msec(2000);
+			liftDown();
 		 //adjustment();
 		}
 		break;
 	}
-	lift();*/
+	lift()
 //-----------------------------------------------------------------------------
 }
