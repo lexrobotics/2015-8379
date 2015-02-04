@@ -109,7 +109,7 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 
 	float scaled = abs(encoderScale* (distance * min / wheelCircumference));
 	mecJustMove(speed, degrees, speedRotation);
-	while((nMotorEncoder[FrontLeft]<scaled) && (nMotorEncoder[FrontRight]<scaled) && (nMotorEncoder[BackLeft]< scaled) && (nMotorEncoder[BackRight]< scaled))
+	while((abs(nMotorEncoder[FrontLeft])<scaled) && (abs(nMotorEncoder[FrontRight])<scaled) && (abs(nMotorEncoder[BackLeft])< scaled) && (abs(nMotorEncoder[BackRight])< scaled))
 	{}
 	Stop();
 	resetEncoders();
@@ -292,7 +292,7 @@ bool alignRecursiveT()//true = we are all set, false = nope not even touching no
 		nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
 		//wait1Msec(2000);
 		playSound(soundUpwardTones);
-		//wait1Msec(1000);
+		wait1Msec(1000);
 		return true;
 	}
 
@@ -338,10 +338,6 @@ bool alignRecursiveT()//true = we are all set, false = nope not even touching no
 }
 
 //----------------Sequential Stuffs--------------------------------------------------------------------------------------------------------------------------------
-void lift()
-{
-
-}
 
 void kickstand()//starting from the bottom of the center goal
 {
@@ -368,8 +364,8 @@ void adjustment()
 void liftUp()
 {
 	     	nMotorEncoder[Lift]=0;
-				motor[Lift]=-30;
-	   		while(abs(nMotorEncoder[Lift])<encoderScale*12.3)
+				motor[Lift]=-40;
+	   		while(abs(nMotorEncoder[Lift])<encoderScale*12.8)
 	   		{
 	   			//wait1Msec(10);
 	   		}
@@ -379,17 +375,7 @@ void liftDown()
 {
 	     	nMotorEncoder[Lift]=0;
 				motor[Lift]=30;
-	   		while(abs(nMotorEncoder[Lift])<encoderScale*8)
-	   		{
-	   			//wait1Msec(10);
-	   		}
-	   		motor[Lift]=0;
-}
-void liftRelease()
-{
-				nMotorEncoder[Lift]=0;
-				motor[Lift]=-30;
-	   		while(abs(nMotorEncoder[Lift])<encoderScale)
+	   		while(abs(nMotorEncoder[Lift])<encoderScale*12.6)
 	   		{
 	   			//wait1Msec(10);
 	   		}
@@ -397,6 +383,11 @@ void liftRelease()
 }
 
 //===================================================================================================================================
+task simuLift()
+{
+	liftUp();
+}
+
 task main()
 {
 	int delay=0;
@@ -407,13 +398,15 @@ task main()
 		wait1Msec(200);
 	}
 	waitForStart();
+	StartTask(simuLift);
 	nxtDisplayCenteredTextLine(2, "%d", delay);
 	wait1Msec(1000*delay);
 
 	eraseDisplay();
 	int pos3 = 40; //should be 40
 	servo[hood] = pos3;//hood in place
-	mecMove(40, 90, 0, 3);
+
+	mecMove(20, 90, 0, 3);
 
 //----------------------------------------------------------------
 	initUS()
@@ -463,26 +456,27 @@ switch (Cposition)
 			mecMove(50, 0, 0, 40);
 			mecMove(50, 90, 0, 50);
 			turnMecGyro(-80, 5);
-			//moveTillUS(80, 0, 0, 50, true);
+			moveTillUS(80, 0, 0, 50, true);
 			moveTillTouch(50, 90, 0, true);
 			wait1Msec(1000);
 			alignT(50, 0, 0);
 		};
 		break;
 		case 3:{
-			mecMove(40, 0, 0, 25);
-			liftUp();
-			moveTillTouch(70, 90, 0, true);
+			mecMove(40, 0, 0, 22.5);
+			moveTillTouch(50, 90, 0, true);
 			wait1Msec(1000);
 			alignRecursiveT();
 			wait1Msec(1000);
-			liftRelease();
+			mecMove(-20, 0, 0, 5);
+			wait1Msec(1000);
+			mecMove(40, 270, 0, 20);
 			wait1Msec(2000);
 			liftDown();
 		 //adjustment();
 		}
 		break;
 	}
-	lift()
+
 //-----------------------------------------------------------------------------
 }

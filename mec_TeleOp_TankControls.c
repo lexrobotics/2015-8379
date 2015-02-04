@@ -21,11 +21,11 @@
 //version 1/21/15   Status: May's edition of tank drive added
 
 #include "JoystickDriver.c"
-#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\hitechnic-irseeker-v2.h"
-#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\hitechnic-sensormux.h"
-#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\lego-touch.h"
-#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\lego-ultrasound.h"
-#include "C:\Users\Robot1\Documents\Programming\robotcdriversuite\include\hitechnic-gyro.h"
+#include "include\hitechnic-irseeker-v2.h"
+#include "include\hitechnic-sensormux.h"
+#include "include\lego-touch.h"
+#include "include\lego-ultrasound.h"
+#include "include\hitechnic-gyro.h"
 
 
 //const tMUXSensor TOUCHFront = msensor_S4_3;
