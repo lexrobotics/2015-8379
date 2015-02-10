@@ -2,7 +2,11 @@
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     gyro,           sensorI2CCustom)
 #pragma config(Sensor, S3,     USback,         sensorSONAR)
+<<<<<<< HEAD
 #pragma config(Sensor, S4,     HTSMUX,         sensorLowSpeed)
+=======
+#pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
+>>>>>>> 5654830042799cbe0f4304485cee1e3374bb4d13
 #pragma config(Motor,  motorA,          arm,           tmotorNXT, openLoop, encoder)
 #pragma config(Motor,  motorB,           ,             tmotorNXT, openLoop, encoder)
 #pragma config(Motor,  motorC,           ,             tmotorNXT, openLoop, encoder)
@@ -329,9 +333,9 @@ task main()
 	servo[grabber1]=pos2;//they are switched
 	servo[grabber2]=pos1;
 
-	int pos3 = 10;
-	servo[hood] = pos3;
+	move(50.0, 170.0);
 
+<<<<<<< HEAD
 	time1[T2]=0;
 
 	//move(50.0, 170.0);//**1st length: move down the ramp
@@ -349,6 +353,8 @@ task main()
 	wait1Msec((30.0-totaltime-(float)delay)*1000.0);
 	pos3 = 10;
 	servo[hood] = pos3;//to prevent the hood from falling onto the tube when the program stops
+=======
+>>>>>>> 5654830042799cbe0f4304485cee1e3374bb4d13
 	wait1Msec(500);
 
 }
