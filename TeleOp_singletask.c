@@ -91,11 +91,11 @@ task main()
 		}
 
 		if(joy1Btn(6)) { //thrower forward
-			motor[thrower] = 100;
+			motor[thrower] = -100;
 		}
 
 		if(joy1Btn(8)) { //throw backward
-			motor[thrower] = -100;
+			motor[thrower] = 100;
 		}
 
 		//===============kickstand arm====================================================
