@@ -44,11 +44,6 @@ task main()
 
 	int pos4 = 50;
 	servo[hood] = pos4;
-	//int armcounter = 0;
-
-	//int throwerCount = 0;
-	//int kArmCount = 0;
-	//int hoodCount=0;
 
 	int frontback = 1;
 
