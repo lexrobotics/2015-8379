@@ -2,7 +2,7 @@
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     gyro,           sensorI2CCustom)
 #pragma config(Sensor, S3,     USback,         sensorSONAR)
-#pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
+#pragma config(Sensor, S4,     HTSMUX,         sensorLowSpeed)
 #pragma config(Motor,  motorA,          arm,           tmotorNXT, openLoop, encoder)
 #pragma config(Motor,  motorB,           ,             tmotorNXT, openLoop, encoder)
 #pragma config(Motor,  motorC,           ,             tmotorNXT, openLoop, encoder)
@@ -179,10 +179,26 @@ void moveTillTouch(float speed, float degrees, float speedRotation, bool till)
 
 //--------------------Align stuffs-----------------------------------------------------------------------------------------------------------------------------------
 
+void ballRelease(int time)//in second
+{
+	playSound(soundLowBuzz);
+	time1[T2] = 0;
+	servo[liftRelease] = 0;
+	while(time1[T2]/1000 < time)
+	{}
+	servo[liftRelease] = 127;
+	wait1Msec(2000);
+	mecMove(60, 270, 0, 15);
+	wait1Msec(2000);
+}
+
 bool alignRecursiveT(int counter)//true = we are all set, false = nope not even touching now and need to realign
 //don't know if RobotC allows me to do recursive or would the robot crash...?
 //**the function can stop and alarm when it is not aligning anymore, which is better than alignT()
 {
+	/*if(time1[T4]>25000){
+		ballRelease(1.5);
+	}*/
 	nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
 
 	if (TSreadState(TOUCHfront) == 1 && TSreadState(TOUCHback) == 1)// if both of them are touching
@@ -194,7 +210,7 @@ bool alignRecursiveT(int counter)//true = we are all set, false = nope not even 
 		wait1Msec(1000);
 		return true;
 	}
-	if (counter == 12){
+	if (counter == 10){
 		playSound(soundDownwardTones);
 		wait1Msec(1000);
 		return false;
@@ -219,14 +235,19 @@ bool alignRecursiveT(int counter)//true = we are all set, false = nope not even 
 		result = alignRecursiveT(counter);
 	}
 	else{
-		time1[T3] = 0;
-//		if (counter%2 == 0)
-			while(time1[T3] < 1000){
-					nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
+		moveTillTouch(10, 90, 0, true);
+		result = alignRecursiveT(counter);
+		return result;
+	}
+}
+		//time1[T3] = 0;
+	//if (counter%2 == 0)
+			//while(time1[T3] < 1000){
+				//	nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
 					///wait1Msec(2000);
-					mecJustMove(10, 90, 0);
-					if ((TSreadState(TOUCHfront) == 1 && TSreadState(TOUCHback) == 1))
-						break;
+				//	mecJustMove(10, 90, 0);
+				//	if ((TSreadState(TOUCHfront) == 1 && TSreadState(TOUCHback) == 1))
+					//	break;
 //			}
 /*			else
 			{
@@ -237,21 +258,18 @@ bool alignRecursiveT(int counter)//true = we are all set, false = nope not even 
 					if ((TSreadState(TOUCHfront) == 1 && TSreadState(TOUCHback) == 1))
 						break;
 			}*/
-		}
 
-		if (TSreadState(TOUCHfront) || TSreadState(TOUCHback)){
+		/*if (TSreadState(TOUCHfront) || TSreadState(TOUCHback)){
 			result = alignRecursiveT(counter);
 		}
 		else{
-			turnMecGyro(30, 3.0);
+			//turnMecGyro(30, 3.0);
 			result = alignRecursiveT(counter);
 		}
 	}
 		playSound(soundUpwardTones);
-		//wait1Msec(1000);
-		return result;
+		//wait1Msec(1000);*/
 
-}
 
 //----------------Sequential Stuffs--------------------------------------------------------------------------------------------------------------------------------
 
@@ -266,9 +284,9 @@ void kickstand()
 void liftUp()
 {
 	     	nMotorEncoder[Lift]=0;
-				motor[Lift]=-42;
+				motor[Lift]=-38;
 				servo[liftRelease] = 255;
-	   		while(abs(nMotorEncoder[Lift])<encoderScale*13.2)
+	   		while(abs(nMotorEncoder[Lift])<encoderScale*13.2) //up ratio -38/(255-127) = -.297
 	   		{
 	   		}
 	   		motor[Lift]=0;
@@ -280,26 +298,14 @@ void liftDown()
 {
 	     	nMotorEncoder[Lift]=0;
 				motor[Lift]=10;
-				servo[liftRelease] = 95;
-	   		while(abs(nMotorEncoder[Lift])<encoderScale*12.6)
+				servo[liftRelease] = 105;
+	   		while(abs(nMotorEncoder[Lift])<encoderScale*12.6) //down ratio 10/(105-127) = -.455
 	   		{
 	   		}
 	   		motor[Lift]=0;
 	   		servo[liftRelease] = 127;
 }
 
-void ballRelease(int time)//in second
-{
-	playSound(soundLowBuzz);
-	time1[T2] = 0;
-	servo[liftRelease] = 50;
-	while(time1[T2]/1000 < time)
-	{}
-	servo[liftRelease] = 127;
-	wait1Msec(2000);
-	mecMove(60, 270, 0, 15);
-	wait1Msec(2000);
-}
 
 void readUSavg(float &frontS, float &backS)
 {
@@ -340,13 +346,14 @@ task main()
 	eraseDisplay();
 	int pos3 = 40; //should be 40
 	servo[hood] = pos3;//hood in place
+	time1[T4]=0;
 
 	int counter = 0;
 
-	mecMove(40, 90, 0, 3);
+	mecMove(10, 90, 0, 3);
 
 //----------------------------------------------------------------
-	initUS()
+	initUS();
 	int Cposition;
 	DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
 	wait1Msec(500);
@@ -397,7 +404,7 @@ switch (Cposition)
 			wait1Msec(1000);
 			alignRecursiveT(0);
 			wait1Msec(1000);
-			ballRelease(2.5);
+			ballRelease(2.0);
 			StartTask(kickStand);
 			liftDown();
 		};
@@ -411,18 +418,18 @@ switch (Cposition)
 			wait1Msec(1000);
 			alignRecursiveT(0);
 			wait1Msec(1000);
-			ballRelease(2.5);
+			ballRelease(2.0);
 			StartTask(kickStand);
 			liftDown();
 		};
 		break;
 		case 3:{
-			mecMove(60, 0, 0, 22.5);
-			moveTillTouch(60, 90, 0, true);
+			mecMove(40, 0, 0, 22.5);
+			moveTillTouch(40, 90, 0, true);
 			wait1Msec(1000);
 			alignRecursiveT(0);
 			wait1Msec(1000);
-			ballRelease(2.5);
+			ballRelease(2.0);
 			StartTask(kickStand);
 			liftDown();
 		}

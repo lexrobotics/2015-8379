@@ -2,7 +2,7 @@
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     gyro,           sensorI2CCustom)
 #pragma config(Sensor, S3,     irSeeker,       sensorI2CCustom)
-#pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
+#pragma config(Sensor, S4,     HTSMUX,         sensorLowSpeed)
 #pragma config(Motor,  motorA,          arm,           tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     BackLeft,      tmotorTetrix, openLoop, reversed, encoder)
 #pragma config(Motor,  mtr_S1_C1_2,     FrontLeft,     tmotorTetrix, openLoop, encoder)
@@ -153,23 +153,23 @@ Where:*/
 	   	}
 //-Hood---------------------------------------------------------------------------------------
 	   if (joy2Btn(5)){
-	     if(countArm<4){
+	     /*if(countArm<4){
 	       pos4=pos4;
 	     }
-	     else{
+	     else{*/
 	       pos4 = 107;
-	     }
+	     //}
 	     wait1Msec(10);
 	     servo[hood] = pos4;
 	   }
 
 	   if (joy2Btn(7)){
-	     if(countArm<4){
+	     /*if(countArm<4){
 	       pos4=pos4;
 	     }
-	     else{
+	     else{*/
 	       pos4 = 50;
-	     }
+	     //}
 	     wait1Msec(10);
 	     servo[hood] = pos4;
 	   }
@@ -194,10 +194,10 @@ Where:*/
 
 //---Lift--------------------------------------------------------------------------------------------------------
 	   if(joy2Btn(1)){ //lift down
-	     countArm-=1;
+	     //countArm-=1;
 	     nMotorEncoder[Lift]=0;
 				motor[Lift]=25;
-				servo[liftRelease] = 85;
+				servo[liftRelease] = 60; //down ratio of 25/(60-127) = -.373
 	   		while(nMotorEncoder[Lift]<encoderScale)
 	   		{
 	   		}
@@ -205,11 +205,11 @@ Where:*/
 	   		servo[liftRelease] = 127;
 	   	}
 
-	   if(joy2Btn(4)){ //lift up
-	     countArm+=1;
+	   if(joy2Btn(3)){ //lift up
+	     //countArm+=1;
 	     	nMotorEncoder[Lift]=0;
 				motor[Lift]=-30;
-				servo[liftRelease] = 145;
+				servo[liftRelease] = 143; //up ratio of -30/(143-127) =-1.875
 	   		while(abs(nMotorEncoder[Lift])<encoderScale)
 	   		{
 	   			//wait1Msec(10);
