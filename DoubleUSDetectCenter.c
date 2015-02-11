@@ -196,15 +196,11 @@ bool alignRecursiveT(int counter)//true = we are all set, false = nope not even 
 //don't know if RobotC allows me to do recursive or would the robot crash...?
 //**the function can stop and alarm when it is not aligning anymore, which is better than alignT()
 {
-	/*if(time1[T4]>25000){
-		ballRelease(1.5);
-	}*/
 	nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
 
 	if (TSreadState(TOUCHfront) == 1 && TSreadState(TOUCHback) == 1)// if both of them are touching
 	{
 		nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
-		//wait1Msec(2000);
 		mecMove(-20, 0, 0, 3);
 		playSound(soundUpwardTones);
 		wait1Msec(1000);
@@ -241,36 +237,6 @@ bool alignRecursiveT(int counter)//true = we are all set, false = nope not even 
 		return result;
 	}
 }
-		//time1[T3] = 0;
-	//if (counter%2 == 0)
-			//while(time1[T3] < 1000){
-				//	nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
-					///wait1Msec(2000);
-				//	mecJustMove(10, 90, 0);
-				//	if ((TSreadState(TOUCHfront) == 1 && TSreadState(TOUCHback) == 1))
-					//	break;
-//			}
-/*			else
-			{
-				while(time1[T3] < 1000){
-					nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
-					///wait1Msec(2000);
-					mecJustMove(0, 0, 60);
-					if ((TSreadState(TOUCHfront) == 1 && TSreadState(TOUCHback) == 1))
-						break;
-			}*/
-
-		/*if (TSreadState(TOUCHfront) || TSreadState(TOUCHback)){
-			result = alignRecursiveT(counter);
-		}
-		else{
-			//turnMecGyro(30, 3.0);
-			result = alignRecursiveT(counter);
-		}
-	}
-		playSound(soundUpwardTones);
-		//wait1Msec(1000);*/
-
 
 //----------------Sequential Stuffs--------------------------------------------------------------------------------------------------------------------------------
 
@@ -330,6 +296,22 @@ task kickStand()
 {
 	kickstand();
 }
+
+task timePos1()
+{
+	time1[T4]=0;
+}
+
+task timePos2()
+{
+	time1[timer1]=0;
+}
+
+task timePos3()
+{
+	time1[timer2]=0;
+}
+
 task main()
 {
 	int delay=0;
@@ -347,7 +329,6 @@ task main()
 	eraseDisplay();
 	int pos3 = 40; //should be 40
 	servo[hood] = pos3;//hood in place
-	time1[T4]=0;
 
 	int counter = 0;
 
