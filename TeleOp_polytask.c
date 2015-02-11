@@ -210,6 +210,7 @@ task main()
 		if(joy2Btn(6))	{startTask(liftDown);}
 		if(joy2Btn(8))	{startTask(liftUp);}
 
+		wait1Msec(10);
 		/*	if(joy2Btn(6)){
 		servo[liftRelease] = 150;
 		while(joy2Btn(6))
@@ -225,6 +226,5 @@ task main()
 		}
 		servo[liftRelease] = 127;
 		}*/
-		//==========================================================================
 	}
 }
