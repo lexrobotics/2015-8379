@@ -22,9 +22,9 @@
 
 //!!!!!!!!!!!!!!!!!!!!!!!!ALWAYS CHANGE SENSOR S4 HTSMUX to sensorLowSpeed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 /*version 2/10/15
- *author: Eula, May, Kara
- *status: post league championship fix-ups
- */
+*author: Eula, May, Kara
+*status: post league championship fix-ups
+*/
 
 #include "JoystickDriver.c"
 #include "include\hitechnic-irseeker-v2.h"
@@ -42,11 +42,12 @@ const tMUXSensor TOUCHback = msensor_S4_4;
 static float encoderScale=1120.0;
 static float wheelRadius=((9.7)/2);
 static float wheelCircumference=PI*2*wheelRadius;
+static int counter = 0;
 
 //------------------------------nonmotor related basic stuffs--------------------------------------------------------------------------------------------
 void initUS()
 {
-		servo[USfrontserv] = 220;
+	servo[USfrontserv] = 220;
 	//	servo[USbackserv] = 118;
 }
 void armOut(){
@@ -79,7 +80,6 @@ void Stop()
 	motor[FrontLeft] = 0;
 	motor[FrontRight] = 0;
 }
-
 
 void mecJustMove(int speed, float degrees, float speedRotation)
 {
@@ -128,32 +128,32 @@ void turnMecGyro(int speed, float degrees) {
 	//playSound(soundBeepBeep);
 	mecJustMove (0, 0, speed);//+ = right   - = turn left
 	while (abs(currHeading) < abs(degrees)) {
-	time1[T1] = 0;
-	curRate = HTGYROreadRot(gyro);
-	if (abs(curRate) > 3) {
-	currHeading += curRate * delTime; //Approximates the next heading by adding the rate*time.
-	if (currHeading > 360) currHeading -= 360;
-	else if (currHeading < -360) currHeading += 360;
-	}
-	wait1Msec(5);
-	delTime = ((float)time1[T1]) / 1000; //set delta (zero first time around)
+		time1[T1] = 0;
+		curRate = HTGYROreadRot(gyro);
+		if (abs(curRate) > 3) {
+			currHeading += curRate * delTime; //Approximates the next heading by adding the rate*time.
+			if (currHeading > 360) currHeading -= 360;
+			else if (currHeading < -360) currHeading += 360;
+		}
+		wait1Msec(5);
+		delTime = ((float)time1[T1]) / 1000; //set delta (zero first time around)
 	}
 	Stop();
 }
 
 void moveTillUS(float speed, float degrees, float speedRotation, float threshold, bool till)//if till = true, move until sees something; if till = false, move until not seeing something
 {
-   mecJustMove(speed, degrees, speedRotation);
-   if (till){
-   	while ((USreadDist(USfront) > threshold)){}}
-   else{
-    	while ((USreadDist(USfront)) < threshold || (SensorValue(USback) < threshold)){}}//should be ||, so stop when none of them is in the threshold
-		Stop();
+	mecJustMove(speed, degrees, speedRotation);
+	if (till){
+		while ((USreadDist(USfront) > threshold)){}}
+	else{
+		while ((USreadDist(USfront)) < threshold || (SensorValue(USback) < threshold)){}}//should be ||, so stop when none of them is in the threshold
+	Stop();
 }
 
 void parallel()
 {
-	float difference=USreadDist(USfront) > SensorValue(USback)? 20:-20;//so that the sensors doesn't have to detect twice; to save batteries
+float difference=USreadDist(USfront) > SensorValue(USback)? 20:-20;//so that the sensors doesn't have to detect twice; to save batteries
 	mecJustMove(0, 0, difference);
 	while(abs(USreadDist(USfront)-SensorValue(USback))>5)
 	{}
@@ -162,37 +162,38 @@ void parallel()
 
 void moveTillTouch(float speed, float degrees, float speedRotation, bool till)
 {
-    mecJustMove(speed, degrees, speedRotation);
-    if (till){
-    	while ((!TSreadState(TOUCHFront)) && (!TSreadState(TOUCHBack))){
-    		//if(HTGYROreadRot(gyro)>5){break;}
-			}
+	mecJustMove(speed, degrees, speedRotation);
+	if (till){
+		while ((!TSreadState(TOUCHFront)) && (!TSreadState(TOUCHBack))){
+			//if(HTGYROreadRot(gyro)>5){break;}
+			if (counter>=10)
+				break;
 		}
-    else
-    {
-    	while ((TSreadState(TOUCHFront)) || (TSreadState(TOUCHBack))){
-    		//if(HTGYROreadRot(gyro)>5){break;}
-    	}
-    }
-		Stop();
+	}
+	else
+	{
+		while ((TSreadState(TOUCHFront)) || (TSreadState(TOUCHBack))){
+			//if(HTGYROreadRot(gyro)>5){break;}
+			if (counter>=10)
+				break;
+		}
+	}
+	Stop();
 }
 
 //--------------------Align stuffs-----------------------------------------------------------------------------------------------------------------------------------
-
 void ballRelease(int time)//in second
 {
 	playSound(soundLowBuzz);
-	time1[T2] = 0;
+	time1[T4] = 0;
 	servo[liftRelease] = 0;
-	while(time1[T2]/1000 < time)
+	while(time1[T4]/1000 < time)
 	{}
 	servo[liftRelease] = 127;
 	wait1Msec(2000);
-	mecMove(60, 270, 0, 15);
-	wait1Msec(2000);
 }
 
-bool alignRecursiveT(int counter)//true = we are all set, false = nope not even touching now and need to realign
+bool alignRecursiveT()//true = we are all set, false = nope not even touching now and need to realign
 //don't know if RobotC allows me to do recursive or would the robot crash...?
 //**the function can stop and alarm when it is not aligning anymore, which is better than alignT()
 {
@@ -206,18 +207,18 @@ bool alignRecursiveT(int counter)//true = we are all set, false = nope not even 
 		wait1Msec(1000);
 		return true;
 	}
-	if (counter == 10){
+	if (counter >= 10){
 		playSound(soundDownwardTones);
 		wait1Msec(1000);
 		return false;
 	}
 
-		counter++;
-		bool result;
+	counter++;
+	bool result;
 	if (TSreadState(TOUCHfront) == 1 || TSreadState(TOUCHback) == 1)//run if at least one of them is touching, else... it is just unfortunate
 	{
 
-//		nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
+		//		nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
 		mecMove(10, 90, 0, 2);
 		short reading1 = TSreadState(TOUCHfront), reading2 = TSreadState(TOUCHback);
 		short direction = TSreadState(TOUCHfront)? 1:-1;//if only the front sensor is active, move forward
@@ -225,15 +226,20 @@ bool alignRecursiveT(int counter)//true = we are all set, false = nope not even 
 		mecJustMove(tempspeed, 0, 0);
 		while(TSreadState(TOUCHfront) == reading1 && TSreadState(TOUCHback) == reading2)//stop if at least one of them is different from the beginning
 		{
+			if (counter>=10)
+				break;
 			nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
 		}
 		Stop();
-		result = alignRecursiveT(counter);
+		result = alignRecursiveT();
+		result?=true	playSound(soundUpwardTones): playSound(soundDownwardTones);
+		return result;
 	}
 
 	else{
 		moveTillTouch(10, 90, 0, true);
-		result = alignRecursiveT(counter);
+		result = alignRecursiveT();
+		result?=true	playSound(soundUpwardTones): playSound(soundDownwardTones);
 		return result;
 	}
 }
@@ -250,27 +256,27 @@ void kickstand()
 
 void liftUp()
 {
-	     	nMotorEncoder[Lift]=0;
-				motor[Lift]=-38;
-				//servo[liftRelease] = 255;
-	   		while(abs(nMotorEncoder[Lift])<encoderScale*13.2) //up ratio -38/(255-127) = -.297
-	   		{
-	   		}
-	   		motor[Lift]=0;
-				//servo[liftRelease] = 127;
+	nMotorEncoder[Lift]=0;
+	motor[Lift]=-38;
+	//servo[liftRelease] = 255;
+	while(abs(nMotorEncoder[Lift])<encoderScale*13.2) //up ratio -38/(255-127) = -.297
+	{
+	}
+	motor[Lift]=0;
+	//servo[liftRelease] = 127;
 }
 
 
 void liftDown()
 {
-	     	nMotorEncoder[Lift]=0;
-				motor[Lift]=10;
-				//servo[liftRelease] = 105;
-	   		while(abs(nMotorEncoder[Lift])<encoderScale*12.6) //down ratio 10/(105-127) = -.455
-	   		{
-	   		}
-	   		motor[Lift]=0;
-	   		//servo[liftRelease] = 127;
+	nMotorEncoder[Lift]=0;
+	motor[Lift]=10;
+	//servo[liftRelease] = 105;
+	while(abs(nMotorEncoder[Lift])<encoderScale*12.6) //down ratio 10/(105-127) = -.455
+	{
+	}
+	motor[Lift]=0;
+	//servo[liftRelease] = 127;
 }
 
 
@@ -299,17 +305,40 @@ task kickStand()
 
 task timePos1()
 {
-	time1[T4]=0;
+	time1[T2]=0;
+	while(true)
+	{
+		if (T2> 20000){
+			counter = 10;
+			break;
+		}
+	}
+
 }
 
 task timePos2()
 {
-	time1[timer1]=0;
+	time1[T2]=0;
+	while(true)
+	{
+		if (T2> 20000){
+			counter = 10;
+			break;
+		}
+	}
+
 }
 
 task timePos3()
 {
-	time1[timer2]=0;
+	time1[T2]=0;
+	while(true)
+	{
+		if (T2> 20000){
+			counter = 10;
+			break;
+		}
+	}
 }
 
 task main()
@@ -327,17 +356,14 @@ task main()
 	wait1Msec(1000*delay);
 
 	eraseDisplay();
-	int pos3 = 40; //should be 40
+//*************Initialization******************************
+	int pos3 = 40;
 	servo[hood] = pos3;//hood in place
-
-	int counter = 0;
-
-	mecMove(10, 90, 0, 3);
-
-//----------------------------------------------------------------
 	initUS();
 	int Cposition;
-	DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
+
+//********Position detection*******************************************************************
+/*	DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
 	wait1Msec(500);
 	eraseDisplay();
 	DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
@@ -345,78 +371,79 @@ task main()
 	eraseDisplay();
 	DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
 	wait1Msec(500);
-	eraseDisplay();
+	eraseDisplay();*/
 	float frontS=0, backS=0;
 	readUSavg(frontS, backS);
 
 	if (frontS > 250 && backS > 250) {
 		Cposition = 2;
 		DisplayCenteredTextLine(2, "%d", Cposition);
-		wait1Msec(2000);
-		eraseDisplay();
 		playSound(soundDownwardTones);
-		}
-
-	else if(frontS > 103 && frontS < 113){//the other value is... doesn't matter
+	}
+	else if(frontS > 100 && frontS < 113){//the other value is... doesn't matter
 		Cposition = 3;
 		DisplayCenteredTextLine(2, "%d", Cposition);
-		wait1Msec(2000);
-		eraseDisplay();
 		playSound(soundUpwardTones);
-		}
+	}
+	else{ //values between 128-134, but don't really need it
+		Cposition = 1;
+		DisplayCenteredTextLine(2, "%d", Cposition);
+		playSound(soundBeepBeep);
+	}
 
-	else{ //values between 128-134, but don't need it really
-			Cposition = 1;
-			DisplayCenteredTextLine(2, "%d", Cposition);
-			wait1Msec(2000);
-			eraseDisplay();
-			playSound(soundBeepBeep);
-		}
-
-switch (Cposition)
+	mecMove(10, 90, 0, 3);//move away from the wall
+	switch (Cposition)
 	{
-		case 1:{
-			mecMove(60, 90, 0, 80);
-			mecMove(60, 0, 0, 100);
+	case 1:{
+			startTask(timePos1);
+			mecMove(90, 90, 0, 80);//move sideway
+			mecMove(90, 0, 0, 100);//move forward
 			//moveTillUS(60, 0, 0, 70, false);//move until the center goal is out of the sight of both us
-			turnMecGyro(60, 78.0);
-			moveTillUS(60, 0, 0, 60, true);
-			mecMove(60, 0, 0, 28);
+			turnMecGyro(60, 78.0);//turn parallel to the wall
+			mecMove(90, 0, 0, 60);
+			moveTillUS(90, 0, 0, 60, true);
+			mecMove(90, 0, 0, 28);
 			moveTillTouch(60, 90, 0, true);
-			wait1Msec(1000);
-			alignRecursiveT(0);
-			wait1Msec(1000);
+			wait1Msec(500);
+			alignRecursiveT();
+			wait1Msec(500);
 			ballRelease(2.0);
+			mecMove(60, 270, 0, 15);
 			StartTask(kickStand);
 			liftDown();
 		};
 		break;
-		case 2:{
-			mecMove(60, 90, 0, 50);
+	case 2:{
+			startTask(timePos2);
+			mecMove(90, 90, 0, 50);
 			turnMecGyro(60, 16.0);
-			moveTillUS(60, 0, 0, 60, true);
-			mecMove(60, 0, 0, 28);
+			mecMove(90, 0, 0, 60);
+			moveTillUS(90, 0, 0, 60, true);
+			mecMove(90, 0, 0, 28);
 			moveTillTouch(60, 90, 0, true);
-			wait1Msec(1000);
-			alignRecursiveT(0);
-			wait1Msec(1000);
+			wait1Msec(500);
+			alignRecursiveT();
+			wait1Msec(500);
 			ballRelease(2.0);
+			mecMove(60, 270, 0, 15);
 			StartTask(kickStand);
 			liftDown();
 		};
 		break;
-		case 3:{
+	case 3:{
+			startTask(timePos3);
 			mecMove(40, 0, 0, 22.5);
 			moveTillTouch(40, 90, 0, true);
-			wait1Msec(1000);
-			alignRecursiveT(0);
-			wait1Msec(1000);
+			wait1Msec(500);
+			alignRecursiveT();
+			wait1Msec(500);
 			ballRelease(2.0);
+			mecMove(60, 270, 0, 15);
 			StartTask(kickStand);
 			liftDown();
 		}
 		break;
 	}
 
-//-----------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------
 }
