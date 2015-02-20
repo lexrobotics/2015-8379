@@ -97,7 +97,7 @@ task kArmIn()
 task liftUp()
 {
 	nMotorEncoder[Lift]=0;
-	motor[Lift]=-30;
+	motor[Lift]=-100;
 	//servo[liftRelease] = 143; //up ratio of -30/(143-127) =-1.875
 	while(abs(nMotorEncoder[Lift])<encoderScale)
 	{
@@ -110,7 +110,7 @@ task liftUp()
 task liftDown()
 {
 	nMotorEncoder[Lift]=0;
-	motor[Lift]=25;
+	motor[Lift]=50;
 	//servo[liftRelease] = 60;
 	while(abs(nMotorEncoder[Lift])<encoderScale)
 	{
