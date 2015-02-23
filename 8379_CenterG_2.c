@@ -43,6 +43,7 @@ static float encoderScale=1120.0;
 static float wheelRadius=((9.7)/2);
 static float wheelCircumference=PI*2*wheelRadius;
 static int counter = 0;
+static bool isUp = false;
 
 //------------------------------nonmotor related basic stuffs--------------------------------------------------------------------------------------------
 void initUS()
@@ -145,7 +146,9 @@ void moveTillUS(float speed, float degrees, float speedRotation, float threshold
 {
 	mecJustMove(speed, degrees, speedRotation);
 	if (till){
-		while ((SensorValue(USfront) > threshold)){}}
+		while ((SensorValue(USfront) > threshold)){
+		nxtDisplayCenteredTextLine(2, "%d, %d", (SensorValue(USfront)), (USreadDist(USback));
+		}}
 	else{
 		while ((SensorValue(USfront)) < threshold || (USreadDist(USback) < threshold)){}}//should be ||, so stop when none of them is in the threshold
 	Stop();
@@ -185,7 +188,8 @@ void moveTillTouch(float speed, float degrees, float speedRotation, bool till)
 //--------------------Align stuffs-----------------------------------------------------------------------------------------------------------------------------------
 void ballRelease(int time)//in second
 {
-
+	playSound(soundLowBuzz);
+	wait1Msec(2000);
 }
 
 bool alignRecursiveT()//true = we are all set, false = nope not even touching now and need to realign
@@ -252,39 +256,37 @@ void kickstand()
 void liftUp()
 {
 	nMotorEncoder[Lift]=0;
-	motor[Lift]=-38;
-	//servo[liftRelease] = 255;
-	while(abs(nMotorEncoder[Lift])<encoderScale*13.2) //up ratio -38/(255-127) = -.297
+	motor[Lift]=-100;
+	while(abs(nMotorEncoder[Lift])<encoderScale*13.5) //up ratio -38/(255-127) = -.297
 	{
 	}
 	motor[Lift]=0;
-	//servo[liftRelease] = 127;
+	isUp = true;
 }
 
 
 void liftDown()
 {
 	nMotorEncoder[Lift]=0;
-	motor[Lift]=10;
-	//servo[liftRelease] = 105;
+	motor[Lift]=50;
 	while(abs(nMotorEncoder[Lift])<encoderScale*12.6) //down ratio 10/(105-127) = -.455
 	{
 	}
 	motor[Lift]=0;
-	//servo[liftRelease] = 127;
 }
 
 
 void readUSavg(float &frontS, float &backS)
 {
 	int f=0, b=0;
-	for (int i=0; i<10; i++)
+	for (int i=0; i<20; i++)
 	{
 		f+=SensorValue(USfront);
 		b+=USreadDist(USback);
+		wait1Msec(5);
 	}
-	frontS=f/10.0;
-	backS=b/10.0;
+	frontS=f/20.0;
+	backS=b/20.0;
 }
 
 //===================================================================================================================================
@@ -346,19 +348,20 @@ task main()
 		wait1Msec(200);
 	}
 	waitForStart();
-//	StartTask(simuLift);
+	StartTask(simuLift);
 	nxtDisplayCenteredTextLine(2, "%d", delay);
 	wait1Msec(1000*delay);
-
 	eraseDisplay();
+
 //*************Initialization******************************
 	int pos3 = 40;
 	servo[hood] = pos3;//hood in place
 	initUS();
+	servo[grabber] = 200;
 	int Cposition;
 
 //********Position detection*******************************************************************
-/*	DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
+/*DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
 	wait1Msec(500);
 	eraseDisplay();
 	DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
@@ -375,7 +378,7 @@ task main()
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundDownwardTones);
 	}
-	else if(frontS > 100 && frontS < 113){//the other value is... doesn't matter
+	else if(frontS > 105 && frontS < 115 && backS > 250){//the other value is... doesn't matter
 		Cposition = 3;
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundUpwardTones);
@@ -385,67 +388,74 @@ task main()
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundBeepBeep);
 	}
+	DisplayCenteredTextLine(2, "%d, %d", frontS, backS;
 
-
-	DisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
-
-mecMove(10, 90, 0, 3);//move away from the wall
+	mecMove(10, 90, 0, 3);//move away from the wall
 
 	switch (Cposition)
 	{
 	case 1:{
 			startTask(timePos1);
-			mecMove(90, 90, 0, 80);//move sideway
-			mecMove(90, 0, 0, 100);//move forward
+			mecMove(80, 90, 0, 80);//move sideway
+			mecMove(80, 0, 0, 85);//move forward
 			//moveTillUS(60, 0, 0, 70, false);//move until the center goal is out of the sight of both us
-			turnMecGyro(60, 78.0);//turn parallel to the wall
-			wait1Msec(1000);
-			mecMove(90, 0, 0, 60);
-			wait1Msec(1000);
-			moveTillUS(90, 0, 0, 60, true);
-			mecMove(90, 0, 0, 28);
-			wait1Msec(1000);
+			turnMecGyro(60, 88.0);//turn parallel to the wall
+			wait1Msec(200);
+			mecMove(80, 0, 0, 87);
+			//mecMove(80, 0, 0, 45);
+			//wait1Msec(200);
+			//moveTillUS(80, 0, 0, 30, true);
+			//wait1Msec(200);
+			//mecMove(80, 0, 0, 18);
+			wait1Msec(200);
+			while(!isUp){};
 			moveTillTouch(60, 90, 0, true);
 			wait1Msec(500);
 			alignRecursiveT();
 			wait1Msec(500);
-		//ballRelease(2.0);
-			//mecMove(60, 270, 0, 15);
+			mecMove(-60, 0, 0, 8);
+			ballRelease(2.0);
+			mecMove(60, 270, 0, 15);
 			//StartTask(kickStand);
-			//liftDown();
+			liftDown();
 		};
 		break;
 	case 2:{
 			startTask(timePos2);
-			mecMove(90, 90, 0, 50);
+			mecMove(80, 90, 0, 50);
 			turnMecGyro(60, 17.0);
-			mecMove(90, 0, 0, 60);
+			mecMove(80, 0, 0, 60);
 			//wait1Msec(1000);
-			moveTillUS(90, 0, 0, 60, true);
+			moveTillUS(80, 0, 0, 60, true);
 			wait1Msec(200);
-			mecMove(90, 0, 0, 10);
+			mecMove(80, 0, 0, 15);
 			wait1Msec(200);
+			while(!isUp){};
 			moveTillTouch(60, 90, 0, true);
 			wait1Msec(200);
 			alignRecursiveT();
 			wait1Msec(200);
-			//ballRelease(2.0);
-			//mecMove(60, 270, 0, 15);
+			mecMove(-60, 0, 0, 8);
+			ballRelease(2.0);
+			mecMove(60, 270, 0, 15);
 			//StartTask(kickStand);
-			//liftDown();
+			liftDown();
 		};
 		break;
 	case 3:{
 			startTask(timePos3);
 			mecMove(40, 0, 0, 18);
+			mecMove(60, 90, 0, 90);
+			while(!isUp){};
 			moveTillTouch(70, 90, 0, true);
 			wait1Msec(500);
 			alignRecursiveT();
 			wait1Msec(500);
-			//ballRelease(2.0);
-			//mecMove(60, 270, 0, 15);
+			mecMove(-60, 0, 0, 8);
+			ballRelease(2.0);
+			mecMove(60, 270, 0, 15);
 			//StartTask(kickStand);
-			//liftDown();
+			liftDown();
 		}
 		break;
 	}

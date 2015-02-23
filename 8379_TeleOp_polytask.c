@@ -33,9 +33,8 @@
 //const tMUXSensor TOUCHBack = msensor_S4_4;
 
 	static float encoderScale=1120.0;
-	static int pos1 = 255;
-	static int pos2 = 0;
-	static int pos4 = 50;
+	static int pos1 = 215;
+	static int pos4 = 60;
 	static int frontback = 1;
 
 //===========================Thrower====================================
@@ -57,14 +56,14 @@ task throwerReverse()
 task grabberUp()
 {
 	pos1+=5;
-	if (pos1 >= 255) pos1=255;
+	if (pos1 >= 215) pos1=215;
 	servo[grabber] = (pos1);
 }
 
 task grabberDown()
 {
 	pos1-=5;
-	if (pos1 <= 0) pos1=0;
+	if (pos1 <= 125) pos1=125;
 	servo[grabber] = (pos1);
 }
 
@@ -94,8 +93,9 @@ task liftUp()
 {
 	nMotorEncoder[Lift]=0;
 	motor[Lift]=-100;
-	//servo[liftRelease] = 143; //up ratio of -30/(143-127) =-1.875
+//ervo[liftRelease] = 143; //up ratio of -30/(143-127) =-1.875
 	while(abs(nMotorEncoder[Lift])<encoderScale)
+//hile(joy2Btn(6))
 	{
 		wait1Msec(10);
 	}
@@ -107,8 +107,9 @@ task liftDown()
 {
 	nMotorEncoder[Lift]=0;
 	motor[Lift]=50;
-	//servo[liftRelease] = 60;
+//	servo[liftRelease] = 60;
 	while(abs(nMotorEncoder[Lift])<encoderScale)
+//	while(joy2Btn(8))
 	{
 		wait1Msec(10);
 	}
@@ -119,15 +120,15 @@ task liftDown()
 //========================Hood===========================================================
 task hoodOut()
 {
-	pos4 = 107;
-	wait1Msec(1);
+	pos4 = 140;
+//	wait1Msec(1);
 	servo[hood] = pos4;
 }
 
 task hoodIn()
 {
-	pos4 = 50;
-	wait1Msec(1);
+	pos4 = 70;
+//	wait1Msec(1);
 	servo[hood] = pos4;
 }
 
@@ -201,8 +202,8 @@ task main()
 		if(joy2Btn(5))	{startTask(hoodOut);}
 		if(joy2Btn(7))	{startTask(hoodIn);}
 //==================================================Lift======================================================================================
-		if(joy2Btn(6))	{startTask(liftDown);}
-		if(joy2Btn(8))	{startTask(liftUp);}
+		if(joy2Btn(6))	{startTask(liftUp);}
+		if(joy2Btn(8))	{startTask(liftDown);}
 
 		wait1Msec(10);
 	}
