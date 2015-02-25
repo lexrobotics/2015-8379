@@ -120,14 +120,14 @@ task liftDown()
 //========================Hood===========================================================
 task hoodOut()
 {
-	pos4 = 140;
+	pos4 = 125;
 //	wait1Msec(1);
 	servo[hood] = pos4;
 }
 
 task hoodIn()
 {
-	pos4 = 70;
+	pos4 = 60;
 //	wait1Msec(1);
 	servo[hood] = pos4;
 }
@@ -147,7 +147,7 @@ task flipperFront()
 task main()
 {
 	servo[grabber]=pos1;
-//	servo[hood] = pos4;
+	servo[hood] = pos4;
 	//initial lift
 	waitForStart();
 
