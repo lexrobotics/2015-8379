@@ -186,10 +186,10 @@ void moveTillTouch(float speed, float degrees, float speedRotation, bool till)
 }
 
 //--------------------Align stuffs-----------------------------------------------------------------------------------------------------------------------------------
-void ballRelease(int time)//in second
+void ballRelease()
 {
+	servo[trigger] = 150;
 	playSound(soundLowBuzz);
-	wait1Msec(2000);
 }
 
 bool alignRecursiveT()//true = we are all set, false = nope not even touching now and need to realign
@@ -247,8 +247,8 @@ bool alignRecursiveT()//true = we are all set, false = nope not even touching no
 
 void kickstand()
 {
-	mecMove(80,180, 0, 38);
-	turnMecGyro(50, 270);
+	mecMove(80,180, 0, 50);
+	turnMecGyro(50, 275);
 	armOut();
 	mecMove(80, 180, 0, 90);
 }
@@ -273,6 +273,7 @@ void liftDown()
 	{
 	}
 	motor[Lift]=0;
+	wait1Msec(5000);
 }
 
 
@@ -354,10 +355,11 @@ task main()
 	eraseDisplay();
 
 //*************Initialization******************************
-	int pos3 = 40;
+	int pos3 = 60;
 	servo[hood] = pos3;//hood in place
 	initUS();
 	servo[grabber] = 200;
+	servo[trigger] = 220;
 	int Cposition;
 
 //********Position detection*******************************************************************
@@ -378,7 +380,7 @@ task main()
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundDownwardTones);
 	}
-	else if(frontS > 105 && frontS < 115 && backS > 250){//the other value is... doesn't matter
+	else if(frontS > 95 && frontS < 115 ){//the other value is greater than 250, usually, but using 200+ runs into issues to
 		Cposition = 3;
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundUpwardTones);
@@ -388,6 +390,7 @@ task main()
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundBeepBeep);
 	}
+
 	DisplayCenteredTextLine(2, "%d, %d", frontS, backS;
 
 	mecMove(10, 90, 0, 3);//move away from the wall
@@ -398,25 +401,22 @@ task main()
 			startTask(timePos1);
 			mecMove(80, 90, 0, 80);//move sideway
 			mecMove(80, 0, 0, 85);//move forward
-			//moveTillUS(60, 0, 0, 70, false);//move until the center goal is out of the sight of both us
+			wait1Msec(500);
 			turnMecGyro(60, 88.0);//turn parallel to the wall
-			wait1Msec(200);
-			mecMove(80, 0, 0, 87);
-			//mecMove(80, 0, 0, 45);
-			//wait1Msec(200);
-			//moveTillUS(80, 0, 0, 30, true);
-			//wait1Msec(200);
-			//mecMove(80, 0, 0, 18);
+			wait1Msec(500);
+			mecMove(70, 0, 0, 87);
 			wait1Msec(200);
 			while(!isUp){};
 			moveTillTouch(60, 90, 0, true);
 			wait1Msec(500);
 			alignRecursiveT();
 			wait1Msec(500);
-			mecMove(-60, 0, 0, 8);
-			ballRelease(2.0);
-			mecMove(60, 270, 0, 15);
-			//StartTask(kickStand);
+			mecMove(-40, 0, 0, 8);
+			wait1Msec(500);
+			ballRelease();
+			wait1Msec(2000);
+			mecMove(40, 270, 0, 20);
+			StartTask(kickStand);
 			liftDown();
 		};
 		break;
@@ -424,21 +424,23 @@ task main()
 			startTask(timePos2);
 			mecMove(80, 90, 0, 50);
 			turnMecGyro(60, 17.0);
-			mecMove(80, 0, 0, 60);
+			mecMove(70, 0, 0, 60);
 			//wait1Msec(1000);
-			moveTillUS(80, 0, 0, 60, true);
-			wait1Msec(200);
-			mecMove(80, 0, 0, 15);
-			wait1Msec(200);
+			moveTillUS(70, 0, 0, 60, true);
+			wait1Msec(400);
+			mecMove(70, 0, 0, 15);
+			wait1Msec(400);
 			while(!isUp){};
-			moveTillTouch(60, 90, 0, true);
+			moveTillTouch(70, 90, 0, true);
 			wait1Msec(200);
 			alignRecursiveT();
-			wait1Msec(200);
-			mecMove(-60, 0, 0, 8);
-			ballRelease(2.0);
-			mecMove(60, 270, 0, 15);
-			//StartTask(kickStand);
+			wait1Msec(500);
+			mecMove(-40, 0, 0, 8);
+			wait1Msec(500);
+			ballRelease();
+			wait1Msec(2000);
+			mecMove(40, 270, 0, 20);
+			StartTask(kickStand);
 			liftDown();
 		};
 		break;
@@ -451,10 +453,12 @@ task main()
 			wait1Msec(500);
 			alignRecursiveT();
 			wait1Msec(500);
-			mecMove(-60, 0, 0, 8);
-			ballRelease(2.0);
-			mecMove(60, 270, 0, 15);
-			//StartTask(kickStand);
+			mecMove(-40, 0, 0, 8);
+			wait1Msec(500);
+			ballRelease();
+			wait1Msec(2000);
+			mecMove(40, 270, 0, 20);
+			StartTask(kickStand);
 			liftDown();
 		}
 		break;

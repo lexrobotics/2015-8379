@@ -55,16 +55,16 @@ task throwerReverse()
 //==========================Grabber==============================================
 task grabberUp()
 {
-	pos1+=5;
-	if (pos1 >= 215) pos1=215;
-	servo[grabber] = (pos1);
+	//pos1+=5;
+	//if (pos1 >= 215) pos1=215;
+	servo[grabber] = 255;
 }
 
 task grabberDown()
 {
-	pos1-=5;
-	if (pos1 <= 125) pos1=125;
-	servo[grabber] = (pos1);
+	//pos1-=5;
+	//if (pos1 <= 125) pos1=125;
+	servo[grabber] = 150;
 }
 
 //=========================Kickstand Arm======================================================
@@ -199,8 +199,8 @@ task main()
 		if(joy2Btn(4))	{startTask(grabberUp);}
 		if(joy2Btn(2))	{startTask(grabberDown);}
 //==================================================Hood==============================================================
-		if(joy2Btn(5))	{startTask(hoodOut);}
-		if(joy2Btn(7))	{startTask(hoodIn);}
+		if(joy2Btn(5))	{startTask(hoodIn);}
+		if(joy2Btn(7))	{startTask(hoodOut);}
 //==================================================Lift======================================================================================
 		if(joy2Btn(6))	{startTask(liftUp);}
 		if(joy2Btn(8))	{startTask(liftDown);}
