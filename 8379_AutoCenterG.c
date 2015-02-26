@@ -285,6 +285,26 @@ void readUSavg(float &frontS, float &backS)
 	backS=b/10.0;
 }
 
+void frontEWMA(double factor)
+{
+	double reading=0.0;
+	for (int i=0; i<10; i++)
+	{
+		reading=factor*reading+(1-factor)*SensorValue(USfront);
+	}
+	return reading;
+}
+
+void backEWMA(double factor)
+{
+	double reading=0.0;
+	for (int i=0; i<10; i++)
+	{
+		reading=factor*reading+(1-factor)*USreadDist(USback);
+	}
+	return reading;
+}
+
 //===================================================================================================================================
 task simuLift()
 {
