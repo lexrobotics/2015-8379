@@ -188,7 +188,7 @@ void moveTillTouch(float speed, float degrees, float speedRotation, bool till)
 //--------------------Align stuffs-----------------------------------------------------------------------------------------------------------------------------------
 void ballRelease()
 {
-	servo[trigger] = 150;
+	servo[trigger] = 25;
 	playSound(soundLowBuzz);
 }
 
@@ -245,12 +245,22 @@ bool alignRecursiveT()//true = we are all set, false = nope not even touching no
 
 //----------------Sequential Stuffs--------------------------------------------------------------------------------------------------------------------------------
 
-void kickstand()
+void kickstand12()
 {
-	mecMove(80,180, 0, 46);
+	mecMove(80,180, 0, 44);
 	turnMecGyro(50, 275);
 	armOut();
-	mecMove(80, 180, 0, 90);
+	mecMove(80, 180, 0, 120);
+	armIn();
+}
+
+void kickstand3()
+{
+	mecMove(80,180, 0, 41);
+	turnMecGyro(50, 275);
+	armOut();
+	mecMove(80, 180, 0, 120);
+	armIn();
 }
 
 void liftUp()
@@ -281,33 +291,53 @@ void liftDown()
 void readUSavg(float &frontS, float &backS)
 {
 	int f=0, b=0;
-	for (int i=0; i<10; i++)
+	int tfront, tback;
+	float tcountF = 0.0, tcountB = 0.0;
+	for (int i=0; i<20; i++)
 	{
-		f+=SensorValue(USfront);
-		b+=USreadDist(USback);
-		wait1Msec(100);
-		DisplayCenteredTextLine(2, "%d, %d", SensorValue(USfront), USreadDist(USback));
+		tfront = SensorValue(USfront);
+		tback = USreadDist(USback);
+		DisplayCenteredTextLine(2, "%d, %d", tfront, tback);
+		if (tfront > 40)//95
+		{
+			tcountF++;
+			f+=tfront;
+		}
+		if (tback > 40)//95
+		{
+			tcountB++;
+			b+=tback;
+		}
+		wait1Msec(50);
+
 	}
-	frontS=f/10.0;
-	backS=b/10.0;
+	frontS=f/tcountF;
+	backS=b/tcountB;
+	DisplayCenteredTextLine(2, "%d, %d", tcountF, tcountB);
+	wait1Msec(1000);
 }
 
-task kickStand()
+task kickStand12()
 {
-	kickstand();
+	kickstand12();
+}
+
+task kickStand3()
+{
+	kickstand3();
 }
 
 void endSequence() //scores balls, lowers lift, and knocks kickstand
 {
 	alignRecursiveT(); //aligns robot so both touch sensors hit
 	wait1Msec(500);
-	mecMove(-40, 0, 0, 9); //shift right to align lift/ramp with center goal
+	mecMove(-60, 0, 0, 11); //shift right to align lift/ramp with center goal
+	wait1Msec(500);
+	mecMove(60, 270, 0, 4); //shift back
 	wait1Msec(500);
 	ballRelease(); //release balls with servo
 	wait1Msec(2000);
-	mecMove(40, 270, 0, 20);//move backwards
-	StartTask(kickStand); //begins kickstand knocking function
-	liftDown(); //brings lift down simultaneously
+	mecMove(60, 270, 0, 15);//move backwards
 }
 
 //===================================================================================================================================
@@ -374,7 +404,7 @@ task main()
 	servo[hood] = 60;//hood in place
 	initUS();
 	servo[grabber] = 255;
-	servo[trigger] = 220;
+	servo[trigger] = 120;
 	int Cposition;
 
 	//********Position detection*******************************************************************
@@ -387,15 +417,21 @@ task main()
 	DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
 	wait1Msec(500);
 	eraseDisplay();*/
+
+	mecMove(70, 90, 0, 30);
+
+
+	StartTask(simuLift);
+
 	float frontS=0, backS=0;
 	readUSavg(frontS, backS);
 
-	if (frontS > 150 && backS > 230) {
+	if (frontS > 240 && backS > 240) {
 		Cposition = 2;
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundDownwardTones);
 	}
-	else if(frontS > 95 && frontS < 115 ){//the other value is greater than 250, usually, but using 200+ runs into issues to
+	else if(frontS > 70 && frontS < 90 ){//was 95 125
 		Cposition = 3;
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundUpwardTones);
@@ -405,6 +441,14 @@ task main()
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundBeepBeep);
 	}
+
+
+	mecMove(-50, 90, 0, 33);
+
+/*	while (true){
+	DisplayCenteredTextLine(2, "%d, %d", SensorValue(USfront), USreadDist(USback));
+	//DisplayCenteredTextLine(2, "%d, %d", frontS, backS);
+	}*/
 
 	DisplayCenteredTextLine(2, "%d, %d", frontS, backS);
 
@@ -417,16 +461,18 @@ task main()
 	case 1:{
 			startTask(timePos1);
 			mecMove(80, 90, 0, 80);//move sideway
-			mecMove(80, 0, 0, 85);//move forward
-			wait1Msec(500);
+			mecMove(80, 0, 0, 90);//move forward
+			wait1Msec(200);
 			turnMecGyro(60, 88.0);//turn parallel to the wall
-			wait1Msec(500);
-			mecMove(70, 0, 0, 86);
+			wait1Msec(200);
+			mecMove(80, 0, 0, 86);
 			wait1Msec(200);
 			while(!isUp){};
-			moveTillTouch(60, 90, 0, true);
+			moveTillTouch(70, 90, 0, true);
 			wait1Msec(500);
 			endSequence();
+			StartTask(kickStand12); //begins kickstand knocking function
+		liftDown(); //brings lift down simultaneously
 		};
 		break;
 	case 2:{
@@ -437,12 +483,14 @@ task main()
 			//wait1Msec(1000);
 			moveTillUS(70, 0, 0, 60, true);
 			wait1Msec(400);
-			mecMove(70, 0, 0, 18); //was 15cm
+			mecMove(70, 0, 0, 18);
 			wait1Msec(400);
 			while(!isUp){};
 			moveTillTouch(70, 90, 0, true);
 			wait1Msec(200);
 			endSequence();
+			StartTask(kickStand12); //begins kickstand knocking function
+			liftDown(); //brings lift down simultaneously
 		};
 		break;
 	case 3:{
@@ -453,6 +501,8 @@ task main()
 			moveTillTouch(70, 90, 0, true);
 			wait1Msec(500);
 			endSequence();
+			StartTask(kickStand3); //begins kickstand knocking function
+			liftDown(); //brings lift down simultaneously
 		}
 		break;
 	}

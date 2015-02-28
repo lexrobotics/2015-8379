@@ -117,6 +117,11 @@ task liftDown()
 	//servo[liftRelease] = 127;
 }
 
+task triggerDown()
+{
+	servo[trigger] = 255;
+}
+
 //========================Hood===========================================================
 task hoodOut()
 {
@@ -148,7 +153,7 @@ task main()
 {
 	servo[grabber]=pos1;
 	servo[hood] = pos4;
-	//initial lift
+	//initial lift6
 	waitForStart();
 
 	while(true){
@@ -204,6 +209,7 @@ task main()
 //==================================================Lift======================================================================================
 		if(joy2Btn(6))	{startTask(liftUp);}
 		if(joy2Btn(8))	{startTask(liftDown);}
+		if(joy2Btn(1)) {startTask(triggerDown);}
 
 		wait1Msec(10);
 	}
