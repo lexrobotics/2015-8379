@@ -46,11 +46,5 @@ static bool isUp = false;
 
 task main()
 {
-	nMotorEncoder[Lift]=0;
-	motor[Lift]=-100;
-	while(abs(nMotorEncoder[Lift])<encoderScale*13.7) //up ratio -38/(255-127) = -.297
-	{
-	}
-	motor[Lift]=0;
-	playSound(soundBeepBeep);
+
 }

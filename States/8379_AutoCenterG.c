@@ -292,7 +292,7 @@ void frontEWMA(double factor)
 	{
 		reading=factor*reading+(1-factor)*SensorValue(USfront);
 	}
-	return reading;
+//	return reading;
 }
 
 void backEWMA(double factor)
@@ -302,7 +302,7 @@ void backEWMA(double factor)
 	{
 		reading=factor*reading+(1-factor)*USreadDist(USback);
 	}
-	return reading;
+	//return reading;
 }
 
 //===================================================================================================================================

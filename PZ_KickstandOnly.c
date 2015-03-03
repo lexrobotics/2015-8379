@@ -186,107 +186,6 @@ void moveTillTouch(float speed, float degrees, float speedRotation, bool till)
 }
 
 //--------------------Align stuffs-----------------------------------------------------------------------------------------------------------------------------------
-void ballRelease()
-{
-	servo[trigger] = 25;
-	playSound(soundLowBuzz);
-}
-
-bool alignRecursiveT()//true = we are all set, false = nope not even touching now and need to realign
-//don't know if RobotC allows me to do recursive or would the robot crash...?
-//**the function can stop and alarm when it is not aligning anymore, which is better than alignT()
-{
-	nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
-
-	if (TSreadState(TOUCHfront) == 1 && TSreadState(TOUCHback) == 1)// if both of them are touching
-	{
-		nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
-		//mecMove(-20, 0, 0, 3);
-		playSound(soundUpwardTones);
-		wait1Msec(1000);
-		return true;
-	}
-	if (counter >= 10){
-		playSound(soundDownwardTones);
-		wait1Msec(1000);
-		return false;
-	}
-
-	counter++;
-	bool result;
-	if (TSreadState(TOUCHfront) == 1 || TSreadState(TOUCHback) == 1)//run if at least one of them is touching, else... it is just unfortunate
-	{
-
-		//		nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
-		//mecMove(10, 90, 0, 2);
-		short reading1 = TSreadState(TOUCHfront), reading2 = TSreadState(TOUCHback);
-	short direction = TSreadState(TOUCHfront)? 1:-1;//if only the front sensor is active, move forward
-		int tempspeed = 10*direction;//positive speed = forward, negative = backward
-		mecJustMove(tempspeed, 0, 0);
-		while(TSreadState(TOUCHfront) == reading1 && TSreadState(TOUCHback) == reading2)//stop if at least one of them is different from the beginning
-		{
-			if (counter>=10)
-				break;
-			nxtDisplayCenteredTextLine(2, "%d, %d", TSreadState(TOUCHfront), TSreadState(TOUCHback));
-		}
-		Stop();
-		result = alignRecursiveT();
-		//		result==true?	playSound(soundUpwardTones): playSound(soundDownwardTones);
-		return result;
-	}
-
-	else{
-		moveTillTouch(10, 90, 0, true);
-		result = alignRecursiveT();
-		//		result==true?	playSound(soundUpwardTones): playSound(soundDownwardTones);
-		return result;
-	}
-}
-
-//----------------Sequential Stuffs--------------------------------------------------------------------------------------------------------------------------------
-
-void kickstand12()
-{
-	mecMove(80,180, 0, 44);
-	turnMecGyro(50, 275);
-	armOut();
-	mecMove(80, 180, 0, 120);
-	armIn();
-}
-
-void kickstand3()
-{
-	mecMove(80,180, 0, 41);
-	turnMecGyro(50, 275);
-	armOut();
-	mecMove(80, 180, 0, 120);
-	armIn();
-}
-
-void liftUp()
-{
-	nMotorEncoder[Lift]=0;
-	motor[Lift]=-100;
-	while(abs(nMotorEncoder[Lift])<encoderScale*13.7) //up ratio -38/(255-127) = -.297
-	{
-	}
-	motor[Lift]=0;
-	isUp = true;
-}
-
-
-void liftDown()
-{
-	nMotorEncoder[Lift]=0;
-	motor[Lift]=50;
-//	while(abs(nMotorEncoder[Lift])<encoderScale*9.0) //!!REMBER TO CHANGE TO THIS!!!
-	while(abs(nMotorEncoder[Lift])<encoderScale*12.5)
-	{
-	}
-	motor[Lift]=0;
-	wait1Msec(5000);
-}
-
 
 void readUSavg(float &frontS, float &backS)
 {
@@ -317,73 +216,9 @@ void readUSavg(float &frontS, float &backS)
 	wait1Msec(1000);
 }
 
-task kickStand12()
-{
-	kickstand12();
-}
-
-task kickStand3()
-{
-	kickstand3();
-}
-
-void endSequence() //scores balls, lowers lift, and knocks kickstand
-{
-	alignRecursiveT(); //aligns robot so both touch sensors hit
-	wait1Msec(500);
-	mecMove(-60, 0, 0, 11); //shift right to align lift/ramp with center goal
-	wait1Msec(500);
-	mecMove(60, 270, 0, 4); //shift back
-	wait1Msec(500);
-	ballRelease(); //release balls with servo
-	wait1Msec(2000);
-	mecMove(60, 270, 0, 15);//move backwards
-}
-
-//===================================================================================================================================
-task simuLift()
-{
-	liftUp();
-}
 
 
-task timePos1()
-{
-	time1[T2]=0;
-	while(true)
-	{
-		if (T2> 20000){
-			counter = 10;
-			break;
-		}
-	}
 
-}
-
-task timePos2()
-{
-	time1[T2]=0;
-	while(true)
-	{
-		if (T2> 20000){
-			counter = 10;
-			break;
-		}
-	}
-
-}
-
-task timePos3()
-{
-	time1[T2]=0;
-	while(true)
-	{
-		if (T2> 20000){
-			counter = 10;
-			break;
-		}
-	}
-}
 //============================================================================================
 task main()
 {
@@ -443,8 +278,6 @@ task main()
 	}
 
 
-	mecMove(-50, 90, 0, 33);
-
 /*	while (true){
 	DisplayCenteredTextLine(2, "%d, %d", SensorValue(USfront), USreadDist(USback));
 	//DisplayCenteredTextLine(2, "%d, %d", frontS, backS);
@@ -453,56 +286,31 @@ task main()
 	DisplayCenteredTextLine(2, "%d, %d", frontS, backS);
 
 
-
-	mecMove(10, 90, 0, 3);//move away from the wall
-
 	switch (Cposition)
 	{
 	case 1:{
-			startTask(timePos1);
-			mecMove(80, 90, 0, 80);//move sideway
-			mecMove(80, 0, 0, 90);//move forward
-			wait1Msec(200);
-			turnMecGyro(60, 88.0);//turn parallel to the wall
-			wait1Msec(200);
-			mecMove(80, 0, 0, 86);
-			wait1Msec(200);
-			while(!isUp){};
-			moveTillTouch(70, 90, 0, true);
-			wait1Msec(500);
-			endSequence();
-			StartTask(kickStand12); //begins kickstand knocking function
-		liftDown(); //brings lift down simultaneously
+		mecMove(80, 95, 0, 150);
+		armOut();
+		mecMove(80, 0, 0, 50);
+		mecMove(-80, 0, 0, 50);
+		armIn();
 		};
 		break;
 	case 2:{
-			startTask(timePos2);
-			mecMove(80, 90, 0, 50);
-			turnMecGyro(60, 17.0);
-			mecMove(70, 0, 0, 60);
-			//wait1Msec(1000);
-			moveTillUS(70, 0, 0, 60, true);
-			wait1Msec(400);
-			mecMove(70, 0, 0, 18);
-			wait1Msec(400);
-			while(!isUp){};
-			moveTillTouch(70, 90, 0, true);
-			wait1Msec(200);
-			endSequence();
-			StartTask(kickStand12); //begins kickstand knocking function
-			liftDown(); //brings lift down simultaneously
+		mecMove(80, 90, 0, 100);
+		turnMecGyro(-60, 17.0);
+		armOut();
+		mecMove(80, 0, 0, 50);
+		mecMove(-80, 0, 0, 50);
 		};
 		break;
 	case 3:{
-			startTask(timePos3);
-			mecMove(40, 0, 0, 18);
-			mecMove(60, 90, 0, 90);
-			while(!isUp){};
-			moveTillTouch(70, 90, 0, true);
-			wait1Msec(500);
-			endSequence();
-			StartTask(kickStand3); //begins kickstand knocking function
-			liftDown(); //brings lift down simultaneously
+		mecMove(80, 120, 0, 100);
+		mecMove(80, 0, 0, 50);
+		turnMecGyro(-60, 88.0);
+		armOut();
+		mecMove(80, 0, 0, 100);
+		mecMove(-80, 0, 0, 50);
 		}
 		break;
 	}
