@@ -152,11 +152,13 @@ task main()
 	servo[trigger] = 220;
 	servo[hood] = 60;//hood in place
 
-	liftPart();
-
-	mecMove(80, 90, 0, 3);//translate forward off wall
-	mecMove(80, 0, 0, 200);//shift left and disturb goals
-	mecMove(80, 120, 0, 150);//shift forward at angle into bottle neck
+	mecMove(80, 90, 0, 20);//translate forward off wall
+	mecMove(80, 0, 0, 135);//shift left and disturb goals
+	mecMove(-80,0, 0, 20);//shift right
+	wait1Msec(300);
+	mecMove(80, 55, 0, 55);//translate forward to scramble 60
+	wait1Msec(300);
+	mecMove(80, 120, 0, 200);//shift forward at angle into bottle neck
 
 
 	wait1Msec(15000);

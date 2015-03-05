@@ -213,7 +213,6 @@ void readUSavg(float &frontS, float &backS)
 	frontS=f/tcountF;
 	backS=b/tcountB;
 	DisplayCenteredTextLine(2, "%d, %d", tcountF, tcountB);
-	wait1Msec(1000);
 }
 
 
@@ -230,7 +229,6 @@ task main()
 		wait1Msec(200);
 	}
 	waitForStart();
-	StartTask(simuLift);
 	nxtDisplayCenteredTextLine(2, "%d", delay);
 	wait1Msec(1000*delay);
 	eraseDisplay();
@@ -238,7 +236,7 @@ task main()
 	//*************Initialization******************************
 	servo[hood] = 60;//hood in place
 	initUS();
-	servo[grabber] = 255;
+	servo[grabber] = 150;
 	servo[trigger] = 120;
 	int Cposition;
 
@@ -255,8 +253,6 @@ task main()
 
 	mecMove(70, 90, 0, 30);
 
-
-	StartTask(simuLift);
 
 	float frontS=0, backS=0;
 	readUSavg(frontS, backS);
@@ -289,28 +285,35 @@ task main()
 	switch (Cposition)
 	{
 	case 1:{
-		mecMove(80, 95, 0, 150);
+		mecMove(80, 105, 0, 97);
 		armOut();
-		mecMove(80, 0, 0, 50);
-		mecMove(-80, 0, 0, 50);
+		mecMove(80, 0, 0, 80);
+		mecMove(-80, 0, 0, 80);
 		armIn();
+		wait1Msec(300);
+		mecMove(80, -50, 0, 170);
 		};
 		break;
 	case 2:{
-		mecMove(80, 90, 0, 100);
-		turnMecGyro(-60, 17.0);
+		mecMove(80, 90, 0, 60);
+		turnMecGyro(-60, 55.0);
 		armOut();
-		mecMove(80, 0, 0, 50);
-		mecMove(-80, 0, 0, 50);
+		mecMove(-80, 0, 0, 100);
+		mecMove(80, 0, 0, 80);
+		armIn();
+		wait1Msec(300);
+		mecMove(80, 43, 0, 150);
 		};
 		break;
 	case 3:{
-		mecMove(80, 120, 0, 100);
-		mecMove(80, 0, 0, 50);
+		mecMove(80, 120, 0, 93);
 		turnMecGyro(-60, 88.0);
 		armOut();
+		mecMove(-80, 0, 0, 100);
 		mecMove(80, 0, 0, 100);
-		mecMove(-80, 0, 0, 50);
+		armIn();
+		wait1Msec(300);
+		mecMove(80, 55, 0, 150);
 		}
 		break;
 	}
