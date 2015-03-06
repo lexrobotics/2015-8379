@@ -173,10 +173,4 @@ task main()
 	mecMove(80, 40, 0, 150); //shift right and back into bottleneck
 
 	//---------------------------------------------------------------------------
-}task main()
-{
-
-}task main()
-{
-
 }

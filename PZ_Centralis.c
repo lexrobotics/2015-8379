@@ -443,7 +443,7 @@ task main()
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundDownwardTones);
 	}
-	else if(frontS > 70 && frontS < 90 ){//was 95 125
+	else if(frontS > 70 && frontS < 95 ){//was 95 125
 		Cposition = 3;
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundUpwardTones);

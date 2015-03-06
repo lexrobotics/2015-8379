@@ -48,10 +48,12 @@ static bool isUp = false;
 
 //----------------------------------plain movement stuffs---------------------------------------------------------------------------------
 void resetEncoders(){
+	wait1Msec(200);
 	nMotorEncoder[FrontLeft] = 0;
 	nMotorEncoder[FrontRight] = 0;
 	nMotorEncoder[BackLeft] = 0;
 	nMotorEncoder[BackRight] = 0;
+	wait1Msec(200);
 }
 
 void Stop()
@@ -94,7 +96,7 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 	{}
 	Stop();
 	resetEncoders();
-	wait1Msec(10);
+	//wait1Msec(10);
 }
 
 void turnMecGyro(int speed, float degrees) {
@@ -152,7 +154,7 @@ task main()
 	servo[trigger] = 220;
 	servo[hood] = 60;//hood in place
 
-	liftPart();
+//	liftPart();
 
 	mecMove(60, 0, 0, 170);//**1st length: move down the ramp
 	wait1Msec(250);
@@ -167,7 +169,7 @@ task main()
 	wait1Msec(100);
 	servo[hood] = 125;//hood in place
 
-	turnMecGyro(-60.0,160.0);//turn toward the PK
+	turnMecGyro(-60.0,155.0);//turn toward the PK
 	motor[Flipper] = -100.0; //start thrower motor
 	mecMove(80.0, 0, 0, 260.0);//**length: move pass the kick stand
 	wait1Msec(250);

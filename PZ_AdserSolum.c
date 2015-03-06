@@ -241,7 +241,14 @@ task main()
 	int Cposition;
 
 	//********Position detection*******************************************************************
-	/*DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
+
+	mecMove(70, 90, 0, 30);
+
+
+	float frontS=0, backS=0;
+	readUSavg(frontS, backS);
+
+/*	DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
 	wait1Msec(500);
 	eraseDisplay();
 	DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
@@ -251,27 +258,24 @@ task main()
 	wait1Msec(500);
 	eraseDisplay();*/
 
-	mecMove(70, 90, 0, 30);
-
-
-	float frontS=0, backS=0;
-	readUSavg(frontS, backS);
-
 	if (frontS > 240 && backS > 240) {
 		Cposition = 2;
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundDownwardTones);
 	}
-	else if(frontS > 70 && frontS < 90 ){//was 95 125
+	else if(frontS > 70 && frontS < 95 ){//was 95 125
 		Cposition = 3;
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundUpwardTones);
 	}
-	else{ //values between 128-134, but don't really need it
+	else{
 		Cposition = 1;
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundBeepBeep);
 	}
+
+	DisplayCenteredTextLine(2, "%d, %d", frontS,backS);
+	wait1Msec(2000);
 
 
 /*	while (true){
@@ -285,34 +289,33 @@ task main()
 	switch (Cposition)
 	{
 	case 1:{
-		mecMove(80, 105, 0, 97);
+		mecMove(80, 105, 0, 105);
 		armOut();
 		mecMove(80, 0, 0, 80);
-		mecMove(-80, 0, 0, 80);
+		mecMove(-80, -30, 0, 80);
 		armIn();
 		wait1Msec(300);
-		mecMove(80, -50, 0, 170);
+		mecMove(80, -70, 0, 150);
 		};
 		break;
 	case 2:{
-		mecMove(80, 90, 0, 60);
+		mecMove(80, 90, 0, 68);
 		turnMecGyro(-60, 55.0);
 		armOut();
 		mecMove(-80, 0, 0, 100);
-		mecMove(80, 0, 0, 80);
+		mecMove(80, 10, 0, 100);
 		armIn();
 		wait1Msec(300);
-		mecMove(80, 43, 0, 150);
+		mecMove(80, 20, 0, 130);
 		};
 		break;
 	case 3:{
-		mecMove(80, 120, 0, 93);
-		turnMecGyro(-60, 88.0);
+		mecMove(80, 120, 0, 90);
+		turnMecGyro(-60, 90.0);
 		armOut();
 		mecMove(-80, 0, 0, 100);
 		mecMove(80, 0, 0, 100);
 		armIn();
-		wait1Msec(300);
 		mecMove(80, 55, 0, 150);
 		}
 		break;

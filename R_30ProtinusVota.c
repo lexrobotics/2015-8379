@@ -171,7 +171,7 @@ task main()
 	wait1Msec(100);
 	servo[hood] = 125;//hood in place
 
-	turnMecGyro(-60.0,160.0);//turn toward the PK
+	turnMecGyro(-60.0,155.0);//turn toward the PK
 
 	motor[Flipper] = -100.0; //start thrower motor
 

@@ -177,17 +177,17 @@ task main()
 		}
 
 		if(frontback==1){
-			motor[FrontLeft] = (-100.0/256 * (-joystick.joy1_y1 - (joystick.joy1_x1 + joystick.joy1_x2) / 2));
-			motor[BackLeft] = (-100.0/256 * (-joystick.joy1_y1 + (joystick.joy1_x1 + joystick.joy1_x2) / 2));
-			motor[FrontRight] =  (-100.0/256 * (-joystick.joy1_y2 + (joystick.joy1_x1 + joystick.joy1_x2) / 2));
-			motor[BackRight] = (-100.0/256 * (-joystick.joy1_y2 - (joystick.joy1_x1 + joystick.joy1_x2) / 2));
+			motor[FrontLeft] = (-100.0/256 * (-joystick.joy1_y1 - (((joystick.joy1_x1 + joystick.joy1_x2) / 2) * 1)));
+			motor[BackLeft] = (-100.0/256 * (-joystick.joy1_y1 + (((joystick.joy1_x1 + joystick.joy1_x2) / 2) * 1)));
+			motor[FrontRight] =  (-100.0/256 * (-joystick.joy1_y2 + (((joystick.joy1_x1 + joystick.joy1_x2) / 2) * 1)));
+			motor[BackRight] = (-100.0/256 * (-joystick.joy1_y2 - (((joystick.joy1_x1 + joystick.joy1_x2) / 2) * 1)));
 		}
 
 		else{
-			motor[FrontRight] = frontback * (-100.0/256 * (-joystick.joy1_y1 - frontback * (joystick.joy1_x1 + joystick.joy1_x2) / 2));
-			motor[BackRight] = frontback * (-100.0/256 * (-joystick.joy1_y1 + frontback * (joystick.joy1_x1 + joystick.joy1_x2) / 2));
-			motor[FrontLeft] = frontback * (-100.0/256 * (-joystick.joy1_y2 + frontback * (joystick.joy1_x1 + joystick.joy1_x2) / 2));
-			motor[BackLeft] = frontback * (-100.0/256 * (-joystick.joy1_y2 - frontback * (joystick.joy1_x1 + joystick.joy1_x2) / 2));
+			motor[FrontRight] = frontback * (-100.0/256 * (-joystick.joy1_y1 - frontback * (((joystick.joy1_x1 + joystick.joy1_x2) / 2) * 1)));
+			motor[BackRight] = frontback * (-100.0/256 * (-joystick.joy1_y1 + frontback * (((joystick.joy1_x1 + joystick.joy1_x2) / 2) * 1)));
+			motor[FrontLeft] = frontback * (-100.0/256 * (-joystick.joy1_y2 + frontback * (((joystick.joy1_x1 + joystick.joy1_x2) / 2) * 1)));
+			motor[BackLeft] = frontback * (-100.0/256 * (-joystick.joy1_y2 - frontback * (((joystick.joy1_x1 + joystick.joy1_x2) / 2) * 1)));
 		}
 //=================================================Thrower======================================================
 		if(joy1Btn(1))	{startTask(throwerStop);}
