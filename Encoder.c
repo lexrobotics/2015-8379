@@ -1,7 +1,8 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
+#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     gyro,           sensorI2CCustom)
 #pragma config(Sensor, S3,     USfront,        sensorSONAR)
-#pragma config(Sensor, S4,     HTSMUX,         sensorLowSpeed)
+#pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
 #pragma config(Motor,  motorA,          arm,           tmotorNXT, openLoop, encoder)
 #pragma config(Motor,  motorB,           ,             tmotorNXT, openLoop, encoder)
 #pragma config(Motor,  motorC,           ,             tmotorNXT, openLoop, encoder)
@@ -25,7 +26,7 @@
 *status: post league championship fix-ups
 */
 
-#include "JoystickDriver.c"
+//#include "JoystickDriver.c"
 #include "include\hitechnic-irseeker-v2.h"
 #include "include\hitechnic-sensormux.h"
 #include "include\lego-touch.h"
@@ -72,7 +73,7 @@ void resetEncoders(){
 	nMotorEncoder[FrontRight] = 0;
 	nMotorEncoder[BackLeft] = 0;
 	nMotorEncoder[BackRight] = 0;
-	wait1Msec(300);
+	wait1Msec(50);
 }
 
 void Stop()
@@ -112,23 +113,13 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 	float scaled = abs(encoderScale* (distance * min / wheelCircumference));
 
 	mecJustMove(speed, degrees, speedRotation);
-	int dataCount1=0;
-		int dataCount2=1;
-			int dataCount3=2;
-				int dataCount4=3;
+
 	while((abs(nMotorEncoder[FrontLeft])<scaled) && (abs(nMotorEncoder[FrontRight])<scaled) && (abs(nMotorEncoder[BackLeft])< scaled) && (abs(nMotorEncoder[BackRight])< scaled))
 	{
-		AddToDatalog(dataCount1, nMotorEncoder[FrontRight]);
-		dataCount1+=5;
-		AddToDatalog(dataCount2, nMotorEncoder[FrontLeft]);
-		dataCount2+=5;
-		AddToDatalog(dataCount3, nMotorEncoder[BackRight]);
-		dataCount3+=5;
-		AddToDatalog(dataCount4, nMotorEncoder[BackLeft]);
-		dataCount4+=5;
-		AddToDatalog(dataCount4+1, 99999);
+		wait1Msec(50);
+		writeDebugStreamLine("%d, %d, %d, %d ", (nMotorEncoder[FrontLeft]), (nMotorEncoder[FrontRight]), (nMotorEncoder[BackLeft]), (nMotorEncoder[BackRight]));
 	}
-		//DisplayCenteredTextLine(2, "%d, %d, %d, %d",(int)nMotorEncoder[FrontRight]/100,(int)nMotorEncoder[BackRight]/100, (int)nMotorEncoder[FrontLeft]/100, (int)nMotorEncoder[BackLeft]/100);}
+	//DisplayCenteredTextLine(2, "%d, %d, %d, %d",(int)nMotorEncoder[FrontRight]/100,(int)nMotorEncoder[BackRight]/100, (int)nMotorEncoder[FrontLeft]/100, (int)nMotorEncoder[BackLeft]/100);}
 	eraseDisplay();
 	Stop();
 	resetEncoders();
@@ -238,7 +229,7 @@ void readUSavg(float &frontS, float &backS)
 //============================================================================================
 task main()
 {
-	int delay=0;
+	/*int delay=0;
 	while(nNxtButtonPressed!=3){
 		if(nNxtButtonPressed==1) delay++;
 		else if(nNxtButtonPressed==2 && delay>0) delay--;
@@ -248,8 +239,16 @@ task main()
 	waitForStart();
 	nxtDisplayCenteredTextLine(2, "%d", delay);
 	wait1Msec(1000*delay);
-	eraseDisplay();
+	eraseDisplay();*/
 
+	while(true)
+	{
+		displayCenteredTextLine(2, "%d", nMotorEncoder[FrontLeft] );
+			displayCenteredTextLine(3, "%d", nMotorEncoder[FrontRight] );
+				displayCenteredTextLine(4, "%d", nMotorEncoder[BackLeft] );
+					displayCenteredTextLine(5, "%d", nMotorEncoder[BackRight] );
+	}
+/*
 	//*************Initialization******************************
 	servo[hood] = 60;//hood in place
 	initUS();
@@ -258,88 +257,14 @@ task main()
 	int Cposition;
 
 	//********Position detection*******************************************************************
-
-	mecMove(70, 90, 0, 30);
-
-
-	float frontS=0, backS=0;
-	readUSavg(frontS, backS);
-
-/*	DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
-	wait1Msec(500);
-	eraseDisplay();
-	DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
-	wait1Msec(500);
-	eraseDisplay();
-	DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
-	wait1Msec(500);
-	eraseDisplay();*/
-
-	if (frontS > 240 && backS > 240) {
-		Cposition = 2;
-		DisplayCenteredTextLine(2, "%d", Cposition);
-		playSound(soundDownwardTones);
+	for(int i = 0; i<5; i++){
+		//writeDebugStreamLine("************************************************************");
+		mecMove(78, 0, 0, 80);
+		//mecMove(80, 90, 0, 30);
+		//mecMove(80, 135, 0, 30);
 	}
-	else if(frontS > 70 && frontS < 95 ){//was 95 125
-		Cposition = 3;
-		DisplayCenteredTextLine(2, "%d", Cposition);
-		playSound(soundUpwardTones);
-	}
-	else{
-		Cposition = 1;
-		DisplayCenteredTextLine(2, "%d", Cposition);
-		playSound(soundBeepBeep);
-	}
-
-//	DisplayCenteredTextLine(2, "%d, %d", frontS,backS);
-	wait1Msec(2000);
-
-
-/*	while (true){
-	DisplayCenteredTextLine(2, "%d, %d", SensorValue(USfront), USreadDist(USback));
-	//DisplayCenteredTextLine(2, "%d, %d", frontS, backS);
-	}*/
-
-	//DisplayCenteredTextLine(2, "%d, %d", frontS, backS);
-
-
-	switch (Cposition)
-	{
-	case 1:{
-		mecMove(90, 105, 0, 100);
-		armOut();
-		mecMove(80, 0, 0, 80);
-		mecMove(-80, 0, 0, 80);
-		armIn();
-		wait1Msec(300);
-		mecMove(80, -90, 0, 150);
-		mecMove(80, 90, 0, 30);
-		mecMove(80, 0, 0, 50);
-		};
-		break;
-	case 2:{
-		mecMove(80, 90, 0, 68);
-		turnMecGyro(-60, 55.0);
-		armOut();
-		mecMove(-80, 0, 0, 100);
-		mecMove(80, 0, 0, 100);
-		armIn();
-		wait1Msec(300);
-		mecMove(80, 0, 0, 130);
-		};
-		break;
-	case 3:{
-		mecMove(80, 135, 0, 90);
-		turnMecGyro(-60, 90.0);
-		armOut();
-		mecMove(-80, 0, 0, 100);
-		mecMove(80, 0, 0, 100);
-		armIn();
-		mecMove(80, 45, 0, 150);
-		}
-		break;
-	}
-
-
-	//---------------------------------------------------------------------------
+	*/
 }
+
+
+//---------------------------------------------------------------------------
