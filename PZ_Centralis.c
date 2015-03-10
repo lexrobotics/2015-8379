@@ -72,6 +72,7 @@ void resetEncoders(){
 	nMotorEncoder[FrontRight] = 0;
 	nMotorEncoder[BackLeft] = 0;
 	nMotorEncoder[BackRight] = 0;
+	wait1Msec(50);
 }
 
 void Stop()
@@ -111,8 +112,13 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 
 	float scaled = abs(encoderScale* (distance * min / wheelCircumference));
 	mecJustMove(speed, degrees, speedRotation);
+
+	writeDebugStreamLine("*************************");
+
 	while((abs(nMotorEncoder[FrontLeft])<scaled) && (abs(nMotorEncoder[FrontRight])<scaled) && (abs(nMotorEncoder[BackLeft])< scaled) && (abs(nMotorEncoder[BackRight])< scaled))
-	{}
+	{
+		writeDebugStreamLine("%d, %d, %d, %d ", (nMotorEncoder[FrontLeft]), (nMotorEncoder[FrontRight]), (nMotorEncoder[BackLeft]), (nMotorEncoder[BackRight]));
+	}
 	Stop();
 	resetEncoders();
 	wait1Msec(10);
@@ -250,7 +256,8 @@ void kickstand12()
 	mecMove(80,180, 0, 44);
 	turnMecGyro(50, 275);
 	armOut();
-	mecMove(80, 180, 0, 120);
+	mecMove(80, 180, 0, 90);
+	mecMove(-80, 180, 0, 120);
 	armIn();
 }
 
@@ -259,7 +266,8 @@ void kickstand3()
 	mecMove(80,180, 0, 41);
 	turnMecGyro(50, 275);
 	armOut();
-	mecMove(80, 180, 0, 120);
+	mecMove(80, 180, 0, 90);
+	mecMove(-80, 180, 0, 120);
 	armIn();
 }
 
@@ -273,7 +281,7 @@ void liftUp()
 	motor[Lift]=0;*/
 	nMotorEncoder[Lift]=0;
 	motor[Lift]=-100;
-	while(abs(nMotorEncoder[Lift])<encoderScale*12.5) //up ratio -38/(255-127) = -.297
+	while(abs(nMotorEncoder[Lift])<encoderScale*9) //up ratio -38/(255-127) = -.297
 	{
 	}
 	motor[Lift]=0;
@@ -292,7 +300,7 @@ void liftDown()
 	nMotorEncoder[Lift]=0;
 	motor[Lift]=50;
 //	while(abs(nMotorEncoder[Lift])<encoderScale*9.0) //!!REMBER TO CHANGE TO THIS!!!
-	while(abs(nMotorEncoder[Lift])<encoderScale*12.5)
+	while(abs(nMotorEncoder[Lift])<encoderScale*10.5)
 	{
 	}
 	motor[Lift]=0;
@@ -416,7 +424,7 @@ task main()
 	servo[hood] = 60;//hood in place
 	initUS();
 	servo[grabber] = 255;
-	servo[trigger] = 120;
+	servo[trigger] = 182;
 	int Cposition;
 
 	//********Position detection*******************************************************************
@@ -453,9 +461,6 @@ task main()
 		DisplayCenteredTextLine(2, "%d", Cposition);
 		playSound(soundBeepBeep);
 	}
-
-
-	mecMove(-50, 90, 0, 33);
 
 /*	while (true){
 	DisplayCenteredTextLine(2, "%d, %d", SensorValue(USfront), USreadDist(USback));
@@ -507,8 +512,8 @@ task main()
 		break;
 	case 3:{
 			startTask(timePos3);
-			mecMove(40, 0, 0, 18);
-			mecMove(60, 90, 0, 90);
+			mecMove(70, 0, 0, 18);
+			mecMove(70, 90, 0, 60);
 			while(!isUp){};
 			moveTillTouch(70, 90, 0, true);
 			wait1Msec(500);

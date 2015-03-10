@@ -310,20 +310,22 @@ task main()
 		break;
 	case 2:{
 		mecMove(80, 90, 0, 68);
-		turnMecGyro(-60, 55.0);
+		turnMecGyro(-60, 50.0);
 		armOut();
 		mecMove(-80, 0, 0, 100);
 		mecMove(80, 0, 0, 100);
 		armIn();
 		//wait1Msec(300);
-		mecMove(80, 0, 0, 130);
+		mecMove(80, 0, 0, 110);
+		mecMove(-80, 0, 0, 3);
+		mecMove(80, 90, 0, 50);
 		};
 		break;
 	case 3:{
 		//mecMove(80, 135, 0, 70); //single diagonal move
 		mecMove(80, 90, 0, 80);
-		mecMove(-80, 0, 0, 35);
-		turnMecGyro(-60, 90.0);
+		mecMove(-60, 0, 0, 30);
+		turnMecGyro(-60, 82.0);
 		armOut();
 		mecMove(-80, 0, 0, 100);
 		mecMove(80, 0, 0, 100);
