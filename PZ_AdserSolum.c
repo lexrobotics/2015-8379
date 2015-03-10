@@ -72,7 +72,7 @@ void resetEncoders(){
 	nMotorEncoder[FrontRight] = 0;
 	nMotorEncoder[BackLeft] = 0;
 	nMotorEncoder[BackRight] = 0;
-	wait1Msec(300);
+	wait1Msec(50);
 }
 
 void Stop()
@@ -112,21 +112,10 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 	float scaled = abs(encoderScale* (distance * min / wheelCircumference));
 
 	mecJustMove(speed, degrees, speedRotation);
-	int dataCount1=0;
-		int dataCount2=1;
-			int dataCount3=2;
-				int dataCount4=3;
+	writeDebugStreamLine("*************************");
 	while((abs(nMotorEncoder[FrontLeft])<scaled) && (abs(nMotorEncoder[FrontRight])<scaled) && (abs(nMotorEncoder[BackLeft])< scaled) && (abs(nMotorEncoder[BackRight])< scaled))
 	{
-		AddToDatalog(dataCount1, nMotorEncoder[FrontRight]);
-		dataCount1+=5;
-		AddToDatalog(dataCount2, nMotorEncoder[FrontLeft]);
-		dataCount2+=5;
-		AddToDatalog(dataCount3, nMotorEncoder[BackRight]);
-		dataCount3+=5;
-		AddToDatalog(dataCount4, nMotorEncoder[BackLeft]);
-		dataCount4+=5;
-		AddToDatalog(dataCount4+1, 99999);
+		writeDebugStreamLine("%d, %d, %d, %d ", (nMotorEncoder[FrontLeft]), (nMotorEncoder[FrontRight]), (nMotorEncoder[BackLeft]), (nMotorEncoder[BackRight]));
 	}
 		//DisplayCenteredTextLine(2, "%d, %d, %d, %d",(int)nMotorEncoder[FrontRight]/100,(int)nMotorEncoder[BackRight]/100, (int)nMotorEncoder[FrontLeft]/100, (int)nMotorEncoder[BackLeft]/100);}
 	eraseDisplay();
@@ -250,6 +239,8 @@ task main()
 	wait1Msec(1000*delay);
 	eraseDisplay();
 
+	clearDebugStream();
+
 	//*************Initialization******************************
 	servo[hood] = 60;//hood in place
 	initUS();
@@ -300,20 +291,20 @@ task main()
 	//DisplayCenteredTextLine(2, "%d, %d", frontS, backS);
 	}*/
 
-	//DisplayCenteredTextLine(2, "%d, %d", frontS, backS);
+	DisplayCenteredTextLine(2, "%d, %d", frontS, backS);
 
 
 	switch (Cposition)
 	{
 	case 1:{
-		mecMove(90, 105, 0, 100);
+		mecMove(80, 90, 0, 90);// angle should be 105, 98cm
 		armOut();
 		mecMove(80, 0, 0, 80);
 		mecMove(-80, 0, 0, 80);
 		armIn();
-		wait1Msec(300);
+		//wait1Msec(300);
 		mecMove(80, -90, 0, 150);
-		mecMove(80, 90, 0, 30);
+		mecMove(80, 90, 0, 3);
 		mecMove(80, 0, 0, 50);
 		};
 		break;
@@ -324,18 +315,23 @@ task main()
 		mecMove(-80, 0, 0, 100);
 		mecMove(80, 0, 0, 100);
 		armIn();
-		wait1Msec(300);
+		//wait1Msec(300);
 		mecMove(80, 0, 0, 130);
 		};
 		break;
 	case 3:{
-		mecMove(80, 135, 0, 90);
+		//mecMove(80, 135, 0, 70); //single diagonal move
+		mecMove(80, 90, 0, 80);
+		mecMove(-80, 0, 0, 35);
 		turnMecGyro(-60, 90.0);
 		armOut();
 		mecMove(-80, 0, 0, 100);
 		mecMove(80, 0, 0, 100);
 		armIn();
+		//wait1Msec(300);
 		mecMove(80, 45, 0, 150);
+		mecMove(-80, 0, 0, 3);
+		mecMove(80, 90, 0, 50);
 		}
 		break;
 	}
