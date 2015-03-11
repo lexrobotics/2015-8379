@@ -407,6 +407,14 @@ task timePos3()
 //============================================================================================
 task main()
 {
+		//*************Initialization******************************
+	servo[hood] = 60;//hood in place
+	initUS();
+	servo[grabber] = 255;
+	servo[trigger] = 182;
+	int Cposition;
+
+
 	int delay=0;
 	while(nNxtButtonPressed!=3){
 		if(nNxtButtonPressed==1) delay++;
@@ -420,12 +428,7 @@ task main()
 	wait1Msec(1000*delay);
 	eraseDisplay();
 
-	//*************Initialization******************************
-	servo[hood] = 60;//hood in place
-	initUS();
-	servo[grabber] = 255;
-	servo[trigger] = 182;
-	int Cposition;
+
 
 	//********Position detection*******************************************************************
 	/*DisplayCenteredTextLine(2, "%d, %d", USreadDist(USfront),SensorValue(USback));
