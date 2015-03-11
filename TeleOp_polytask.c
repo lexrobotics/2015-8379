@@ -35,6 +35,7 @@
 	static float encoderScale=1120.0;
 	static int pos1 = 150;
 	static int pos4 = 60;
+	static int pos5 = 182;
 	static int frontback = 1;
 
 //===========================Thrower====================================
@@ -151,9 +152,9 @@ task flipperFront()
 //--------------------------------------------------------------------------------------
 task main()
 {
-	servo[grabber]=pos1;
+	servo[grabber] = pos1;
 	servo[hood] = pos4;
-	//initial lift6
+	servo[trigger] = pos5;
 	waitForStart();
 
 	while(true){
