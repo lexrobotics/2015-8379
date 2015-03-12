@@ -3,5 +3,5 @@ Number of Failed Runs
 Number of Total Runs
 
 AdserSolum
-3
-18
+4
+24

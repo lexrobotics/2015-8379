@@ -110,9 +110,13 @@ task main()
 
 	initUS();
 	servo[grabber] = 255;
-	servo[trigger] = 220;
-	servo[hood] = 60;//hood in place
+	servo[hood] = 60;
+	servo[trigger] = 182;
+	servo[holder] = 127;
 
-	mecMove(60, 0, 0, 170.0);
+	mecJustMove(60, 0, 0);
+	wait1Msec(2000);
+	Stop();
+	//mecMove(60, 0, 0, 170.0);
 
 }

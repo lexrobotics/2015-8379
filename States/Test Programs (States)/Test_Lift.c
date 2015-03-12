@@ -46,5 +46,11 @@ static bool isUp = false;
 
 task main()
 {
-
+		nMotorEncoder[Lift]=0;
+	motor[Lift]=-50;
+//	while(abs(nMotorEncoder[Lift])<encoderScale*9.0) //!!REMBER TO CHANGE TO THIS!!!
+	while(abs(nMotorEncoder[Lift])<encoderScale*8.5)
+	{
+	}
+	motor[Lift]=0;
 }
