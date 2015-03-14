@@ -61,7 +61,8 @@ void armOut(){
 }
 
 void armIn(){
-	time1[T3]=0;
+	//time1[T3]=0;
+	ClearTimer(T3);
 	while((float)time1[T3] < 2000){
 		motor[arm] = 50;
 	}
@@ -261,22 +262,22 @@ bool alignRecursiveT()//true = we are all set, false = nope not even touching no
 
 void kickstand1()
 {
-	mecMove(70,180, 0, 43);
+	mecMove(70,180, 0, 40);
 	turnMecGyro(-60, 82.0);
-	mecMove(-78, 0, 0, 20);
+	mecMove(-78, 0, 0, 25);
 	armOut();
-	mecMove(-78, 0, 0, 100);
+	mecMove(-78, 0, 0, 80);
 	mecMove(78, 0, 0, 100);
 	armIn();
 }
 
 void kickstand2()
 {
-	mecMove(70,180, 0, 43);
+	mecMove(70,180, 0, 40);
 	turnMecGyro(-60, 82.0);
-	mecMove(-78, 0, 0, 20);
+	mecMove(-78, 0, 0, 25);
 	armOut();
-	mecMove(-78, 0, 0, 100);
+	mecMove(-78, 0, 0, 80);
 	mecMove(78, 0, 0, 100);
 	armIn();
 }
@@ -285,9 +286,9 @@ void kickstand3()
 {
 	mecMove(70,180, 0, 43);
 	turnMecGyro(-60, 82.0);
-	mecMove(-78, 0, 0, 20);
+	mecMove(-78, 0, 0, 25);
 	armOut();
-	mecMove(-78, 0, 0, 100);
+	mecMove(-78, 0, 0, 80);
 	mecMove(78, 0, 0, 100);
 	armIn();
 }
@@ -302,14 +303,14 @@ void liftUp()
 	motor[Lift]=0;*/
 	nMotorEncoder[Lift]=0;
 	motor[Lift]=-100;
-	while(abs(nMotorEncoder[Lift])<encoderScale*11.2) //up ratio -38/(255-127) = -.297
+	while(abs(nMotorEncoder[Lift])<encoderScale*10.7) //up ratio -38/(255-127) = -.297
 	{
 	}
 	motor[Lift]=0;
 
 	time1[T4]=0;
 	motor[Lift]=-100;
-	while(time1[T4]<500){
+	while(time1[T4]<460){
 	}
 	motor[Lift]=0;
 	isUp = true;
@@ -321,7 +322,7 @@ void liftDown()
 	nMotorEncoder[Lift]=0;
 	motor[Lift]=50;
 	//	while(abs(nMotorEncoder[Lift])<encoderScale*9.0) //!!REMBER TO CHANGE TO THIS!!!
-	while(abs(nMotorEncoder[Lift])<encoderScale*10.5)
+	while(abs(nMotorEncoder[Lift])<encoderScale*11.0)
 	{
 	}
 	motor[Lift]=0;
@@ -378,9 +379,9 @@ void endSequence() //scores balls, lowers lift, and knocks kickstand
 {
 	alignRecursiveT(); //aligns robot so both touch sensors hit
 	wait1Msec(500);
-	mecMove(-60, 0, 0, 11); //shift right to align lift/ramp with center goal
+	mecMove(-55, 0, 0, 10.8); //shift right to align lift/ramp with center goal
 	wait1Msec(500);
-	mecMove(60, 270, 0, 4); //shift back
+	mecMove(60, 270, 0, 3); //shift back
 	wait1Msec(500);
 	ballRelease(); //release balls with servo
 	wait1Msec(2000);
@@ -529,8 +530,8 @@ task main()
 			mecMove(70, 0, 0, 60);//was speed 70
 			wait1Msec(500);
 			moveTillUS(70, 0, 0, 60, true);
-			wait1Msec(400);
-			//mecMove(70, 0, 0, 18);
+			//wait1Msec(400);
+			//mecMove(70, 0, 0, 3);
 			//wait1Msec(400);
 			while(!isUp){};
 			moveTillTouch(70, 90, 0, true);

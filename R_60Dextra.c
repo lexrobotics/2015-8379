@@ -44,6 +44,7 @@ static float wheelRadius=((9.7)/2);
 static float wheelCircumference=PI*2*wheelRadius;
 static int counter = 0;
 static bool isUp = false;
+int grabberDelayTime;
 
 
 //----------------------------------plain movement stuffs---------------------------------------------------------------------------------
@@ -131,7 +132,20 @@ void liftPart()
 	}
 	motor[Lift]=0;
 }
+
 //============================================================================================
+task grabbersDownDelay()
+{
+	wait1Msec(1000*grabberDelayTime);
+	servo[grabber] = 150;
+}
+
+task grabbersUpDelay()
+{
+	wait1Msec(1000*grabberDelayTime);
+	servo[grabber] = 255;
+}
+
 task main()
 {
 	int delay=0;
@@ -152,27 +166,33 @@ task main()
 	servo[trigger] = 220;
 	servo[hood] = 60;//hood in place
 
-	liftPart();
+	grabberDelayTime = 5;
+	startTask(grabbersDownDelay);
+	mecJustMove(60, 0, 0);
+	wait1Msec(5500);
+	Stop();
+	//mecMove(78.0, 90, 0, 4.0);
+	//mecMove(-78.0, 90, 0, 3.0);
 
-	mecMove(80, 0, 0, 250);//**1st length: move down the ramp and into 60cm goal
-	wait1Msec(250);
-	servo[grabber]=150;//grab 60cm rolling goal
+	//wait1Msec(250);
+	//servo[grabber]=150;//grab 60cm rolling goal
 	wait1Msec(500);
-	mecMove(-80, 0, 0, 10.0);//back a bit
-	wait1Msec(100);
-	mecMove(-80, 110, 0,  10.0);//strafe back left a bit
-	turnMecGyro(-60.0,160.0);//turn toward the PZ
+	mecMove(-60, 0, 0, 10.0);//back a bit
+	//wait1Msec(100);
+	mecMove(78, 270, 0, 90.0);//strafe back left a bit
+	//turnMecGyro(-60.0,160.0);//turn toward the PZ
 
 
-	mecMove(80.0, 0, 0, 260.0);//**length: move pass the kick stand
+	mecMove(-78.0, 0, 0, 220.0);//**length: move pass the kick stand
 	wait1Msec(250);
-	mecMove(80.0, 90, 0, 80.0);//**right strafe significantly pz
+	turnMecGyro(-60.0,180.0)//turn inside pz
 	wait1Msec(250);
+	grabberDelayTime = 2;
+	startTask(grabbersUpDelay);
+	mecMove(78.0, 90, 0, 200.0);//**right strafe significantly pz
+
 
 	wait1Msec(15000);
 
 	//---------------------------------------------------------------------------
-}task main()
-{
-
 }
