@@ -153,7 +153,7 @@ task main()
 	servo[hood] = 60;//hood in place
 
 	mecMove(100, 90, 0, 70);//translate forward off wall
-	mecMove(100, 0, 0, 100);//shift left and disturb goals was 135cm
+	mecMove(100, 0, 0, 110);//shift left and disturb goals was 135cm
 
 
 	wait1Msec(15000);

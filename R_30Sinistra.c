@@ -205,11 +205,12 @@ task main()
 
 	//turnMecGyro(-60.0,155.0);//turn toward the PK
 	motor[Flipper] = -100.0; //start thrower motor
-	mecMove(-78.0, 0, 0, 240.0);//**length: move pass the kick stand
+	mecMove(-78.0, 0, 0, 242.0);//**length: move pass the kick stand
 	wait1Msec(250);
 	mecMove(-78.0, 90, 0, 30.0);//**right strafe significantly pz
 	wait1Msec(250);
 	turnMecGyro(-60.0,160.0)//turn inside pz
+	mecMove(78.0, 90, 0, 10.0);
 
 	wait1Msec(15000);
 	//---------------------------------------------------------------------------

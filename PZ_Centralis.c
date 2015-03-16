@@ -526,12 +526,12 @@ task main()
 	case 2:{
 			startTask(timePos2);
 			mecMove(78, 90, 0, 50);
-			turnMecGyro(60, 17.0);
+			turnMecGyro(60, 17);
 			mecMove(70, 0, 0, 60);//was speed 70
 			wait1Msec(500);
 			moveTillUS(70, 0, 0, 60, true);
 			//wait1Msec(400);
-			//mecMove(70, 0, 0, 3);
+			mecMove(70, 0, 0, 3);
 			//wait1Msec(400);
 			while(!isUp){};
 			moveTillTouch(70, 90, 0, true);

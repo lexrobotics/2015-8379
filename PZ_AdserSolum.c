@@ -333,7 +333,7 @@ task main()
 	case 3:{
 			//mecMove(80, 135, 0, 70); //single diagonal move
 			mecMove(78, 90, 0, 80);
-			mecMove(-60, 0, 0, 30);
+			mecMove(-60, 0, 0, 25);
 			turnMecGyro(-60, 82.0);
 			armOut();
 			mecMove(-78, 0, 0, 100);

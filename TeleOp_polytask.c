@@ -132,11 +132,12 @@ task hoodOut()
 
 task hoodIn()
 {
-	servo[holder] = 255; //rotate forward
+	servo[hood] = 45;
 	wait1Msec(50);
+	servo[holder] = 255; //rotate forward
+	wait1Msec(100);
 	servo[holder] = 127;
 	//	wait1Msec(1);
-	servo[hood] = 55;
 }
 
 
@@ -158,7 +159,7 @@ task main()
 {
 
 	servo[grabber] = 255;
-	servo[hood] = 60;
+	servo[hood] = 50;
 	servo[trigger] = 182;
 	servo[holder] = 127;
 	waitForStart();
