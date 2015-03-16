@@ -32,8 +32,8 @@
 //const tMUXSensor TOUCHFront = msensor_S4_3;
 //const tMUXSensor TOUCHBack = msensor_S4_4;
 
-	static float encoderScale=1120.0;
-	static int frontback = 1;
+static float encoderScale=1120.0;
+static int frontback = 1;
 
 //===========================Thrower====================================
 task throwerStop()
@@ -91,9 +91,9 @@ task liftUp()
 {
 	nMotorEncoder[Lift]=0;
 	motor[Lift]=-100;
-//ervo[liftRelease] = 143; //up ratio of -30/(143-127) =-1.875
+	//ervo[liftRelease] = 143; //up ratio of -30/(143-127) =-1.875
 	while(abs(nMotorEncoder[Lift])<encoderScale)
-//hile(joy2Btn(6))
+		//hile(joy2Btn(6))
 	{
 		wait1Msec(10);
 	}
@@ -105,9 +105,9 @@ task liftDown()
 {
 	nMotorEncoder[Lift]=0;
 	motor[Lift]=50;
-//	servo[liftRelease] = 60;
+	//	servo[liftRelease] = 60;
 	while(abs(nMotorEncoder[Lift])<encoderScale)
-//	while(joy2Btn(8))
+		//	while(joy2Btn(8))
 	{
 		wait1Msec(10);
 	}
@@ -123,29 +123,23 @@ task triggerDown()
 //========================Hood===========================================================
 task hoodOut()
 {
-//	wait1Msec(1);
+	servo[holder] = 100;
+	wait1Msec(50);
+	servo[holder] = 127;
+	//	wait1Msec(1);
 	servo[hood] = 125;
 }
 
 task hoodIn()
 {
-//	wait1Msec(1);
+	servo[holder] = 255; //rotate forward
+	wait1Msec(50);
+	servo[holder] = 127;
+	//	wait1Msec(1);
 	servo[hood] = 55;
 }
 
-task hoodRelease()
-{
-	servo[holder] = 100;
-	wait1Msec(50);
-	servo[holder] = 127;
-}
 
-task hoodHold()
-{
-servo[holder] = 255; //rotate forward
-wait1Msec(50);
-servo[holder] = 127;
-}
 
 
 //=========================Change Direction=============================================
@@ -171,7 +165,7 @@ task main()
 
 
 	while(true){
-//===================================================driving stuffs======================================
+		//===================================================driving stuffs======================================
 		getJoystickSettings(joystick);
 		if(abs(joystick.joy1_y1)<10)
 		{
@@ -203,30 +197,28 @@ task main()
 			motor[FrontLeft] = frontback * (-100.0/256 * (-joystick.joy1_y2 + frontback * (((joystick.joy1_x1 + joystick.joy1_x2) / 2) * 1.2)));
 			motor[BackLeft] = frontback * (-100.0/256 * (-joystick.joy1_y2 - frontback * (((joystick.joy1_x1 + joystick.joy1_x2) / 2) * 1.2)));
 		}
-//=================================================Thrower======================================================
+		//=================================================Thrower======================================================
 		if(joy1Btn(1))	{startTask(throwerStop);}
 		if(joy1Btn(6))	{startTask(throwerForward);}
 		if(joy1Btn(8))	{startTask(throwerReverse);}
-//=================================================kickstand arm====================================================
+		//=================================================kickstand arm====================================================
 		if (joy1Btn(5))	{startTask(kArmOut);}
 		if (joy1Btn(7))	{startTask(kArmIn);}
-//=================================================change direction====================================================
+		//=================================================change direction====================================================
 		if (joy1Btn(2))	{startTask(grabberFront);}
 		if (joy1Btn(4))	{startTask(flipperFront);}
-//=================================================trigger====================================================
-		if(joy1Btn(3)) 	{startTask(triggerDown);}
-//-------------------------------------------------Joystick 2 ------------------------------------------------------
-//==================================================Grabber=======================================================
+
+		//-------------------------------------------------Joystick 2 ------------------------------------------------------
+		//==================================================Grabber=======================================================
 		if(joy2Btn(4))	{startTask(grabberUp);}
 		if(joy2Btn(2))	{startTask(grabberDown);}
-//==================================================Hood==============================================================
+		//==================================================Hood==============================================================
 		if(joy2Btn(5))	{startTask(hoodIn);}
 		if(joy2Btn(7))	{startTask(hoodOut);}
-		if(joy2Btn(3)) 	{startTask(hoodRelease);}
-		if(joy2Btn(1))	{startTask(hoodHold);}
-//==================================================Lift======================================================================================
+		//==================================================Lift======================================================================================
 		if(joy2Btn(6))	{startTask(liftUp);}
 		if(joy2Btn(8))	{startTask(liftDown);}
+		if(joy1Btn(3)) 	{startTask(triggerDown);}
 
 		wait1Msec(10);
 	}
