@@ -109,7 +109,7 @@ void turnMecGyro(int speed, float degrees) {
 	mecJustMove (0, 0, speed);//+ = right   - = turn left
 	while (abs(currHeading) < abs(degrees)) {
 		time1[T1] = 0;
-		curRate = HTGYROreadRot(gyro);
+	curRate = HTGYROreadRot(gyro);
 		if (abs(curRate) > 3) {
 			currHeading += curRate * delTime; //Approximates the next heading by adding the rate*time.
 			if (currHeading > 360) currHeading -= 360;
