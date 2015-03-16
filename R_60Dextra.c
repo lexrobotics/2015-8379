@@ -184,12 +184,12 @@ task main()
 
 
 	mecMove(-78.0, 0, 0, 220.0);//**length: move pass the kick stand
-	wait1Msec(250);
+	mecMove(-78.0, 90, 0, 30.0);
 	turnMecGyro(-60.0,180.0)//turn inside pz
 	wait1Msec(250);
-	grabberDelayTime = 2;
+	grabberDelayTime = 1.6;
 	startTask(grabbersUpDelay);
-	mecMove(78.0, 90, 0, 200.0);//**right strafe significantly pz
+	mecMove(78.0, 90, 0, 150.0);//**right strafe significantly pz
 
 
 	wait1Msec(15000);

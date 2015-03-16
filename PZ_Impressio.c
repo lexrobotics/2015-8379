@@ -148,40 +148,14 @@ task main()
 
 	//*************Initialization******************************
 
-
 	servo[grabber] = 255;
 	servo[trigger] = 220;
 	servo[hood] = 60;//hood in place
 
-	liftPart();
+	mecMove(100, 90, 0, 70);//translate forward off wall
+	mecMove(100, 0, 0, 100);//shift left and disturb goals was 135cm
 
-	mecMove(60, 0, 0, 170);//**1st length: move down the ramp
-	wait1Msec(250);
-	mecMove(-80, 90, 0,  45.0);//strafe left
-	//turnMecGyro(60.0,3.0);
-	wait1Msec(250);
-	mecMove(80, 0, 0, 150.0);//forward toward goal
 
-	wait1Msec(250);
-
-	servo[grabber]=150;
-	wait1Msec(500);
-
-	mecMove(-80, 0, 0, 10.0);//back a bit
-	wait1Msec(100);
-	servo[hood] = 125;//hood in place
-
-	turnMecGyro(-60.0,155.0);//turn toward the PK
-
-	motor[Flipper] = -100.0; //start thrower motor
-
-	mecMove(80.0, 0, 0, 260.0);//**length: move pass the kick stand
-	wait1Msec(250);
-	mecMove(80.0, 90, 0, 40.0);//**right strafe slightly so rolling goal totally in pz
-
-	servo[grabber] = 255;// drop goal
-	mecMove(80, 20, 0, 100); //shift right and back
-	mecMove(80, 40, 0, 150); //shift right and back into bottleneck
-
+	wait1Msec(15000);
 	//---------------------------------------------------------------------------
 }

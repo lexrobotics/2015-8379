@@ -154,11 +154,10 @@ task main()
 
 //	liftPart();
 
-	mecMove(80, 60, 0, 200); //shift forward left out of pz, straight into bottleneck?
+	mecMove(78, 90, 0, 5);
+	mecMove(78, 0, 0, 50);
 	wait1Msec(300);
-	mecMove(80, 0, 0, 20);
-	wait1Msec(300);
-	mecMove(80, 90, 0, 50); //shift right into bottleneck
+	mecMove(78, 90, 0, 200); //shift right into bottleneck
 
 	wait1Msec(15000);
 	//---------------------------------------------------------------------------
