@@ -127,7 +127,7 @@ task hoodOut()
 	wait1Msec(50);
 	servo[holder] = 127;
 	//	wait1Msec(1);
-	servo[hood] = 125;
+	servo[hood] = 130;
 }
 
 task hoodIn()

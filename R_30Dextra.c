@@ -200,7 +200,7 @@ task main()
 	wait1Msec(500);
 	mecMove(-78, 0, 0, 10.0);//back a bit
 	wait1Msec(100);
-	servo[hood] = 125;//hood in place
+	servo[hood] = 130;//hood in place
 	mecMove(-78, 90, 0, 10.0);//side shift a bit
 
 	//turnMecGyro(-60.0,155.0);//turn toward the PK
