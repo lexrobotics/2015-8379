@@ -2,10 +2,10 @@ PZ_Impressio			3s
 PZ_DisiceVota			10s		Hits 60 at 5s
 PZ_ProtinusVota			5s
 PZ_AdserSolum			23s		Pos 1 = 18s, Pos2 = 21s, Pos3 = 23s kickstand in ~10s 
-PZ_Centralis			27s		Pos1 = 27s, Pos2 = 26s, Pos3 = ?s
-PZ_CentralisMediocrior		max		Pos1 = ?s, Pos3 = ?s
-PZ_CentralisSimplex		max		??? whichever two are slowest
-PZ_CentralisDesiste		max		
+PZ_Centralis			27s		Pos1 = 27s, Pos2 = 26s, Pos3 = 23s
+PZ_CentralisMediocrior		26s		Pos1 = 10s, Pos2 = 26s, Pos3 = 23s
+PZ_CentralisSimplex		23s		Pos1 = 10s, Pos2 = 10s, Pos3 = 23s
+PZ_CentralisDesiste		max		Pos1 = 24s, Pos2 = 23s, Pos3 = 20s
 R_Desiste			4s
 R_30Dextra			19s
 R_30Sinistra			18s

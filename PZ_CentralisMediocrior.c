@@ -126,7 +126,7 @@ void mecMove(float speed, float degrees, float speedRotation, float distance)
 	while((abs(nMotorEncoder[FrontLeft])<scaled) && (abs(nMotorEncoder[FrontRight])<scaled) && (abs(nMotorEncoder[BackLeft])< scaled) && (abs(nMotorEncoder[BackRight])< scaled))
 	{
 		wait1Msec(5);
-//		writeDebugStreamLine("%d, %d, %d, %d ", (nMotorEncoder[FrontLeft]), (nMotorEncoder[FrontRight]), (nMotorEncoder[BackLeft]), (nMotorEncoder[BackRight]));
+		//		writeDebugStreamLine("%d, %d, %d, %d ", (nMotorEncoder[FrontLeft]), (nMotorEncoder[FrontRight]), (nMotorEncoder[BackLeft]), (nMotorEncoder[BackRight]));
 	}
 	Stop();
 	resetEncoders();
@@ -434,9 +434,9 @@ task timePos3()
 
 task disice1()
 {
-			mecMove(78, -90, 0, 140);
-			mecMove(78, 90, 0, 5);
-			mecMove(78, 0, 0, 50);
+	mecMove(78, -90, 0, 140);
+	mecMove(78, 90, 0, 5);
+	mecMove(78, 0, 0, 50);
 }
 //============================================================================================
 task main()
@@ -507,7 +507,7 @@ task main()
 
 
 
-//	mecMove(10, 90, 0, 3);//move away from the wall
+	//	mecMove(10, 90, 0, 3);//move away from the wall
 
 	switch (Cposition)
 	{
@@ -526,12 +526,12 @@ task main()
 	case 2:{
 			startTask(timePos2);
 			mecMove(78, 90, 0, 50);
-			turnMecGyro(60, 17.0);
+			turnMecGyro(60, 17);
 			mecMove(70, 0, 0, 60);//was speed 70
 			wait1Msec(500);
 			moveTillUS(70, 0, 0, 60, true);
 			//wait1Msec(400);
-			//mecMove(70, 0, 0, 3);
+			mecMove(70, 0, 0, 3);
 			//wait1Msec(400);
 			while(!isUp){};
 			moveTillTouch(70, 90, 0, true);

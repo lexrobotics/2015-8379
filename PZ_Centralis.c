@@ -284,7 +284,7 @@ void kickstand2()
 
 void kickstand3()
 {
-	mecMove(70,180, 0, 43);
+	mecMove(70,180, 0, 40);
 	turnMecGyro(-60, 82.0);
 	mecMove(-78, 0, 0, 25);
 	armOut();
